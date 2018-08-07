@@ -81,14 +81,14 @@
 
 <meta name="description" content="开篇&amp;emsp;&amp;emsp;CountDownLatch的源码其实很简单，因为其主要依靠AQS实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是await(),一个是countDown()。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：1234">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java基础（一）CountDownLatch源码分析">
+<meta property="og:title" content="Java并发之旅（一）CountDownLatch源码分析">
 <meta property="og:url" content="http://yoursite.com/2018/07/30/Java基础（一）CountDownLatch源码分析/index.html">
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:description" content="开篇&amp;emsp;&amp;emsp;CountDownLatch的源码其实很简单，因为其主要依靠AQS实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是await(),一个是countDown()。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：1234">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-30T06:13:04.000Z">
+<meta property="og:updated_time" content="2018-07-30T13:38:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java基础（一）CountDownLatch源码分析">
+<meta name="twitter:title" content="Java并发之旅（一）CountDownLatch源码分析">
 <meta name="twitter:description" content="开篇&amp;emsp;&amp;emsp;CountDownLatch的源码其实很简单，因为其主要依靠AQS实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是await(),一个是countDown()。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：1234">
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>Java基础（一）CountDownLatch源码分析 | 迷宫式编程</title>
+  <title>Java并发之旅（一）CountDownLatch源码分析 | 迷宫式编程</title>
   
 
 
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Java基础（一）CountDownLatch源码分析</h1>
+          <h1 class="post-title" itemprop="name headline">Java并发之旅（一）CountDownLatch源码分析</h1>
         
 
         <div class="post-meta">
@@ -339,8 +339,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/28/Netty修行（三）ByteBuf内存管理/" rel="next" title="Netty修行（三）ByteBuf内存管理">
-                <i class="fa fa-chevron-left"></i> Netty修行（三）ByteBuf内存管理
+              <a href="/2018/07/28/Netty修行（三）ByteBuf内存管理/" rel="next" title="Netty修行（三）ByteBuf内存三剑客以及算法概要">
+                <i class="fa fa-chevron-left"></i> Netty修行（三）ByteBuf内存三剑客以及算法概要
               </a>
             
           </div>

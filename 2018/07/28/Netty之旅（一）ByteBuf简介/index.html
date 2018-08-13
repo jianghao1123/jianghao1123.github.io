@@ -81,15 +81,15 @@
 
 <meta name="description" content="NIO Buffer缺陷 Buffer设计精简，只有一个position。读写切换的时候需要使用者手动去调用flip()和rewind()，其position和limit的含义，取决于当前Buffer是处于读还是写模式，无疑为整个Buffer编程增加难度。 ByteBuffer长度固定，一旦长度超出limit就会抛出IndexOutOfBoundsException，这就意味着在为ByteBuff">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Netty修行（一）ByteBuf简介">
-<meta property="og:url" content="http://yoursite.com/2018/07/28/Netty修行之ByteBuf/index.html">
+<meta property="og:title" content="Netty之旅（一）ByteBuf简介">
+<meta property="og:url" content="http://yoursite.com/2018/07/28/Netty之旅（一）ByteBuf简介/index.html">
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:description" content="NIO Buffer缺陷 Buffer设计精简，只有一个position。读写切换的时候需要使用者手动去调用flip()和rewind()，其position和limit的含义，取决于当前Buffer是处于读还是写模式，无疑为整个Buffer编程增加难度。 ByteBuffer长度固定，一旦长度超出limit就会抛出IndexOutOfBoundsException，这就意味着在为ByteBuff">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1ftro5mxzrcj21d80qytbh.jpg">
-<meta property="og:updated_time" content="2018-08-07T11:18:06.000Z">
+<meta property="og:updated_time" content="2018-08-13T01:29:43.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Netty修行（一）ByteBuf简介">
+<meta name="twitter:title" content="Netty之旅（一）ByteBuf简介">
 <meta name="twitter:description" content="NIO Buffer缺陷 Buffer设计精简，只有一个position。读写切换的时候需要使用者手动去调用flip()和rewind()，其position和limit的含义，取决于当前Buffer是处于读还是写模式，无疑为整个Buffer编程增加难度。 ByteBuffer长度固定，一旦长度超出limit就会抛出IndexOutOfBoundsException，这就意味着在为ByteBuff">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1ftro5mxzrcj21d80qytbh.jpg">
 
@@ -121,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/28/Netty修行之ByteBuf/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/28/Netty之旅（一）ByteBuf简介/"/>
 
 
 
 
 
-  <title>Netty修行（一）ByteBuf简介 | 迷宫式编程</title>
+  <title>Netty之旅（一）ByteBuf简介 | 迷宫式编程</title>
   
 
 
@@ -234,7 +234,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty修行之ByteBuf/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（一）ByteBuf简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -251,7 +251,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Netty修行（一）ByteBuf简介</h1>
+          <h1 class="post-title" itemprop="name headline">Netty之旅（一）ByteBuf简介</h1>
         
 
         <div class="post-meta">
@@ -349,8 +349,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/28/Netty修行（二）ByteBuf引用计数/" rel="prev" title="Netty修行（二）ByteBuf引用计数">
-                Netty修行（二）ByteBuf引用计数 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" rel="prev" title="Netty之旅（二）ByteBuf引用计数">
+                Netty之旅（二）ByteBuf引用计数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -428,7 +428,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

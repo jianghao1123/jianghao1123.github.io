@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty修行（六）ByteBuf内存管理之PoolArena/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/12/RocketMQ之旅（二）namesrv/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -248,7 +248,267 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/08/Netty修行（六）ByteBuf内存管理之PoolArena/" itemprop="url">Netty修行（六）ByteBuf内存管理之PoolArena</a></h1>
+                <a class="post-title-link" href="/2018/08/12/RocketMQ之旅（二）namesrv/" itemprop="url">RocketMQ之旅（二）namesrv</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-12T13:29:39+08:00">
+                2018-08-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;&emsp;namesrv是一个注册中心，每个broker都会向namesrv注册。producer或者consumer根据topic到namesrv获取broker的信息。根据官网Qucik Start来启动namesrv：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; unzip rocketmq-all-4.3.0-source-release.zip</span><br><span class="line">&gt; cd rocketmq-all-4.3.0/</span><br><span class="line">&gt; mvn -Prelease-all -DskipTests clean install -U</span><br><span class="line">&gt; cd distribution/target/apache-rocketmq</span><br><span class="line">&gt; nohup sh bin/mqnamesrv &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/namesrv.log</span><br><span class="line">The Name Server boot success...</span><br></pre></td></tr></table></figure></p>
+<p>查看mqnamesrv脚本，指定启动org.apache.rocketmq.namesrv.NamesrvStartup。进入NamesrvStartup查看代码，是一个main函数，主要分两步：<strong>创建NamesrvController</strong>，<strong>启动NamesrvController</strong>，所以我们重点还是看一下NamesrvController这个类。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/11/RocketMQ之旅（一）概述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/11/RocketMQ之旅（一）概述/" itemprop="url">RocketMQ之旅（一）概述</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-11T20:28:01+08:00">
+                2018-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
+<ol>
+<li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
+<li><strong>client</strong> 集结了consumer和producer</li>
+<li><strong>common</strong> 提供通用基础方法给其他模块调用</li>
+<li><strong>dev</strong> 是一个版本控制脚本不用管</li>
+<li><strong>distribution</strong> 提供了一些部署的脚本</li>
+<li><strong>filter</strong> 过滤器，提供SQL92标准的过滤方式</li>
+<li><strong>logappender</strong> 日志模块</li>
+<li><strong>logging</strong> 也是日志</li>
+<li><strong>namesrv</strong> 注册中心，管理broker和topic信息</li>
+<li><strong>openmessaging</strong> openmessaging是由阿里巴巴发起的分布式消息领域的国际标准，这个包主要提供openmessaging标准的部分实现</li>
+<li><strong>remoting</strong> 是一个通用的网络通信基础模块，基于netty实现</li>
+<li><strong>srvutil</strong> 工具包，里面只有三个类</li>
+<li><strong>store</strong> 消息相关存储服务</li>
+<li><strong>style</strong> 统一代码风格不用管</li>
+<li><strong>test</strong> 测试相关</li>
+<li><strong>tools</strong> 工具类，提供一些后台管理的工具</li>
+</ol>
+<p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" itemprop="url">Netty之旅（六）ByteBuf内存管理之PoolArena</a></h1>
         
 
         <div class="post-meta">
@@ -348,7 +608,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty修行（五）ByteBuf内存管理之PoolSubpage/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -367,7 +627,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/08/Netty修行（五）ByteBuf内存管理之PoolSubpage/" itemprop="url">Netty修行（五）ByteBuf内存管理之PoolSubpage</a></h1>
+                <a class="post-title-link" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" itemprop="url">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a></h1>
         
 
         <div class="post-meta">
@@ -418,21 +678,14 @@
 
       
         
-          
-            <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">private long allocateSubpage(int normCapacity) &#123;</span><br><span class="line">        // Obtain the head of the PoolSubPage pool that is owned by the PoolArena and synchronize on it.</span><br><span class="line">        // This is need as we may add it back and so alter the linked-list structure.</span><br><span class="line">        // 内存主要还是依靠PoolArena来管理，这个先不说了</span><br><span class="line">        PoolSubpage&lt;T&gt; head = arena.findSubpagePoolHead(normCapacity);</span><br><span class="line">        synchronized (head) &#123;</span><br><span class="line">            int d = maxOrder; // subpages are only be allocated from pages i.e., leaves</span><br><span class="line">            // d深度为最大深度，所以这里会去叶子节点寻找空闲的节点</span><br><span class="line">            int id = allocateNode(d);</span><br><span class="line">            if (id &lt; 0) &#123;</span><br><span class="line">                return id;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            final PoolSubpage&lt;T&gt;[] subpages = this.subpages;</span><br><span class="line">            final int pageSize = this.pageSize;</span><br><span class="line"></span><br><span class="line">            freeBytes -= pageSize;</span><br><span class="line">            //获取在subpages中的索引</span><br><span class="line">            int subpageIdx = subpageIdx(id);</span><br><span class="line">            PoolSubpage&lt;T&gt; subpage = subpages[subpageIdx];</span><br><span class="line">            if (subpage == null) &#123;</span><br><span class="line">                subpage = new PoolSubpage&lt;T&gt;(head, this, id, runOffset(id), pageSize, normCapacity);</span><br><span class="line">                subpages[subpageIdx] = subpage;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                subpage.init(head, normCapacity);</span><br><span class="line">            &#125;</span><br><span class="line">            return subpage.allocate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="PoolSubpage分配内存"><a href="#PoolSubpage分配内存" class="headerlink" title="PoolSubpage分配内存"></a>PoolSubpage分配内存</h3><p>&emsp;&emsp;看一下PoolSubpage构造函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PoolSubpage(PoolSubpage&lt;T&gt; head, PoolChunk&lt;T&gt; chunk, int memoryMapIdx, int runOffset, int pageSize, int elemSize) &#123;</span><br><span class="line">        this.chunk = chunk;</span><br><span class="line">        this.memoryMapIdx = memoryMapIdx;</span><br><span class="line">        this.runOffset = runOffset;</span><br><span class="line">        this.pageSize = pageSize;</span><br><span class="line">        bitmap = new long[pageSize &gt;&gt;&gt; 10]; // pageSize / 16 / 64</span><br><span class="line">        init(head, elemSize);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>看一下这里的bitmap数组，他的大小是pageSize/16/64，默认pageSize=8192，即bitmap数组长度默认为8。bitmap反映了PoolSubpage中每一段内存的分配情况。elemSize是<strong>allocateSubpage(int normCapacity)</strong>入口的内存分配请求大小，这个大小是经过normalize的，最小为16，所以这里pageSize / 16，意思是将一页内存划分为512段，每一段内存是空闲还是被占用，使用一个bit位来标识，long类型可以标识64个bit位，所以，这里的bitmap数组长度只需要8就可以标识一页内存每一段的占用情况了。<br>看一下<strong>init</strong>函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void init(PoolSubpage&lt;T&gt; head, int elemSize) &#123;</span><br><span class="line">        doNotDestroy = true;</span><br><span class="line">        this.elemSize = elemSize;</span><br><span class="line">        if (elemSize != 0) &#123;</span><br><span class="line">            maxNumElems = numAvail = pageSize / elemSize;</span><br><span class="line">            nextAvail = 0;</span><br><span class="line">            bitmapLength = maxNumElems &gt;&gt;&gt; 6;</span><br><span class="line">            if ((maxNumElems &amp; 63) != 0) &#123;</span><br><span class="line">                bitmapLength ++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            for (int i = 0; i &lt; bitmapLength; i ++) &#123;</span><br><span class="line">                bitmap[i] = 0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        addToPool(head);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>根据实际elemSize大小，来初始化bitmap数组。看一下PoolSubpage中实际分配内存的函数<strong>allocate()</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">long allocate() &#123;</span><br><span class="line">    if (elemSize == 0) &#123;</span><br><span class="line">        return toHandle(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (numAvail == 0 || !doNotDestroy) &#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    // 寻找可用的内存段序号</span><br><span class="line">    final int bitmapIdx = getNextAvail();</span><br><span class="line">    // 获取该内存段在bitmap中的索引</span><br><span class="line">    int q = bitmapIdx &gt;&gt;&gt; 6;</span><br><span class="line">    // 舍弃高位，保证得到一个小于64的数字</span><br><span class="line">    int r = bitmapIdx &amp; 63;</span><br><span class="line">    assert (bitmap[q] &gt;&gt;&gt; r &amp; 1) == 0;</span><br><span class="line">    // 将bitmap中索引为q的数字，将相应bit位为不可用</span><br><span class="line">    bitmap[q] |= 1L &lt;&lt; r;</span><br><span class="line"></span><br><span class="line">    if (-- numAvail == 0) &#123;</span><br><span class="line">        removeFromPool();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return toHandle(bitmapIdx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>看一下<strong>getNextAvail</strong>到底做了什么，他又返回了什么东西：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private int getNextAvail() &#123;</span><br><span class="line">        int nextAvail = this.nextAvail;</span><br><span class="line">        if (nextAvail &gt;= 0) &#123;</span><br><span class="line">            this.nextAvail = -1;</span><br><span class="line">            return nextAvail;</span><br><span class="line">        &#125;</span><br><span class="line">        return findNextAvail();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>初始nextAvail=0，如果分配了，则将nextAvail置为-1，后来者会进入<strong>findNextAvail</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private int findNextAvail() &#123;</span><br><span class="line">        final long[] bitmap = this.bitmap;</span><br><span class="line">        final int bitmapLength = this.bitmapLength;</span><br><span class="line">        // 遍历bitmap数组</span><br><span class="line">        for (int i = 0; i &lt; bitmapLength; i ++) &#123;</span><br><span class="line">            long bits = bitmap[i];</span><br><span class="line">            // 该位置还有未分配的空间</span><br><span class="line">            if (~bits != 0) &#123;</span><br><span class="line">                return findNextAvail0(i, bits);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private int findNextAvail0(int i, long bits) &#123;</span><br><span class="line">        final int maxNumElems = this.maxNumElems;</span><br><span class="line">        final int baseVal = i &lt;&lt; 6;</span><br><span class="line">        // 因为bitmap存储的是64位的long类型，每一位都代表一个内存段的分配情况</span><br><span class="line">        for (int j = 0; j &lt; 64; j ++) &#123;</span><br><span class="line">            if ((bits &amp; 1) == 0) &#123;</span><br><span class="line">                // 内存段的序号，必须小于最大的内存段数量</span><br><span class="line">                int val = baseVal | j;</span><br><span class="line">                if (val &lt; maxNumElems) &#123;</span><br><span class="line">                    return val;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            bits &gt;&gt;&gt;= 1;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>遍历bitmap数组，如果为0，表示该位置还有未被分配的内存段，取出该bitmap上的long类型数字。</li>
-<li>遍历该数字的每一个bit位，如果为0，而且该段内存序号小于最大的内存段，返回该段序号。</li>
-</ol>
-<p>好了，拿到的原来是elem的序号，继续回过头看上面的<strong>allocate()</strong>函数，拿到这个内存段序号后，返回toHandle(bitmapIdx)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private long toHandle(int bitmapIdx) &#123;</span><br><span class="line">        return 0x4000000000000000L | (long) bitmapIdx &lt;&lt; 32 | memoryMapIdx;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>精妙，只使用一个long类型的数字，将内存段elem序号放在高32位，memoryMapIdx放在低32位，一下子返回了两种信息。</p>
-
-          
+          <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -479,7 +732,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty修行（四）ByteBuf内存管理之PoolChunk/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -498,7 +751,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/08/Netty修行（四）ByteBuf内存管理之PoolChunk/" itemprop="url">Netty修行（四）ByteBuf内存管理之PoolChunk</a></h1>
+                <a class="post-title-link" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" itemprop="url">Netty之旅（四）ByteBuf内存管理之PoolChunk</a></h1>
         
 
         <div class="post-meta">
@@ -552,7 +805,7 @@
           <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0                       1</span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line">1                    2      3</span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line">2                 4     5 6    7</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line">11         2048   2049  *** 4094   4095</span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/08/08/Netty修行（四）ByteBuf内存管理之PoolChunk/" rel="contents">
+            <a class="btn" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -727,7 +980,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty修行（三）ByteBuf内存管理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（三）ByteBuf内存管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -746,7 +999,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/28/Netty修行（三）ByteBuf内存管理/" itemprop="url">Netty修行（三）ByteBuf内存三剑客以及算法概要</a></h1>
+                <a class="post-title-link" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" itemprop="url">Netty之旅（三）ByteBuf内存三剑客以及算法概要</a></h1>
         
 
         <div class="post-meta">
@@ -800,7 +1053,7 @@
           <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty修行（三）ByteBuf内存管理/" rel="contents">
+            <a class="btn" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -851,7 +1104,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty修行（二）ByteBuf引用计数/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（二）ByteBuf引用计数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -870,7 +1123,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/28/Netty修行（二）ByteBuf引用计数/" itemprop="url">Netty修行（二）ByteBuf引用计数</a></h1>
+                <a class="post-title-link" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" itemprop="url">Netty之旅（二）ByteBuf引用计数</a></h1>
         
 
         <div class="post-meta">
@@ -929,7 +1182,7 @@
 <hr>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty修行（二）ByteBuf引用计数/" rel="contents">
+            <a class="btn" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -980,7 +1233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty修行之ByteBuf/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（一）ByteBuf简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -999,7 +1252,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/28/Netty修行之ByteBuf/" itemprop="url">Netty修行（一）ByteBuf简介</a></h1>
+                <a class="post-title-link" href="/2018/07/28/Netty之旅（一）ByteBuf简介/" itemprop="url">Netty之旅（一）ByteBuf简介</a></h1>
         
 
         <div class="post-meta">
@@ -1057,7 +1310,7 @@
 <hr>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty修行之ByteBuf/" rel="contents">
+            <a class="btn" href="/2018/07/28/Netty之旅（一）ByteBuf简介/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1269,7 +1522,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:description" content="引用计数&amp;emsp;&amp;emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。&amp;emsp;&amp;emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-13T01:29:55.000Z">
+<meta property="og:updated_time" content="2018-08-17T03:22:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty之旅（二）ByteBuf引用计数">
 <meta name="twitter:description" content="引用计数&amp;emsp;&amp;emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。&amp;emsp;&amp;emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点">
@@ -190,6 +190,16 @@
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-所有文章">
           <a href="/archives/" rel="section">
             
@@ -272,6 +282,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -306,9 +338,9 @@
 </ol>
 <hr>
 <a id="more"></a>
-<h3 id="AbstractReferenceCountedByteBuf实现"><a href="#AbstractReferenceCountedByteBuf实现" class="headerlink" title="AbstractReferenceCountedByteBuf实现"></a>AbstractReferenceCountedByteBuf实现</h3><p>&emsp;&emsp;Netty的引用计数主要依靠AbstractReferenceCountedByteBuf实现，AbstractReferenceCountedByteBuf内部通过一个AtomicIntegerFieldUpdater变量来实现引用计数。每一次调用retain()方法，引用计数就会+1：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private ByteBuf retain0(final int increment) &#123;</span><br><span class="line">        int oldRef = refCntUpdater.getAndAdd(this, increment);</span><br><span class="line">        if (oldRef &lt;= 0 || oldRef + increment &lt; oldRef) &#123;</span><br><span class="line">            // Ensure we don&apos;t resurrect (which means the refCnt was 0) and also that we encountered an overflow.</span><br><span class="line">            refCntUpdater.getAndAdd(this, -increment);</span><br><span class="line">            throw new IllegalReferenceCountException(oldRef, increment);</span><br><span class="line">        &#125;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>对应使用release()方法使得引用计数-1：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private boolean release0(int decrement) &#123;</span><br><span class="line">        int oldRef = refCntUpdater.getAndAdd(this, -decrement);</span><br><span class="line">        if (oldRef == decrement) &#123;</span><br><span class="line">            deallocate();</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else if (oldRef &lt; decrement || oldRef - decrement &gt; oldRef) &#123;</span><br><span class="line">            // Ensure we don&apos;t over-release, and avoid underflow.</span><br><span class="line">            refCntUpdater.getAndAdd(this, decrement);</span><br><span class="line">            throw new IllegalReferenceCountException(oldRef, -decrement);</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果引用计数为0，调用deallocate()方法进行清理内存。deallocate()是一个虚函数，由各自的ByteBuf来具体实现不同的内存清理方法，比如最简单的UnpooledHeapByteBuf，他的deallocate()就是将数组赋值为空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void deallocate() &#123;</span><br><span class="line">        freeArray(array);</span><br><span class="line">        array = EmptyArrays.EMPTY_BYTES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="AbstractReferenceCountedByteBuf实现"><a href="#AbstractReferenceCountedByteBuf实现" class="headerlink" title="AbstractReferenceCountedByteBuf实现"></a>AbstractReferenceCountedByteBuf实现</h3><p>&emsp;&emsp;Netty的引用计数主要依靠AbstractReferenceCountedByteBuf实现，AbstractReferenceCountedByteBuf内部通过一个AtomicIntegerFieldUpdater变量来实现引用计数。每一次调用retain()方法，引用计数就会+1：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function">ByteBuf <span class="title">retain0</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> increment)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldRef = refCntUpdater.getAndAdd(<span class="keyword">this</span>, increment);</span><br><span class="line">        <span class="keyword">if</span> (oldRef &lt;= <span class="number">0</span> || oldRef + increment &lt; oldRef) &#123;</span><br><span class="line">            <span class="comment">// Ensure we don't resurrect (which means the refCnt was 0) and also that we encountered an overflow.</span></span><br><span class="line">            refCntUpdater.getAndAdd(<span class="keyword">this</span>, -increment);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalReferenceCountException(oldRef, increment);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>对应使用release()方法使得引用计数-1：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">boolean</span> <span class="title">release0</span><span class="params">(<span class="keyword">int</span> decrement)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldRef = refCntUpdater.getAndAdd(<span class="keyword">this</span>, -decrement);</span><br><span class="line">        <span class="keyword">if</span> (oldRef == decrement) &#123;</span><br><span class="line">            deallocate();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="function"><span class="keyword">else</span> <span class="title">if</span> <span class="params">(oldRef &lt; decrement || oldRef - decrement &gt; oldRef)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// Ensure we don't over-release, and avoid underflow.</span></span><br><span class="line">            refCntUpdater.getAndAdd(<span class="keyword">this</span>, decrement);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalReferenceCountException(oldRef, -decrement);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果引用计数为0，调用deallocate()方法进行清理内存。deallocate()是一个虚函数，由各自的ByteBuf来具体实现不同的内存清理方法，比如最简单的UnpooledHeapByteBuf，他的deallocate()就是将数组赋值为空：<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void deallocate() &#123;</span><br><span class="line">        freeArray(array);</span><br><span class="line">       <span class="built_in"> array </span>= EmptyArrays.EMPTY_BYTES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -422,12 +454,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             

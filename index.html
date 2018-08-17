@@ -187,6 +187,16 @@
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-所有文章">
           <a href="/archives/" rel="section">
             
@@ -215,266 +225,6 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/12/RocketMQ之旅（二）namesrv/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/12/RocketMQ之旅（二）namesrv/" itemprop="url">RocketMQ之旅（二）namesrv</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-12T13:29:39+08:00">
-                2018-08-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&emsp;&emsp;namesrv是一个注册中心，每个broker都会向namesrv注册。producer或者consumer根据topic到namesrv获取broker的信息。根据官网Qucik Start来启动namesrv：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; unzip rocketmq-all-4.3.0-source-release.zip</span><br><span class="line">&gt; cd rocketmq-all-4.3.0/</span><br><span class="line">&gt; mvn -Prelease-all -DskipTests clean install -U</span><br><span class="line">&gt; cd distribution/target/apache-rocketmq</span><br><span class="line">&gt; nohup sh bin/mqnamesrv &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/namesrv.log</span><br><span class="line">The Name Server boot success...</span><br></pre></td></tr></table></figure></p>
-<p>查看mqnamesrv脚本，指定启动org.apache.rocketmq.namesrv.NamesrvStartup。进入NamesrvStartup查看代码，是一个main函数，主要分两步：<strong>创建NamesrvController</strong>，<strong>启动NamesrvController</strong>，所以我们重点还是看一下NamesrvController这个类。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/11/RocketMQ之旅（一）概述/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/11/RocketMQ之旅（一）概述/" itemprop="url">RocketMQ之旅（一）概述</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-11T20:28:01+08:00">
-                2018-08-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
-<ol>
-<li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
-<li><strong>client</strong> 集结了consumer和producer</li>
-<li><strong>common</strong> 提供通用基础方法给其他模块调用</li>
-<li><strong>dev</strong> 是一个版本控制脚本不用管</li>
-<li><strong>distribution</strong> 提供了一些部署的脚本</li>
-<li><strong>filter</strong> 过滤器，提供SQL92标准的过滤方式</li>
-<li><strong>logappender</strong> 日志模块</li>
-<li><strong>logging</strong> 也是日志</li>
-<li><strong>namesrv</strong> 注册中心，管理broker和topic信息</li>
-<li><strong>openmessaging</strong> openmessaging是由阿里巴巴发起的分布式消息领域的国际标准，这个包主要提供openmessaging标准的部分实现</li>
-<li><strong>remoting</strong> 是一个通用的网络通信基础模块，基于netty实现</li>
-<li><strong>srvutil</strong> 工具包，里面只有三个类</li>
-<li><strong>store</strong> 消息相关存储服务</li>
-<li><strong>style</strong> 统一代码风格不用管</li>
-<li><strong>test</strong> 测试相关</li>
-<li><strong>tools</strong> 工具类，提供一些后台管理的工具</li>
-</ol>
-<p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
     
       
 
@@ -531,6 +281,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -559,9 +331,15 @@
 
       
         
-          
-            
-          
+          <p>&emsp;&emsp;<a href="../Netty之旅（五）ByteBuf内存管理之PoolSubpage">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a>中描述PoolSubpage分配内存的时候，allocateSubpage方法开头就会调用PoolArena：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">allocateSubpage</span><span class="params">(<span class="keyword">int</span> normCapacity)</span> </span>&#123;</span><br><span class="line">    PoolSubpage&lt;T&gt; head = arena.findSubpagePoolHead(normCapacity);</span><br><span class="line">    ......（省略）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>或者在<a href="../Netty之旅（三）ByteBuf内存管理">Netty之旅（三）ByteBuf内存管理</a>中，PooledByteBufAllocator来分配堆内存：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ByteBuf <span class="title">newHeapBuffer</span>(<span class="params"><span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity</span>) </span>&#123;</span><br><span class="line">    PoolThreadCache cache = threadCache.<span class="keyword">get</span>();</span><br><span class="line">    PoolArena&lt;<span class="keyword">byte</span>[]&gt; heapArena = cache.heapArena;</span><br><span class="line">    ......（省略）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -649,6 +427,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -774,6 +574,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -802,7 +624,7 @@
 
       
         
-          <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0                       1</span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line">1                    2      3</span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line">2                 4     5 6    7</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line">11         2048   2049  *** 4094   4095</span><br></pre></td></tr></table></figure></p>
+          <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>                       <span class="number">1</span></span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line"><span class="number">1</span>                    <span class="number">2</span>      <span class="number">3</span></span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line"><span class="number">2</span>                 <span class="number">4</span>     <span class="number">5</span> <span class="number">6</span>    <span class="number">7</span></span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line"><span class="number">11</span>         <span class="number">2048</span>   <span class="number">2049</span>  *** <span class="number">4094</span>   <span class="number">4095</span></span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" rel="contents">
@@ -897,6 +719,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java并发之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Java并发之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1022,6 +866,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -1145,6 +1011,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1274,6 +1162,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1522,12 +1432,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             

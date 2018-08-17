@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1ftz5koynqyj20gm09m3zh.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fu0bnudmx4j20ho0c13z6.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fu0clp6lz8j20940cvdgd.jpg">
-<meta property="og:updated_time" content="2018-08-13T01:30:24.000Z">
+<meta property="og:updated_time" content="2018-08-17T03:22:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty之旅（三）ByteBuf内存三剑客以及算法概要">
 <meta name="twitter:description" content="内存分配器ByteBufAllocator&amp;emsp;&amp;emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们">
@@ -195,6 +195,16 @@
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-所有文章">
           <a href="/archives/" rel="section">
             
@@ -277,6 +287,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -304,9 +336,9 @@
       
 
       
-        <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">final int defaultMinNumArena = NettyRuntime.availableProcessors() * 2;</span><br><span class="line">final int defaultChunkSize = DEFAULT_PAGE_SIZE &lt;&lt; DEFAULT_MAX_ORDER;</span><br><span class="line">DEFAULT_NUM_HEAP_ARENA = Math.max(0,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                &quot;io.netty.allocator.numHeapArenas&quot;,</span><br><span class="line">                (int) Math.min(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        runtime.maxMemory() / defaultChunkSize / 2 / 3)));</span><br><span class="line">DEFAULT_NUM_DIRECT_ARENA = Math.max(0,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                &quot;io.netty.allocator.numDirectArenas&quot;,</span><br><span class="line">                (int) Math.min(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        PlatformDependent.maxDirectMemory() / defaultChunkSize / 2 / 3)));</span><br></pre></td></tr></table></figure></p>
-<p><strong>DEFAULT_PAGE_SIZE</strong>默认为8192，<strong>DEFAULT_MAX_ORDER</strong>默认为11，这两个常量很重要，跟后面的内存管理息息相关。来看下PooledByteBufAllocator实际分配heapBuffer的地方：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) &#123;</span><br><span class="line">        // 优先获取线程缓存的 PoolArena，这就是上面说为什么有多个PoolArena</span><br><span class="line">        PoolThreadCache cache = threadCache.get();</span><br><span class="line">        PoolArena&lt;byte[]&gt; heapArena = cache.heapArena;</span><br><span class="line"></span><br><span class="line">        final ByteBuf buf;</span><br><span class="line">        if (heapArena != null) &#123;</span><br><span class="line">            // 使用PoolArena来获取ByteBuf</span><br><span class="line">            buf = heapArena.allocate(cache, initialCapacity, maxCapacity);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // 第一次进来，线程没有PoolArena缓存，直接返回一个未池化的ByteBuf</span><br><span class="line">            buf = PlatformDependent.hasUnsafe() ?</span><br><span class="line">                    new UnpooledUnsafeHeapByteBuf(this, initialCapacity, maxCapacity) :</span><br><span class="line">                    new UnpooledHeapByteBuf(this, initialCapacity, maxCapacity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return toLeakAwareBuffer(buf);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>PoolArena</strong>虽然是实际的内存操纵者，但是，他自己却不干活，实质上也是一个管理者，来看下它内部的劳工<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private final PoolSubpage&lt;T&gt;[] tinySubpagePools;</span><br><span class="line">private final PoolSubpage&lt;T&gt;[] smallSubpagePools;</span><br><span class="line">private final PoolChunkList&lt;T&gt; q050;</span><br><span class="line">private final PoolChunkList&lt;T&gt; q025;</span><br><span class="line">private final PoolChunkList&lt;T&gt; q000;</span><br><span class="line">private final PoolChunkList&lt;T&gt; qInit;</span><br><span class="line">private final PoolChunkList&lt;T&gt; q075;</span><br><span class="line">private final PoolChunkList&lt;T&gt; q100;</span><br></pre></td></tr></table></figure></p>
+        <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br><a id="more"></a><br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="built_in">int</span> defaultMinNumArena = NettyRuntime.availableProcessors() * <span class="number">2</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="built_in">int</span> defaultChunkSize = DEFAULT_PAGE_SIZE &lt;&lt; DEFAULT_MAX_ORDER;</span><br><span class="line">DEFAULT_NUM_HEAP_ARENA = Math.<span class="built_in">max</span>(<span class="number">0</span>,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                <span class="string">"io.netty.allocator.numHeapArenas"</span>,</span><br><span class="line">                (<span class="built_in">int</span>) Math.<span class="built_in">min</span>(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        runtime.maxMemory() / defaultChunkSize / <span class="number">2</span> / <span class="number">3</span>)));</span><br><span class="line">DEFAULT_NUM_DIRECT_ARENA = Math.<span class="built_in">max</span>(<span class="number">0</span>,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                <span class="string">"io.netty.allocator.numDirectArenas"</span>,</span><br><span class="line">                (<span class="built_in">int</span>) Math.<span class="built_in">min</span>(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        PlatformDependent.maxDirectMemory() / defaultChunkSize / <span class="number">2</span> / <span class="number">3</span>)));</span><br></pre></td></tr></table></figure></p>
+<p><strong>DEFAULT_PAGE_SIZE</strong>默认为8192，<strong>DEFAULT_MAX_ORDER</strong>默认为11，这两个常量很重要，跟后面的内存管理息息相关。来看下PooledByteBufAllocator实际分配heapBuffer的地方：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function">ByteBuf <span class="title">newHeapBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 优先获取线程缓存的 PoolArena，这就是上面说为什么有多个PoolArena</span></span><br><span class="line">        PoolThreadCache cache = threadCache.get();</span><br><span class="line">        PoolArena&lt;<span class="keyword">byte</span>[]&gt; heapArena = cache.heapArena;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> ByteBuf buf;</span><br><span class="line">        <span class="keyword">if</span> (heapArena != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 使用PoolArena来获取ByteBuf</span></span><br><span class="line">            buf = heapArena.allocate(cache, initialCapacity, maxCapacity);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 第一次进来，线程没有PoolArena缓存，直接返回一个未池化的ByteBuf</span></span><br><span class="line">            buf = PlatformDependent.hasUnsafe() ?</span><br><span class="line">                    <span class="keyword">new</span> UnpooledUnsafeHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity) :</span><br><span class="line">                    <span class="keyword">new</span> UnpooledHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">return</span> <span class="title">toLeakAwareBuffer</span><span class="params">(buf)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>PoolArena</strong>虽然是实际的内存操纵者，但是，他自己却不干活，实质上也是一个管理者，来看下它内部的劳工<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolSubpage&lt;T&gt;[] tinySubpagePools;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolSubpage&lt;T&gt;[] smallSubpagePools;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; q050;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; q025;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; q000;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; qInit;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; q075;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PoolChunkList&lt;T&gt; q100;</span><br></pre></td></tr></table></figure></p>
 <p>由此，Netty的内存三剑客差不多已经浮出了水面，其中一位便是<strong>PoolSubpage</strong>，不过还有一位并不是这里的PoolChunkList，因为进入PoolChunkList我又发现了一位劳工，三剑客之一<strong>PoolChunk</strong>。因为实质上PoolChunkList的引入就是为了更高效的管理PoolChunk，他组成了劳工的工会。至此，<strong>PoolArena</strong>、<strong>PoolSubpage</strong>、<strong>PoolChunk</strong>便组成了我们的内存三剑客。</p>
 <h3 id="Netty内存管理概要"><a href="#Netty内存管理概要" class="headerlink" title="Netty内存管理概要"></a>Netty内存管理概要</h3><h4 id="Buddy算法和Slab机制"><a href="#Buddy算法和Slab机制" class="headerlink" title="Buddy算法和Slab机制"></a>Buddy算法和Slab机制</h4><p>&emsp;&emsp;Buddy算法利用计算机可以快速计算2次幂的特性，将内存中的页按照2^N划分，比如把内存分为1，2，4，8，16，32，64……个连续页，每个页有一定大小。假设一个页4KB大小，为了申请1M大小的空间，可以先从256页框去查找，如果该页框空间不足2M大小，就从512的页框查找，如果该页框空闲，会被一分为二，并将其中的一块分配给用户使用。被拆分后的两个小块，就是伙伴了。下面是一个完整的示例：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1ftz5koynqyj20gm09m3zh.jpg" alt="Alt text"><br>简单解释下，假设分配70K大小空间，因为页都是2次幂，所以实际上需要给他分配128K大小。接着分配35K大小，初始128K被分配了，256K被一分为二，剩余的128继续拆分，分成两个64K大小……如此循环往复，去寻找相匹配的页。<br>&emsp;&emsp;从上面Buddy算法来看，虽然分配连续内存空间的效率很高，但是也因为2次幂的特性，导致空间被浪费，如果用来分配小内存空间，那就更加浪费了，因为Buddy分配内存大小是以页为单位的。比如我们要分配10B大小，总不能直接给分配一页空间吧。所以，为了解决小内存分配的问题，有了Slab机制。Slab是一个对象缓存池，他就像一个零售店，从Buddy那里批发内存，对象是他的基本商品。</p>
 <h4 id="jemalloc内存分配"><a href="#jemalloc内存分配" class="headerlink" title="jemalloc内存分配"></a>jemalloc内存分配</h4><p>&emsp;&emsp;Netty的内存设计很大程度上借鉴了jemalloc，比如<strong>Arena</strong>和<strong>Thread Cache</strong>。<strong>Arena</strong>是一个完全自治的区域，他将内存页划分为<strong>Chunk</strong>，多个页构成一个<strong>Chunk</strong>，比如在jemalloc中建议<strong>Chunk</strong>为4MB大小。<strong>Arena</strong>内部维护了一个bin数组，bin中有多个Run，一个Run就是Chunk内的一块区域，每个Run大于等于一个Page，根据Page Run的内存使用率，将其分为QINIT，Q0，Q25，Q50，Q75，Q100，使用率分组参照下面：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu0bnudmx4j20ho0c13z6.jpg" alt="Alt text"><br>bin还管理着内存的分配方式，它根据内存大小分为三个尺寸，分别是<strong>small</strong>，<strong>large</strong>，<strong>huge</strong>，具体参照下图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu0clp6lz8j20940cvdgd.jpg" alt="Alt text"><br>&emsp;&emsp;<strong>Thread Cache</strong>保证多线程并发下更高效地分配内存，每个<strong>Thread Cache</strong>对应一个<strong>Arena</strong>（通常有多个Arena），同时其内部还维护了<strong>small</strong>的缓存，每次分配小内存的时候，都会优先检测本地缓存，更有效地消除了锁竞争的开销。</p>
@@ -423,12 +455,21 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             

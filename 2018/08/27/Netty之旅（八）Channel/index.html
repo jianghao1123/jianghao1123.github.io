@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fuisx7nt56j21500s2akc.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fulnsskgovj20wg0lwtd8.jpg">
-<meta property="og:updated_time" content="2018-08-27T13:03:42.000Z">
+<meta property="og:updated_time" content="2018-09-03T05:54:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty之旅（八）Channel">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;这里的Channel是io.netty.channel.Channel，很巧合的是java nio里面也有一个Channel——java.nio.channels.Channel，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，isOpen()，close()，剩下的功能诸如I/O读写，都是交给其子类接口">
@@ -334,7 +334,7 @@
       
 
       
-        <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。</p>
+        <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。<br><a id="more"></a></p>
 <h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><p>&emsp;&emsp;先贴一下Channel(以下都是特指netty中的Channel)中<strong>NioServerSocketChannel</strong>和<strong>NioSocketChannel</strong>实现的类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fuisx7nt56j21500s2akc.jpg" alt=""></p>
 <p>&emsp;&emsp;<strong>NioServerSocketChannel</strong>和<strong>NioSocketChannel</strong>拥有共同的父类<strong>AbstractNioChannel</strong>，他们之间的大部分代码都是通过<strong>AbstractNioChannel</strong>以及其父类<strong>AbstractChannel</strong>来实现共用的。从类的最顶部实现开始探索，看一下<strong>AbstractChannel</strong>的构造函数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">AbstractChannel</span><span class="params">(Channel parent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.parent = parent;</span><br><span class="line">    id = newId();</span><br><span class="line">    unsafe = newUnsafe();</span><br><span class="line">    pipeline = newChannelPipeline();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>可以很容易地看出Channel的几个特征：</p>
@@ -440,6 +440,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/" rel="prev" title="Netty之旅（九）ChannelPipeline">
+                Netty之旅（九）ChannelPipeline <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -515,7 +519,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

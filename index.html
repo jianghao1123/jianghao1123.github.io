@@ -239,6 +239,298 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/08/Netty之旅（十）ChannelHandlerContext/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" itemprop="url">Netty之旅（十）ChannelHandlerContext</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-08T10:25:23+08:00">
+                2018-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>&emsp;&emsp;<strong>Netty之旅（九）ChannelPipeline</strong>中我们知道ChannelPipeline的事件接收后真正处理者是ChannelHandlerContext，所以围绕前文，我们来探讨一下ChannelHandlerContext是如何处理这些事件的。ChannelHandlerContext的类图也很简单：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fuv6uq2j3gj21640modmg.jpg" alt=""><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/08/Netty之旅（九）ChannelPipeline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/08/Netty之旅（九）ChannelPipeline/" itemprop="url">Netty之旅（九）ChannelPipeline</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-08T10:25:08+08:00">
+                2018-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelPipeline和ChannelHandler实现了一种Intercepting Filter Pattern（拦截过滤器）。每一个netty Channel都有他自己的ChannelPipeline，当Channel收到事件，他就会将事件传递给自己的ChannelPipeline，事件在ChannelPipeline中流动，从一个ChannelHandler传播到下一个ChannelHandler。源码里面有一个经典的流动图可以解释：<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/08/Netty之旅（九）ChannelPipeline/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/27/Netty之旅（八）Channel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -331,81 +623,14 @@
 
       
         
-          
-            <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。</p>
-<h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><p>&emsp;&emsp;先贴一下Channel(以下都是特指netty中的Channel)中<strong>NioServerSocketChannel</strong>和<strong>NioSocketChannel</strong>实现的类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fuisx7nt56j21500s2akc.jpg" alt=""></p>
-<p>&emsp;&emsp;<strong>NioServerSocketChannel</strong>和<strong>NioSocketChannel</strong>拥有共同的父类<strong>AbstractNioChannel</strong>，他们之间的大部分代码都是通过<strong>AbstractNioChannel</strong>以及其父类<strong>AbstractChannel</strong>来实现共用的。从类的最顶部实现开始探索，看一下<strong>AbstractChannel</strong>的构造函数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">AbstractChannel</span><span class="params">(Channel parent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.parent = parent;</span><br><span class="line">    id = newId();</span><br><span class="line">    unsafe = newUnsafe();</span><br><span class="line">    pipeline = newChannelPipeline();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以很容易地看出Channel的几个特征：</p>
-<ol>
-<li>Channel之间有父子关系。</li>
-<li>有一个唯一的id</li>
-<li>创建时都会新建一个ChannelPipeline</li>
-</ol>
-<p>&emsp;&emsp;关于Channel的父子关系，举个例子，看一下<strong>NioServerSocketChannel</strong>中的<strong>doReadMessages</strong>函数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">doReadMessages</span><span class="params">(List&lt;Object&gt; buf)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    SocketChannel ch = SocketUtils.accept(javaChannel());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>) &#123;</span><br><span class="line">            buf.add(<span class="keyword">new</span> NioSocketChannel(<span class="keyword">this</span>, ch));</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        logger.warn(<span class="string">"Failed to create a new channel from an accepted socket."</span>, t);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ch.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t2) &#123;</span><br><span class="line">            logger.warn(<span class="string">"Failed to close a socket."</span>, t2);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>对于服务端SocketChannel，他的parent理所当然就是NioServerSocketChannel。</p>
-<p>&emsp;&emsp;继续看<strong>AbstractChannel</strong>，他实现了Channel的核心网络读写功能，贴一段代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">bind</span><span class="params">(SocketAddress localAddress)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.bind(localAddress);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">connect</span><span class="params">(SocketAddress remoteAddress)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.connect(remoteAddress);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">connect</span><span class="params">(SocketAddress remoteAddress, SocketAddress localAddress)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.connect(remoteAddress, localAddress);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">disconnect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.disconnect();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">deregister</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.deregister();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Channel <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    pipeline.flush();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//...（省略部分代码）...</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Channel <span class="title">read</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    pipeline.read();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">write</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.write(msg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">write</span><span class="params">(Object msg, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.write(msg, promise);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">writeAndFlush</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.writeAndFlush(msg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">writeAndFlush</span><span class="params">(Object msg, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.writeAndFlush(msg, promise);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>全都是<strong>ChannelPipeline</strong>，可见Channel实际并不处理这些事件，他会将事件传播给<strong>ChannelPipeline</strong>。</p>
-<h3 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h3><p>&emsp;&emsp;Channel内部还有个Unsafe接口，他是Channel的辅助类，实际的io读写是这个Unsafe。Unsafe听着名字就知道是不安全的类，或者说是不希望被用户使用的类，看一下Unsafe类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fulnsskgovj20wg0lwtd8.jpg" alt=""><br>Unsafe实现也是Channel实现的内部类，比如<strong>AbstractUnsafe</strong>在<strong>AbstractChannel</strong>中，<strong>AbstractNioUnsafe</strong>在<strong>AbstractNioChannel</strong>中。</p>
-<h4 id="register"><a href="#register" class="headerlink" title="register"></a>register</h4><p>&emsp;&emsp;在<strong>Netty之旅（七）从官方例子展开</strong>中DiscardServer.class的例子，调用ServerBootstrap的bind()方法，会将Channel注册到一个EventLoop上，同时也会调用<strong>AbstractUnsafe</strong>的<strong>register()</strong>。贴一下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop, <span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (eventLoop == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"eventLoop"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isRegistered()) &#123;</span><br><span class="line">        promise.setFailure(<span class="keyword">new</span> IllegalStateException(<span class="string">"registered to an event loop already"</span>));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!isCompatible(eventLoop)) &#123;</span><br><span class="line">        promise.setFailure(</span><br><span class="line">                <span class="keyword">new</span> IllegalStateException(<span class="string">"incompatible event loop type: "</span> + eventLoop.getClass().getName()));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    AbstractChannel.<span class="keyword">this</span>.eventLoop = eventLoop;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (eventLoop.inEventLoop()) &#123;</span><br><span class="line">        register0(promise);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            eventLoop.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    register0(promise);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">            logger.warn(</span><br><span class="line">                    <span class="string">"Force-closing a channel whose registration task was not accepted by an event loop: &#123;&#125;"</span>,</span><br><span class="line">                    AbstractChannel.<span class="keyword">this</span>, t);</span><br><span class="line">            closeForcibly();</span><br><span class="line">            closeFuture.setClosed();</span><br><span class="line">            safeSetFailure(promise, t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>eventLoop.inEventLoop()确保<strong>register</strong>方法在当前eventLoop线程中调用，才会执行<strong>register0</strong>，否则会重新提交给eventLoop线程去执行<strong>register0</strong>，看一下<strong>register0</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">register0</span><span class="params">(ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// check if the channel is still open as it could be closed in the mean time when the register</span></span><br><span class="line">        <span class="comment">// call was outside of the eventLoop</span></span><br><span class="line">        <span class="keyword">if</span> (!promise.setUncancellable() || !ensureOpen(promise)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">boolean</span> firstRegistration = neverRegistered;</span><br><span class="line">        doRegister();</span><br><span class="line">        neverRegistered = <span class="keyword">false</span>;</span><br><span class="line">        registered = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Ensure we call handlerAdded(...) before we actually notify the promise. This is needed as the</span></span><br><span class="line">        <span class="comment">// user may already fire events through the pipeline in the ChannelFutureListener.</span></span><br><span class="line">        pipeline.invokeHandlerAddedIfNeeded();</span><br><span class="line"></span><br><span class="line">        safeSetSuccess(promise);</span><br><span class="line">        pipeline.fireChannelRegistered();</span><br><span class="line">        <span class="comment">// Only fire a channelActive if the channel has never been registered. This prevents firing</span></span><br><span class="line">        <span class="comment">// multiple channel actives if the channel is deregistered and re-registered.</span></span><br><span class="line">        <span class="keyword">if</span> (isActive()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (firstRegistration) &#123;</span><br><span class="line">                pipeline.fireChannelActive();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (config().isAutoRead()) &#123;</span><br><span class="line">                <span class="comment">// This channel was registered before and autoRead() is set. This means we need to begin read</span></span><br><span class="line">                <span class="comment">// again so that we process inbound data.</span></span><br><span class="line">                <span class="comment">//</span></span><br><span class="line">                <span class="comment">// See https://github.com/netty/netty/issues/4805</span></span><br><span class="line">                beginRead();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        <span class="comment">// Close the channel directly to avoid FD leak.</span></span><br><span class="line">        closeForcibly();</span><br><span class="line">        closeFuture.setClosed();</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>主要还是通知pipeline注册以及激活事件，看一下子类的<strong>doRegister()</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doRegister</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> selected = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            selectionKey = javaChannel().register(eventLoop().unwrappedSelector(), <span class="number">0</span>, <span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (CancelledKeyException e) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!selected) &#123;</span><br><span class="line">                <span class="comment">// Force the Selector to select now as the "canceled" SelectionKey may still be</span></span><br><span class="line">                <span class="comment">// cached and not removed because no Select.select(..) operation was called yet.</span></span><br><span class="line">                eventLoop().selectNow();</span><br><span class="line">                selected = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// We forced a select operation on the selector before but the SelectionKey is still cached</span></span><br><span class="line">                <span class="comment">// for whatever reason. JDK bug ?</span></span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>是将Jdk NIO中Channel注册到eventLoop的多路复用器上，并获取selectionKey。通过位操作可以获取指定的网络事件，在SelectionKey中有定义几个常量：</p>
-<ol>
-<li>OP_READ = 1 &lt;&lt; 0; 读事件位</li>
-<li>OP_WRITE = 1 &lt;&lt; 2; 写事件位</li>
-<li>OP_CONNECT = 1 &lt;&lt; 3; 客户端连接到服务器事件位</li>
-<li>OP_ACCEPT = 1 &lt;&lt; 4; 服务器接收客户端连接事件位</li>
-</ol>
-<p>不过显然这里对这些事件都不关心，传了一个0过去。前面<strong>register0()</strong>还会调用<strong>beginRead()</strong>方法，如果在ChannelConfig中设置了autoRead，继续看一下<strong>beginRead()</strong>的实际执行者<strong>doBeginRead()</strong>，这个方法由子类实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doBeginRead</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// Channel.read() or ChannelHandlerContext.read() was called</span></span><br><span class="line">    <span class="keyword">final</span> SelectionKey selectionKey = <span class="keyword">this</span>.selectionKey;</span><br><span class="line">    <span class="keyword">if</span> (!selectionKey.isValid()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    readPending = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> interestOps = selectionKey.interestOps();</span><br><span class="line">    <span class="keyword">if</span> ((interestOps &amp; readInterestOp) == <span class="number">0</span>) &#123;</span><br><span class="line">        selectionKey.interestOps(interestOps | readInterestOp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在读之前，先调用<strong>selectionKey</strong>的<strong>interestOps()</strong>将感兴趣的事件设置为<strong>OP_READ</strong>，接下去就可以监听到读事件了。</p>
-<h4 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h4><p>&emsp;&emsp;还是那个DiscardServer.class的例子，ServerBootstrap的bind()方法还会调用UnSafe的bind()，贴一下UnSafe中的bind()方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(<span class="keyword">final</span> SocketAddress localAddress, <span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!promise.setUncancellable() || !ensureOpen(promise)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// See: https://github.com/netty/netty/issues/576</span></span><br><span class="line">    <span class="keyword">if</span> (Boolean.TRUE.equals(config().getOption(ChannelOption.SO_BROADCAST)) &amp;&amp;</span><br><span class="line">        localAddress <span class="keyword">instanceof</span> InetSocketAddress &amp;&amp;</span><br><span class="line">        !((InetSocketAddress) localAddress).getAddress().isAnyLocalAddress() &amp;&amp;</span><br><span class="line">        !PlatformDependent.isWindows() &amp;&amp; !PlatformDependent.maybeSuperUser()) &#123;</span><br><span class="line">        <span class="comment">// Warn a user about the fact that a non-root user can't receive a</span></span><br><span class="line">        <span class="comment">// broadcast packet on *nix if the socket is bound on non-wildcard address.</span></span><br><span class="line">        logger.warn(</span><br><span class="line">                <span class="string">"A non-root user can't receive a broadcast packet if the socket "</span> +</span><br><span class="line">                <span class="string">"is not bound to a wildcard address; binding to a non-wildcard "</span> +</span><br><span class="line">                <span class="string">"address ("</span> + localAddress + <span class="string">") anyway as requested."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> wasActive = isActive();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        doBind(localAddress);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">        closeIfClosed();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!wasActive &amp;&amp; isActive()) &#123;</span><br><span class="line">        invokeLater(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                pipeline.fireChannelActive();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    safeSetSuccess(promise);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><strong>doBind()</strong>调用子类实现，比如在<strong>NioServerSocketChannel</strong>中是调用NIO中的Channel 的bind()方法。</li>
-<li><strong>invokeLater()</strong>是向EventLoop提交一个任务。</li>
-</ol>
-<h4 id="connect"><a href="#connect" class="headerlink" title="connect"></a>connect</h4><p>&emsp;&emsp;直接看<strong>AbstractNioUnsafe</strong>中的<strong>connect()</strong>方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">final</span> SocketAddress remoteAddress, <span class="keyword">final</span> SocketAddress localAddress, <span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!promise.setUncancellable() || !ensureOpen(promise)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (connectPromise != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// Already a connect in process.</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConnectionPendingException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> wasActive = isActive();</span><br><span class="line">        <span class="keyword">if</span> (doConnect(remoteAddress, localAddress)) &#123;</span><br><span class="line">            fulfillConnectPromise(promise, wasActive);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            connectPromise = promise;</span><br><span class="line">            requestedRemoteAddress = remoteAddress;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Schedule connect timeout.</span></span><br><span class="line">            <span class="keyword">int</span> connectTimeoutMillis = config().getConnectTimeoutMillis();</span><br><span class="line">            <span class="keyword">if</span> (connectTimeoutMillis &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                connectTimeoutFuture = eventLoop().schedule(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        ChannelPromise connectPromise = AbstractNioChannel.<span class="keyword">this</span>.connectPromise;</span><br><span class="line">                        ConnectTimeoutException cause =</span><br><span class="line">                                <span class="keyword">new</span> ConnectTimeoutException(<span class="string">"connection timed out: "</span> + remoteAddress);</span><br><span class="line">                        <span class="keyword">if</span> (connectPromise != <span class="keyword">null</span> &amp;&amp; connectPromise.tryFailure(cause)) &#123;</span><br><span class="line">                            close(voidPromise());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, connectTimeoutMillis, TimeUnit.MILLISECONDS);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            promise.addListener(<span class="keyword">new</span> ChannelFutureListener() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operationComplete</span><span class="params">(ChannelFuture future)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                    <span class="keyword">if</span> (future.isCancelled()) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (connectTimeoutFuture != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            connectTimeoutFuture.cancel(<span class="keyword">false</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        connectPromise = <span class="keyword">null</span>;</span><br><span class="line">                        close(voidPromise());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        promise.tryFailure(annotateConnectException(t, remoteAddress));</span><br><span class="line">        closeIfClosed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><strong>doConnect</strong>子类实现，完成连接会触发pipline的<strong>fireChannelActive</strong></li>
-<li>有一个超时机制，规定时间未连接成功则关闭连接。</li>
-<li>连接完成后，还会调用<strong>finishConnect</strong>，不过这个未在<strong>connect()</strong>方法中体现。当通道的OP_CONNECT事件可用时，由EventLoop调用这个方法。</li>
-</ol>
-<h4 id="write"><a href="#write" class="headerlink" title="write"></a>write</h4><p>&emsp;&emsp;看一下<strong>AbstractUnsafe</strong>中的<strong>write()</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(Object msg, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    ChannelOutboundBuffer outboundBuffer = <span class="keyword">this</span>.outboundBuffer;</span><br><span class="line">    <span class="keyword">if</span> (outboundBuffer == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// If the outboundBuffer is null we know the channel was closed and so</span></span><br><span class="line">        <span class="comment">// need to fail the future right away. If it is not null the handling of the rest</span></span><br><span class="line">        <span class="comment">// will be done in flush0()</span></span><br><span class="line">        <span class="comment">// See https://github.com/netty/netty/issues/2362</span></span><br><span class="line">        safeSetFailure(promise, WRITE_CLOSED_CHANNEL_EXCEPTION);</span><br><span class="line">        <span class="comment">// release message now to prevent resource-leak</span></span><br><span class="line">        ReferenceCountUtil.release(msg);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        msg = filterOutboundMessage(msg);</span><br><span class="line">        size = pipeline.estimatorHandle().size(msg);</span><br><span class="line">        <span class="keyword">if</span> (size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            size = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">        ReferenceCountUtil.release(msg);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    outboundBuffer.addMessage(msg, size, promise);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><p><strong>filterOutboundMessage(msg)</strong>由子类实现，比如<strong>NioByteUnsafe</strong>的实现，只支持ByteBuf和FileRegion两种消息格式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> Object <span class="title">filterOutboundMessage</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (msg <span class="keyword">instanceof</span> ByteBuf) &#123;</span><br><span class="line">         ByteBuf buf = (ByteBuf) msg;</span><br><span class="line">         <span class="keyword">if</span> (buf.isDirect()) &#123;</span><br><span class="line">             <span class="keyword">return</span> msg;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">return</span> newDirectBuffer(buf);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (msg <span class="keyword">instanceof</span> FileRegion) &#123;</span><br><span class="line">         <span class="keyword">return</span> msg;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(</span><br><span class="line">             <span class="string">"unsupported message type: "</span> + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>ChannelOutboundBuffer</strong>负责添加消息，但是此时并有没有真正发送消息，也就是说，write方法并不会真正写数据到网络，只是缓存数据：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Object msg, <span class="keyword">int</span> size, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">     Entry entry = Entry.newInstance(msg, size, total(msg), promise);</span><br><span class="line">     <span class="keyword">if</span> (tailEntry == <span class="keyword">null</span>) &#123;</span><br><span class="line">         flushedEntry = <span class="keyword">null</span>;</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         Entry tail = tailEntry;</span><br><span class="line">         tail.next = entry;</span><br><span class="line">     &#125;</span><br><span class="line">     tailEntry = entry;</span><br><span class="line">     <span class="keyword">if</span> (unflushedEntry == <span class="keyword">null</span>) &#123;</span><br><span class="line">         unflushedEntry = entry;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// increment pending bytes after adding message to the unflushed arrays.</span></span><br><span class="line">     <span class="comment">// See https://github.com/netty/netty/issues/1619</span></span><br><span class="line">     incrementPendingOutboundBytes(entry.pendingSize, <span class="keyword">false</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将发送的数据使用Entry对象包装成一个链表，然后使用原子更新去递增<strong>totalPendingSize</strong>的大小。这里有三个Entry，<strong>tailEntry</strong>、<strong>flushedEntry</strong>、<strong>unflushedEntry</strong>，先看下<strong>Entry</strong>类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Recycler&lt;Entry&gt; RECYCLER = <span class="keyword">new</span> Recycler&lt;Entry&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> Entry <span class="title">newObject</span><span class="params">(Handle&lt;Entry&gt; handle)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Entry(handle);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Handle&lt;Entry&gt; handle;</span><br><span class="line">    Entry next;</span><br><span class="line">    Object msg;</span><br><span class="line">    ByteBuffer[] bufs;</span><br><span class="line">    ByteBuffer buf;</span><br><span class="line">    ChannelPromise promise;</span><br><span class="line">    <span class="keyword">long</span> progress;</span><br><span class="line">    <span class="keyword">long</span> total;</span><br><span class="line">    <span class="keyword">int</span> pendingSize;</span><br><span class="line">    <span class="keyword">int</span> count = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Entry</span><span class="params">(Handle&lt;Entry&gt; handle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.handle = handle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> Entry <span class="title">newInstance</span><span class="params">(Object msg, <span class="keyword">int</span> size, <span class="keyword">long</span> total, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">        Entry entry = RECYCLER.get();</span><br><span class="line">        entry.msg = msg;</span><br><span class="line">        entry.pendingSize = size + CHANNEL_OUTBOUND_BUFFER_ENTRY_OVERHEAD;</span><br><span class="line">        entry.total = total;</span><br><span class="line">        entry.promise = promise;</span><br><span class="line">        <span class="keyword">return</span> entry;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个<strong>pendingSize</strong>就是需要新增的容量，不过为什么要加<strong>CHANNEL_OUTBOUND_BUFFER_ENTRY_OVERHEAD</strong>？看一下这个参数的大小：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Assuming a 64-bit JVM:</span></span><br><span class="line"><span class="comment">//  - 16 bytes object header</span></span><br><span class="line"><span class="comment">//  - 8 reference fields</span></span><br><span class="line"><span class="comment">//  - 2 long fields</span></span><br><span class="line"><span class="comment">//  - 2 int fields</span></span><br><span class="line"><span class="comment">//  - 1 boolean field</span></span><br><span class="line"><span class="comment">//  - padding</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CHANNEL_OUTBOUND_BUFFER_ENTRY_OVERHEAD =</span><br><span class="line">    SystemPropertyUtil.getInt(<span class="string">"io.netty.transport.outboundBufferEntrySizeOverhead"</span>, <span class="number">96</span>);</span><br></pre></td></tr></table></figure></p>
-<p>默认为96。假设64位操作系统，对象头为16字节，引用类型为8字节，long类型为8字节，int类型为4字节，boolean类型为1字节，另外还有对齐填充（HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍）。算一下Entry对象的大小：<br>16+6<em>8+8</em>2+4*2+1=89，对齐填充后为96。也就是说Entry对象的大小加上消息体的大小就是这个<strong>pendingSize</strong>，<strong>incrementPendingOutboundBytes()</strong>累加<strong>pendingSize</strong>后检测，如果总待发送的<strong>totalPendingSize</strong>超过阈值，将会触发pipeline的<strong>fireChannelWritabilityChanged()</strong>。<br>&emsp;&emsp;再来说下<strong>tailEntry</strong>、<strong>flushedEntry</strong>、<strong>unflushedEntry</strong>，<strong>tailEntry</strong>尾部的Entry节点，<strong>flushedEntry</strong>表示调用<strong>flush()</strong>操作时将会进行刷新的Entry链表的头节点，<strong>unflushedEntry</strong>表示还未刷新的头节点。</p>
-<h4 id="flush"><a href="#flush" class="headerlink" title="flush"></a>flush</h4><p>看<strong>AbstractUnsafe</strong>中的<strong>flush()</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    ChannelOutboundBuffer outboundBuffer = <span class="keyword">this</span>.outboundBuffer;</span><br><span class="line">    <span class="keyword">if</span> (outboundBuffer == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    outboundBuffer.addFlush();</span><br><span class="line">    flush0();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li><p>再来看<strong>ChannelOutboundBuffer</strong>的<strong>addFlush()</strong>，寻找未被flush的消息进行flush，调用<strong>decrementPendingOutboundBytes</strong>原子递减<em>totalPendingSize</em>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFlush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="comment">// There is no need to process all entries if there was already a flush before and no new messages</span></span><br><span class="line">     <span class="comment">// where added in the meantime.</span></span><br><span class="line">     <span class="comment">//</span></span><br><span class="line">     <span class="comment">// See https://github.com/netty/netty/issues/2577</span></span><br><span class="line">     Entry entry = unflushedEntry;</span><br><span class="line">     <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">if</span> (flushedEntry == <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="comment">// there is no flushedEntry yet, so start with the entry</span></span><br><span class="line">             flushedEntry = entry;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">do</span> &#123;</span><br><span class="line">             flushed ++;</span><br><span class="line">             <span class="keyword">if</span> (!entry.promise.setUncancellable()) &#123;</span><br><span class="line">                 <span class="comment">// Was cancelled so make sure we free up memory and notify about the freed bytes</span></span><br><span class="line">                 <span class="keyword">int</span> pending = entry.cancel();</span><br><span class="line">                 decrementPendingOutboundBytes(pending, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line">             &#125;</span><br><span class="line">             entry = entry.next;</span><br><span class="line">         &#125; <span class="keyword">while</span> (entry != <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">         <span class="comment">// All flushed so reset unflushedEntry</span></span><br><span class="line">         unflushedEntry = <span class="keyword">null</span>;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>flush0()</strong>实际会调用<strong>doWrite()</strong>，这个模板方法由子类实现，比如<strong>NioByteUnsafe</strong>中的<strong>doWrite()</strong>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doWrite</span><span class="params">(ChannelOutboundBuffer in)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">     <span class="keyword">int</span> writeSpinCount = config().getWriteSpinCount();</span><br><span class="line">     <span class="keyword">do</span> &#123;</span><br><span class="line">         Object msg = in.current();</span><br><span class="line">         <span class="keyword">if</span> (msg == <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="comment">// Wrote all messages.</span></span><br><span class="line">             clearOpWrite();</span><br><span class="line">             <span class="comment">// Directly return here so incompleteWrite(...) is not called.</span></span><br><span class="line">             <span class="keyword">return</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         writeSpinCount -= doWriteInternal(in, msg);</span><br><span class="line">     &#125; <span class="keyword">while</span> (writeSpinCount &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">     incompleteWrite(writeSpinCount &lt; <span class="number">0</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li>遍历<strong>ChannelOutboundBuffer</strong>中的flushedEntry,发送消息</li>
-<li>如果消息全部发送完毕（flushedEntry取不到值），清除通道的写标识。</li>
-<li><strong>doWriteInternal()</strong>会调用子类的实现<strong>doWriteBytes</strong>发送消息，当然有可能消息发送失败，出现写半包的情况，这时候就需要调用<strong>incompleteWrite</strong>重新发送未发送完的消息。</li>
-</ol>
-</li>
-</ol>
-<h4 id="read"><a href="#read" class="headerlink" title="read"></a>read</h4><p>&emsp;&emsp;Unsafe并没有<strong>read</strong>方法，该方法在Unsafe子类<strong>NioUnsafe</strong>中定义。看一下子类<strong>NioByteUnsafe</strong>的<strong>read()</strong>方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ChannelConfig config = config();</span><br><span class="line">    <span class="keyword">if</span> (shouldBreakReadReady(config)) &#123;</span><br><span class="line">        clearReadPending();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> ChannelPipeline pipeline = pipeline();</span><br><span class="line">    <span class="keyword">final</span> ByteBufAllocator allocator = config.getAllocator();</span><br><span class="line">    <span class="keyword">final</span> RecvByteBufAllocator.Handle allocHandle = recvBufAllocHandle();</span><br><span class="line">    allocHandle.reset(config);</span><br><span class="line"></span><br><span class="line">    ByteBuf byteBuf = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">boolean</span> close = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            byteBuf = allocHandle.allocate(allocator);</span><br><span class="line">            allocHandle.lastBytesRead(doReadBytes(byteBuf));</span><br><span class="line">            <span class="keyword">if</span> (allocHandle.lastBytesRead() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// nothing was read. release the buffer.</span></span><br><span class="line">                byteBuf.release();</span><br><span class="line">                byteBuf = <span class="keyword">null</span>;</span><br><span class="line">                close = allocHandle.lastBytesRead() &lt; <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">if</span> (close) &#123;</span><br><span class="line">                    <span class="comment">// There is nothing left to read as we received an EOF.</span></span><br><span class="line">                    readPending = <span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            allocHandle.incMessagesRead(<span class="number">1</span>);</span><br><span class="line">            readPending = <span class="keyword">false</span>;</span><br><span class="line">            pipeline.fireChannelRead(byteBuf);</span><br><span class="line">            byteBuf = <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span> (allocHandle.continueReading());</span><br><span class="line"></span><br><span class="line">        allocHandle.readComplete();</span><br><span class="line">        pipeline.fireChannelReadComplete();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (close) &#123;</span><br><span class="line">            closeOnRead(pipeline);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        handleReadException(pipeline, byteBuf, t, close, allocHandle);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// Check if there is a readPending which was not processed yet.</span></span><br><span class="line">        <span class="comment">// This could be for two reasons:</span></span><br><span class="line">        <span class="comment">// * The user called Channel.read() or ChannelHandlerContext.read() in channelRead(...) method</span></span><br><span class="line">        <span class="comment">// * The user called Channel.read() or ChannelHandlerContext.read() in channelReadComplete(...) method</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// See https://github.com/netty/netty/issues/2254</span></span><br><span class="line">        <span class="keyword">if</span> (!readPending &amp;&amp; !config.isAutoRead()) &#123;</span><br><span class="line">            removeReadOp();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>RecvByteBufAllocator.Handle辅助循环读消息，子类方法<strong>doReadBytes</strong>读消息到ByteBuf中，每次读取消息都会调用pipeline的<strong>fireChannelRead(byteBuf)</strong>，消息读取完毕触发pipeline的<strong>fireChannelReadComplete()</strong></p>
-<h4 id="deregister"><a href="#deregister" class="headerlink" title="deregister"></a>deregister</h4><p>&emsp;&emsp;看一下<strong>AbstractUnsafe</strong>的<strong>deregister</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">deregister</span><span class="params">(<span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    deregister(promise, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">deregister</span><span class="params">(<span class="keyword">final</span> ChannelPromise promise, <span class="keyword">final</span> <span class="keyword">boolean</span> fireChannelInactive)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!promise.setUncancellable()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!registered) &#123;</span><br><span class="line">        safeSetSuccess(promise);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// As a user may call deregister() from within any method while doing processing in the ChannelPipeline,</span></span><br><span class="line">    <span class="comment">// we need to ensure we do the actual deregister operation later. This is needed as for example,</span></span><br><span class="line">    <span class="comment">// we may be in the ByteToMessageDecoder.callDecode(...) method and so still try to do processing in</span></span><br><span class="line">    <span class="comment">// the old EventLoop while the user already registered the Channel to a new EventLoop. Without delay,</span></span><br><span class="line">    <span class="comment">// the deregister operation this could lead to have a handler invoked by different EventLoop and so</span></span><br><span class="line">    <span class="comment">// threads.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// See:</span></span><br><span class="line">    <span class="comment">// https://github.com/netty/netty/issues/4435</span></span><br><span class="line">    invokeLater(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                doDeregister();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">                logger.warn(<span class="string">"Unexpected exception occurred while deregistering a channel."</span>, t);</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (fireChannelInactive) &#123;</span><br><span class="line">                    pipeline.fireChannelInactive();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// Some transports like local and AIO does not allow the deregistration of</span></span><br><span class="line">                <span class="comment">// an open channel.  Their doDeregister() calls close(). Consequently,</span></span><br><span class="line">                <span class="comment">// close() calls deregister() again - no need to fire channelUnregistered, so check</span></span><br><span class="line">                <span class="comment">// if it was registered.</span></span><br><span class="line">                <span class="keyword">if</span> (registered) &#123;</span><br><span class="line">                    registered = <span class="keyword">false</span>;</span><br><span class="line">                    pipeline.fireChannelUnregistered();</span><br><span class="line">                &#125;</span><br><span class="line">                safeSetSuccess(promise);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>invokeLater</strong>是调用EventLoop，提交任务。<strong>doDeregister()</strong>由子类实现，比如<strong>AbstractNioUnsafe</strong>的实现很很简单，最终是调用NIO中的<strong>SelectionKey</strong>的<strong>cancel()</strong>方法来结束注册。</p>
-<h4 id="disconnect"><a href="#disconnect" class="headerlink" title="disconnect"></a>disconnect</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">disconnect</span><span class="params">(<span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    assertEventLoop();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!promise.setUncancellable()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> wasActive = isActive();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        doDisconnect();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        safeSetFailure(promise, t);</span><br><span class="line">        closeIfClosed();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (wasActive &amp;&amp; !isActive()) &#123;</span><br><span class="line">        invokeLater(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                pipeline.fireChannelInactive();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    safeSetSuccess(promise);</span><br><span class="line">    closeIfClosed(); <span class="comment">// doDisconnect() might have closed the channel</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><strong>doDisconnect</strong> 由子类实现，如<strong>NioSocketChannel</strong>就是调用NIO中<strong>NioSocketChannel</strong>的<strong>close()</strong>。</li>
-<li><strong>closeIfClosed</strong> 如果NIO中的Channel关闭，则发送对应关闭事件，比如关闭<strong>ChannelOutboundBuffer</strong>，回收未发送消息的内存。</li>
-</ol>
-
-          
+          <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/27/Netty之旅（八）Channel/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1478,303 +1703,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（三）ByteBuf内存管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" itemprop="url">Netty之旅（三）ByteBuf内存三剑客以及算法概要</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T18:02:39+08:00">
-                2018-07-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（二）ByteBuf引用计数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" itemprop="url">Netty之旅（二）ByteBuf引用计数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T17:07:16+08:00">
-                2018-07-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>&emsp;&emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。<br>&emsp;&emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点分析：</p>
-<ol>
-<li>ByteBuf可以从直接内存上分配，直接内存不会由JVM直接控制。创建和释放Direct Buffer的代价要比Heap Buffer高很多，使用引用计数可以大大提高内存的释放效率。</li>
-<li>池化Bytebuf也是提高Netty内存分配的一种手段，为了更方便的管理这个对象池，使用引用计数也是一个好的办法。</li>
-</ol>
-<hr>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1825,7 +1753,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。ChannelInb">
+<meta name="description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty之旅（十一）ChannelHandler">
 <meta property="og:url" content="http://yoursite.com/2018/09/25/Netty之旅（十一）ChannelHandler/index.html">
 <meta property="og:site_name" content="迷宫式编程">
-<meta property="og:description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。ChannelInb">
+<meta property="og:description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg">
-<meta property="og:updated_time" content="2018-09-25T08:41:05.000Z">
+<meta property="og:updated_time" content="2018-09-25T08:43:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty之旅（十一）ChannelHandler">
-<meta name="twitter:description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。ChannelInb">
+<meta name="twitter:description" content="概览&amp;emsp;&amp;emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：&amp;emsp;&amp;emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg">
 
 
@@ -333,7 +333,7 @@
       
 
       
-        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg" alt=""><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。ChannelInboundHandler是对进站的数据进行处理，如<strong>channelRead()</strong>、<strong>channelReadComplete()</strong>等。ChannelOutboundHandler是处理出站的数据，如<strong>write()</strong>、<strong>flush()</strong>等。由<strong>Netty之旅（十）ChannelHandlerContext</strong>可知ChannelHandler之间是一个链式结构（由ChannelHandlerContext包裹着），每一个ChannelHandler接收并处理完事件后，再交给下一个ChannelHandler拦截处理。ChannelHandler很简单，只有三个方法：</p>
+        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg" alt=""><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。<br><a id="more"></a><br>ChannelInboundHandler是对进站的数据进行处理，如<strong>channelRead()</strong>、<strong>channelReadComplete()</strong>等。ChannelOutboundHandler是处理出站的数据，如<strong>write()</strong>、<strong>flush()</strong>等。由<strong>Netty之旅（十）ChannelHandlerContext</strong>可知ChannelHandler之间是一个链式结构（由ChannelHandlerContext包裹着），每一个ChannelHandler接收并处理完事件后，再交给下一个ChannelHandler拦截处理。ChannelHandler很简单，只有三个方法：</p>
 <ol>
 <li><strong>handlerAdded</strong> 当handler被添加到ChannelPipline中调用</li>
 <li><strong>handlerRemoved</strong> 当handler从ChannelPipline中移除时调用</li>

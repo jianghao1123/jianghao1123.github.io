@@ -281,6 +281,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">RocketMQ之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -309,7 +331,7 @@
 
       
         
-          <p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手既可以了。</p>
+          <p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手就可以了。</p>
 <h4 id="NettyRemotingServer"><a href="#NettyRemotingServer" class="headerlink" title="NettyRemotingServer"></a>NettyRemotingServer</h4><p>&emsp;&emsp;NettyRemotingServer在RocketMQ中主要用在两个地方，BrokerController和NamesrvController，先来看一下类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg" alt=""><br>
           <!--noindex-->
           <div class="post-button text-center">
@@ -555,6 +577,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">RocketMQ之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           

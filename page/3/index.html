@@ -79,19 +79,13 @@
 
 
 
-<meta name="description" content="&amp;emsp;&amp;emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：&amp;emsp;&amp;emsp;简单介绍下项目各个模块的用途：  broker 是整个消息服务的中心，负责收发消息，连接consumer和producer。 client 集结了consumer和producer common 提供通用基础方法给">
-<meta property="og:type" content="article">
-<meta property="og:title" content="RocketMQ之旅（一）概述">
-<meta property="og:url" content="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="迷宫式编程">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="迷宫式编程">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：&amp;emsp;&amp;emsp;简单介绍下项目各个模块的用途：  broker 是整个消息服务的中心，负责收发消息，连接consumer和producer。 client 集结了consumer和producer common 提供通用基础方法给">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg">
-<meta property="og:updated_time" content="2018-08-18T01:21:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RocketMQ之旅（一）概述">
-<meta name="twitter:description" content="&amp;emsp;&amp;emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：&amp;emsp;&amp;emsp;简单介绍下项目各个模块的用途：  broker 是整个消息服务的中心，负责收发消息，连接consumer和producer。 client 集结了consumer和producer common 提供通用基础方法给">
-<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg">
+<meta name="twitter:title" content="迷宫式编程">
 
 
 
@@ -121,13 +115,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/"/>
+  <link rel="canonical" href="http://yoursite.com/page/3/"/>
 
 
 
 
 
-  <title>RocketMQ之旅（一）概述 | 迷宫式编程</title>
+  <title>迷宫式编程</title>
   
 
 
@@ -146,7 +140,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -229,9 +224,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -244,7 +239,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（一）ByteBuf简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="matrix22">
@@ -261,7 +256,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">RocketMQ之旅（一）概述</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/28/Netty之旅（一）ByteBuf简介/" itemprop="url">Netty之旅（一）ByteBuf简介</a></h1>
         
 
         <div class="post-meta">
@@ -273,8 +270,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-18T09:21:15+08:00">
-                2018-08-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T10:24:06+08:00">
+                2018-07-28
               </time>
             
 
@@ -296,8 +293,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
                   </a>
                 </span>
 
@@ -333,27 +330,20 @@
       
 
       
-        <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
-<ol>
-<li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
-<li><strong>client</strong> 集结了consumer和producer</li>
-<li><strong>common</strong> 提供通用基础方法给其他模块调用</li>
-<li><strong>dev</strong> 是一个版本控制脚本不用管</li>
-<li><strong>distribution</strong> 提供了一些部署的脚本</li>
-<li><strong>filter</strong> 过滤器，提供SQL92标准的过滤方式</li>
-<li><strong>logappender</strong> 日志模块</li>
-<li><strong>logging</strong> 也是日志</li>
-<li><strong>namesrv</strong> 注册中心，管理broker和topic信息</li>
-<li><strong>openmessaging</strong> openmessaging是由阿里巴巴发起的分布式消息领域的国际标准，这个包主要提供openmessaging标准的部分实现</li>
-<li><strong>remoting</strong> 是一个通用的网络通信基础模块，基于netty实现</li>
-<li><strong>srvutil</strong> 工具包，里面只有三个类</li>
-<li><strong>store</strong> 消息相关存储服务</li>
-<li><strong>style</strong> 统一代码风格不用管</li>
-<li><strong>test</strong> 测试相关</li>
-<li><strong>tools</strong> 工具类，提供一些后台管理的工具</li>
+        
+          <h3 id="NIO-Buffer缺陷"><a href="#NIO-Buffer缺陷" class="headerlink" title="NIO Buffer缺陷"></a>NIO Buffer缺陷</h3><ol>
+<li>Buffer设计精简，只有一个position。读写切换的时候需要使用者手动去调用flip()和rewind()，其position和limit的含义，取决于当前Buffer是处于读还是写模式，无疑为整个Buffer编程增加难度。</li>
+<li>ByteBuffer长度固定，一旦长度超出limit就会抛出IndexOutOfBoundsException，这就意味着在为ByteBuffer分配容量的时候，你必须精确地知道数据的长度，或者明确知道不会超出某个长度。当然，你也可以自己为ByteBuffer封装功能，实现类似数组扩容的逻辑。</li>
 </ol>
-<p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
-
+<hr>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/07/28/Netty之旅（一）ByteBuf简介/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
     
@@ -370,32 +360,12 @@
       
 
       
-      
+
       
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" rel="next" title="Netty之旅（六）ByteBuf内存管理之PoolArena">
-                <i class="fa fa-chevron-left"></i> Netty之旅（六）ByteBuf内存管理之PoolArena
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/08/18/RocketMQ之旅（二）namesrv/" rel="prev" title="RocketMQ之旅（二）namesrv">
-                RocketMQ之旅（二）namesrv <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -405,11 +375,142 @@
   </article>
 
 
+    
+      
 
-    <div class="post-spread">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/22/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/22/hello-world/" itemprop="url">Hello World</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-22T22:27:37+08:00">
+                2018-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+          
+        
       
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
 
 
           </div>
@@ -417,10 +518,6 @@
 
 
           
-
-  
-
-
 
         </div>
         
@@ -633,10 +730,6 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 

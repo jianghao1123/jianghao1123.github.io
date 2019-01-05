@@ -1,337 +1,61 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
   
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="编程" />
-
-
-
-
-
-
-
-
-
-
-<meta property="og:type" content="website">
+  <title>迷宫式编程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
 <meta property="og:title" content="迷宫式编程">
 <meta property="og:url" content="http://yoursite.com/index.html">
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="迷宫式编程">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/"/>
-
-
-
-
-
-  <title>迷宫式编程</title>
   
-
-
-
-
-
-
-
+    <link rel="alternative" href="/atom.xml" title="迷宫式编程" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
 
 </head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main">
   
+    <article id="post-算法国（二）字符串匹配" class="article article-type-post" itemscope itemprop="blogPost">
   
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">迷宫式编程</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+      <header class="article-header">
         
-        <li class="menu-item menu-item-主页">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
-            
-            主页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-所有文章">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-文章"></i> <br />
-            
-            所有文章
-          </a>
-        </li>
-      
-
-      
-    </ul>
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/17/算法国（二）字符串匹配/">算法国（二）字符串匹配</a>
+    </h1>
   
 
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/算法国（二）字符串匹配/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/17/算法国（二）字符串匹配/" itemprop="url">算法国（二）字符串匹配</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T22:22:55+08:00">
-                2018-12-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法国/" itemprop="url" rel="index">
-                    <span itemprop="name">算法国</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/12/17/算法国（二）字符串匹配/" class="article-date">
+  <time datetime="2018-12-17T14:22:55.000Z" itemprop="datePublished">2018-12-17</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法国/">算法国</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
+        <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
 <blockquote>
 <p><strong>算法就是思考的方式</strong></p>
 </blockquote>
@@ -339,889 +63,277 @@
 <blockquote>
 <p><strong>“Hello World。”</strong></p>
 </blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/12/17/算法国（二）字符串匹配/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/12/17/算法国（二）字符串匹配/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（六）broker启动" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/17/RocketMQ之旅（六）broker启动/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/17/RocketMQ之旅（六）broker启动/" itemprop="url">RocketMQ之旅（六）broker启动</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/17/RocketMQ之旅（六）broker启动/">RocketMQ之旅（六）broker启动</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-17T22:22:41+08:00">
-                2018-12-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/12/17/RocketMQ之旅（六）broker启动/" class="article-date">
+  <time datetime="2018-12-17T14:22:41.000Z" itemprop="datePublished">2018-12-17</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <h4 id="命令行启动"><a href="#命令行启动" class="headerlink" title="命令行启动"></a>命令行启动</h4><p>&emsp;&emsp;先从官方的一段启动命令开始我们的旅程：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; nohup sh bin/mqbroker -n localhost:<span class="number">9876</span> &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/broker.log </span><br><span class="line">The broker[%s, <span class="number">172.30</span>.30.233:<span class="number">10911</span>] boot success...</span><br></pre></td></tr></table></figure></p>
+        <h4 id="命令行启动"><a href="#命令行启动" class="headerlink" title="命令行启动"></a>命令行启动</h4><p>&emsp;&emsp;先从官方的一段启动命令开始我们的旅程：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; nohup sh bin/mqbroker -n localhost:<span class="number">9876</span> &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/broker.log </span><br><span class="line">The broker[%s, <span class="number">172.30</span>.30.233:<span class="number">10911</span>] boot success...</span><br></pre></td></tr></table></figure></p>
 <p>mqbroker脚本放在distribution模块的bin目录下。贴一下该脚本的启动命令语句：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh $&#123;ROCKETMQ_HOME&#125;/bin/runbroker.sh org.apache.rocketmq.broker.BrokerStartup $@</span><br></pre></td></tr></table></figure></p>
 <p>从这句sh命令可知，mqbroker脚本主要是启动broker模块的<strong>BrokerStartup</strong>，<strong>BrokerStartup</strong>是整个broker的入口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    start(createBrokerController(args));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/12/17/RocketMQ之旅（六）broker启动/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/12/17/RocketMQ之旅（六）broker启动/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（五）remoting" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/RocketMQ之旅（五）remoting/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/19/RocketMQ之旅（五）remoting/" itemprop="url">RocketMQ之旅（五）remoting</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/19/RocketMQ之旅（五）remoting/">RocketMQ之旅（五）remoting</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T17:02:22+08:00">
-                2018-11-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/11/19/RocketMQ之旅（五）remoting/" class="article-date">
+  <time datetime="2018-11-19T09:02:22.000Z" itemprop="datePublished">2018-11-19</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手就可以了。</p>
+        <p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手就可以了。</p>
 <h4 id="NettyRemotingServer"><a href="#NettyRemotingServer" class="headerlink" title="NettyRemotingServer"></a>NettyRemotingServer</h4><p>&emsp;&emsp;NettyRemotingServer在RocketMQ中主要用在两个地方，BrokerController和NamesrvController，先来看一下类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg" alt=""><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/11/19/RocketMQ之旅（五）remoting/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/11/19/RocketMQ之旅（五）remoting/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-算法国（一）排序" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/17/算法国（一）排序/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/17/算法国（一）排序/" itemprop="url">算法国（一）排序</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/17/算法国（一）排序/">算法国（一）排序</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-17T19:39:02+08:00">
-                2018-11-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/算法国/" itemprop="url" rel="index">
-                    <span itemprop="name">算法国</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/11/17/算法国（一）排序/" class="article-date">
+  <time datetime="2018-11-17T11:39:02.000Z" itemprop="datePublished">2018-11-17</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法国/">算法国</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
+        <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
 <blockquote>
 <p><strong>在算法国里面，谁掌握的算法越多，谁就是王。</strong></p>
 </blockquote>
 <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&emsp;&emsp;排序是最基础的算法，在算法国连小孩都会，什么，如果你连一个排序算法都不会，呵，那人家就会喊你码农，哦不对，码农现在高级了，那叫你码畜，也不对，可能他们会直接喊码拉格比，你连个排序都不会？当然，连排序算法都不会一个的人，在算法国是找不到工作的。算法国的工作其实很简单，复制算法，然后粘贴算法。当然，有时候需要改造一下算法。那已经是比较高级的工作了。至于能创造算法的人，他就是神。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/11/17/算法国（一）排序/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/11/17/算法国（一）排序/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（四）client之Consumer" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/RocketMQ之旅（四）client之Consumer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/12/RocketMQ之旅（四）client之Consumer/" itemprop="url">RocketMQ之旅（四）client之Consumer</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/12/RocketMQ之旅（四）client之Consumer/">RocketMQ之旅（四）client之Consumer</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-12T15:54:12+08:00">
-                2018-11-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/11/12/RocketMQ之旅（四）client之Consumer/" class="article-date">
+  <time datetime="2018-11-12T07:54:12.000Z" itemprop="datePublished">2018-11-12</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><p>&emsp;&emsp;先看一下Consumer的类图结构：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fwno96uqyvj20ta0j20wf.jpg" alt=""><br>Consumer按照拉取的方式分为MQPullConsumer和MQPushConsumer，先从一个官网的MQPushConsumer示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, MQClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Instantiate with specified consumer group name.</span></span><br><span class="line">        DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">         </span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        consumer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Subscribe one more more topics to consume.</span></span><br><span class="line">        consumer.subscribe(<span class="string">"TopicTest"</span>, <span class="string">"*"</span>);</span><br><span class="line">        <span class="comment">// Register callback to execute on arrival of messages fetched from brokers.</span></span><br><span class="line">        consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(List&lt;MessageExt&gt; msgs,</span></span></span><br><span class="line"><span class="function"><span class="params">                ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">                System.out.printf(<span class="string">"%s Receive New Messages: %s %n"</span>, Thread.currentThread().getName(), msgs);</span><br><span class="line">                <span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Launch the consumer instance.</span></span><br><span class="line">        consumer.start();</span><br><span class="line"></span><br><span class="line">        System.out.printf(<span class="string">"Consumer Started.%n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/11/12/RocketMQ之旅（四）client之Consumer/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><p>&emsp;&emsp;先看一下Consumer的类图结构：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fwno96uqyvj20ta0j20wf.jpg" alt=""><br>Consumer按照拉取的方式分为MQPullConsumer和MQPushConsumer，先从一个官网的MQPushConsumer示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, MQClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Instantiate with specified consumer group name.</span></span><br><span class="line">        DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">         </span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        consumer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Subscribe one more more topics to consume.</span></span><br><span class="line">        consumer.subscribe(<span class="string">"TopicTest"</span>, <span class="string">"*"</span>);</span><br><span class="line">        <span class="comment">// Register callback to execute on arrival of messages fetched from brokers.</span></span><br><span class="line">        consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(List&lt;MessageExt&gt; msgs,</span></span></span><br><span class="line"><span class="function"><span class="params">                ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">                System.out.printf(<span class="string">"%s Receive New Messages: %s %n"</span>, Thread.currentThread().getName(), msgs);</span><br><span class="line">                <span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Launch the consumer instance.</span></span><br><span class="line">        consumer.start();</span><br><span class="line"></span><br><span class="line">        System.out.printf(<span class="string">"Consumer Started.%n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        
+          <p class="article-more-link">
+            <a href="/2018/11/12/RocketMQ之旅（四）client之Consumer/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（三）client之Producer" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/25/RocketMQ之旅（三）client之Producer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/25/RocketMQ之旅（三）client之Producer/" itemprop="url">RocketMQ之旅（三）client之Producer</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/25/RocketMQ之旅（三）client之Producer/">RocketMQ之旅（三）client之Producer</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-25T13:49:21+08:00">
-                2018-10-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/10/25/RocketMQ之旅（三）client之Producer/" class="article-date">
+  <time datetime="2018-10-25T05:49:21.000Z" itemprop="datePublished">2018-10-25</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="从官方示例开始"><a href="#从官方示例开始" class="headerlink" title="从官方示例开始"></a>从官方示例开始</h3><p>&emsp;&emsp;先从一个官网的同步消息发送示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SyncProducer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//Instantiate with a producer group name.</span></span><br><span class="line">        DefaultMQProducer producer = <span class="keyword">new</span></span><br><span class="line">            DefaultMQProducer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        producer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        <span class="comment">//Launch the instance.</span></span><br><span class="line">        producer.start();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">            <span class="comment">//Create a message instance, specifying topic, tag and message body.</span></span><br><span class="line">            Message msg = <span class="keyword">new</span> Message(<span class="string">"TopicTest"</span> <span class="comment">/* Topic */</span>,</span><br><span class="line">                <span class="string">"TagA"</span> <span class="comment">/* Tag */</span>,</span><br><span class="line">                (<span class="string">"Hello RocketMQ "</span> +</span><br><span class="line">                    i).getBytes(RemotingHelper.DEFAULT_CHARSET) <span class="comment">/* Message body */</span></span><br><span class="line">            );</span><br><span class="line">            <span class="comment">//Call send message to deliver message to one of brokers.</span></span><br><span class="line">            SendResult sendResult = producer.send(msg);</span><br><span class="line">            System.out.printf(<span class="string">"%s%n"</span>, sendResult);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//Shut down once the producer instance is not longer in use.</span></span><br><span class="line">        producer.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/10/25/RocketMQ之旅（三）client之Producer/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="从官方示例开始"><a href="#从官方示例开始" class="headerlink" title="从官方示例开始"></a>从官方示例开始</h3><p>&emsp;&emsp;先从一个官网的同步消息发送示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SyncProducer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//Instantiate with a producer group name.</span></span><br><span class="line">        DefaultMQProducer producer = <span class="keyword">new</span></span><br><span class="line">            DefaultMQProducer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        producer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        <span class="comment">//Launch the instance.</span></span><br><span class="line">        producer.start();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">            <span class="comment">//Create a message instance, specifying topic, tag and message body.</span></span><br><span class="line">            Message msg = <span class="keyword">new</span> Message(<span class="string">"TopicTest"</span> <span class="comment">/* Topic */</span>,</span><br><span class="line">                <span class="string">"TagA"</span> <span class="comment">/* Tag */</span>,</span><br><span class="line">                (<span class="string">"Hello RocketMQ "</span> +</span><br><span class="line">                    i).getBytes(RemotingHelper.DEFAULT_CHARSET) <span class="comment">/* Message body */</span></span><br><span class="line">            );</span><br><span class="line">            <span class="comment">//Call send message to deliver message to one of brokers.</span></span><br><span class="line">            SendResult sendResult = producer.send(msg);</span><br><span class="line">            System.out.printf(<span class="string">"%s%n"</span>, sendResult);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//Shut down once the producer instance is not longer in use.</span></span><br><span class="line">        producer.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        
+          <p class="article-more-link">
+            <a href="/2018/10/25/RocketMQ之旅（三）client之Producer/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（十二）EventLoop" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/08/Netty之旅（十二）EventLoop/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/08/Netty之旅（十二）EventLoop/" itemprop="url">Netty之旅（十二）EventLoop</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/08/Netty之旅（十二）EventLoop/">Netty之旅（十二）EventLoop</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-08T17:51:59+08:00">
-                2018-10-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/10/08/Netty之旅（十二）EventLoop/" class="article-date">
+  <time datetime="2018-10-08T09:51:59.000Z" itemprop="datePublished">2018-10-08</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <h3 id="Reactor线程模型"><a href="#Reactor线程模型" class="headerlink" title="Reactor线程模型"></a>Reactor线程模型</h3><p>&emsp;&emsp;<strong>Netty之旅（七）从官方例子展开</strong>中的例子有这么一段：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br></pre></td></tr></table></figure></p>
+        <h3 id="Reactor线程模型"><a href="#Reactor线程模型" class="headerlink" title="Reactor线程模型"></a>Reactor线程模型</h3><p>&emsp;&emsp;<strong>Netty之旅（七）从官方例子展开</strong>中的例子有这么一段：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br></pre></td></tr></table></figure></p>
 <p>这也是我们初次接触EventLoop的地方。这两句有什么用？想要理解这两句的意义，不得不说一下Reactor的线程模型。Reactor 线程模型有三种:</p>
 <ol>
 <li>单线程。历史是循序渐进的，Reactor的线程模型发展也是循序渐进的。单线程是最简单的线程模型，Reactor线程无所不能，一边负责多路套接字的分离，接受新的链接，处理I/O操作，一边分配请求到不同的处理器进行消息编解码处理业务。可以很容易地看出单线程模型的缺陷，在同一个线程，一旦哪里有阻塞，整个系统都不得动弹。</li>
@@ -1229,771 +341,212 @@
 <li>主从多线程。高并发环境下，Reactor线程要同时处理成百上千的链路，既要监听连接还要处理I/O，性能上无法支撑。这时候将Reactor分离，有一个主Reactor线程负责连接的监听，另有一个从Reactor线程池负责处理I/O。</li>
 </ol>
 <p>这里的bossGroup和workerGroup就是两个Reactor线程池，一个用于网络链路连接，另一个是处理I/O读写，或者是一些系统的定时任务。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/10/08/Netty之旅（十二）EventLoop/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/10/08/Netty之旅（十二）EventLoop/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（十一）ChannelHandler" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/25/Netty之旅（十一）ChannelHandler/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/25/Netty之旅（十一）ChannelHandler/" itemprop="url">Netty之旅（十一）ChannelHandler</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/25/Netty之旅（十一）ChannelHandler/">Netty之旅（十一）ChannelHandler</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-25T16:41:05+08:00">
-                2018-09-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/09/25/Netty之旅（十一）ChannelHandler/" class="article-date">
+  <time datetime="2018-09-25T08:41:05.000Z" itemprop="datePublished">2018-09-25</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg" alt=""><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/25/Netty之旅（十一）ChannelHandler/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg" alt=""><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/09/25/Netty之旅（十一）ChannelHandler/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（十）ChannelHandlerContext" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/08/Netty之旅（十）ChannelHandlerContext/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" itemprop="url">Netty之旅（十）ChannelHandlerContext</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/">Netty之旅（十）ChannelHandlerContext</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-08T10:25:23+08:00">
-                2018-09-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" class="article-date">
+  <time datetime="2018-09-08T02:25:23.000Z" itemprop="datePublished">2018-09-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>&emsp;&emsp;<strong>Netty之旅（九）ChannelPipeline</strong>中我们知道ChannelPipeline的事件接收后真正处理者是ChannelHandlerContext，所以围绕前文，我们来探讨一下ChannelHandlerContext是如何处理这些事件的。ChannelHandlerContext的类图也很简单：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fuv6uq2j3gj21640modmg.jpg" alt=""><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;<strong>Netty之旅（九）ChannelPipeline</strong>中我们知道ChannelPipeline的事件接收后真正处理者是ChannelHandlerContext，所以围绕前文，我们来探讨一下ChannelHandlerContext是如何处理这些事件的。ChannelHandlerContext的类图也很简单：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fuv6uq2j3gj21640modmg.jpg" alt=""><br>
+        
+          <p class="article-more-link">
+            <a href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（九）ChannelPipeline" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/08/Netty之旅（九）ChannelPipeline/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/08/Netty之旅（九）ChannelPipeline/" itemprop="url">Netty之旅（九）ChannelPipeline</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/08/Netty之旅（九）ChannelPipeline/">Netty之旅（九）ChannelPipeline</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-08T10:25:08+08:00">
-                2018-09-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/" class="article-date">
+  <time datetime="2018-09-08T02:25:08.000Z" itemprop="datePublished">2018-09-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelPipeline和ChannelHandler实现了一种Intercepting Filter Pattern（拦截过滤器）。每一个netty Channel都有他自己的ChannelPipeline，当Channel收到事件，他就会将事件传递给自己的ChannelPipeline，事件在ChannelPipeline中流动，从一个ChannelHandler传播到下一个ChannelHandler。源码里面有一个经典的流动图可以解释：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/08/Netty之旅（九）ChannelPipeline/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelPipeline和ChannelHandler实现了一种Intercepting Filter Pattern（拦截过滤器）。每一个netty Channel都有他自己的ChannelPipeline，当Channel收到事件，他就会将事件传递给自己的ChannelPipeline，事件在ChannelPipeline中流动，从一个ChannelHandler传播到下一个ChannelHandler。源码里面有一个经典的流动图可以解释：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
-    
-  </section>
 
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
   </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
 
-
-
-          </div>
-          
-
-
-          
-
-        </div>
-        
-          
+      </div>
+      <footer id="footer">
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">matrix22</p>
-              <p class="site-description motion-element" itemprop="description"></p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-
-      
+	<div id="footer-info" class="inner">
+	  &copy; 2019 matrix22 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
 
     </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">matrix22</span>
-
+    <nav id="mobile-nav">
   
-</div>
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
     
 
-    
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
 
   </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
 </body>
 </html>

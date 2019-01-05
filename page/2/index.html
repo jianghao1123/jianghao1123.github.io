@@ -1,777 +1,194 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
   
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="编程" />
-
-
-
-
-
-
-
-
-
-
-<meta property="og:type" content="website">
+  <title>迷宫式编程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
 <meta property="og:title" content="迷宫式编程">
 <meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="迷宫式编程">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/page/2/"/>
-
-
-
-
-
-  <title>迷宫式编程</title>
   
-
-
-
-
-
-
-
+    <link rel="alternative" href="/atom.xml" title="迷宫式编程" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
 
 </head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main">
   
+    <article id="post-Netty之旅（八）Channel" class="article article-type-post" itemscope itemprop="blogPost">
   
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">迷宫式编程</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+      <header class="article-header">
         
-        <li class="menu-item menu-item-主页">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
-            
-            主页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-所有文章">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-文章"></i> <br />
-            
-            所有文章
-          </a>
-        </li>
-      
-
-      
-    </ul>
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/27/Netty之旅（八）Channel/">Netty之旅（八）Channel</a>
+    </h1>
   
 
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/27/Netty之旅（八）Channel/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/27/Netty之旅（八）Channel/" itemprop="url">Netty之旅（八）Channel</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T21:03:42+08:00">
-                2018-08-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/08/27/Netty之旅（八）Channel/" class="article-date">
+  <time datetime="2018-08-27T13:03:42.000Z" itemprop="datePublished">2018-08-27</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/27/Netty之旅（八）Channel/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;这里的Channel是<strong>io.netty.channel.Channel</strong>，很巧合的是java nio里面也有一个Channel——<strong>java.nio.channels.Channel</strong>，这两者有什么关系？同样是接口，也同样是实现I/O操作的通道，java nio中的Channel异常简单，只有两个方法，<strong>isOpen()</strong>，<strong>close()</strong>，剩下的功能诸如I/O读写，都是交给其子类接口去实现，所有的Channel接口功能都被细分了。netty中的Channel却特别复杂，内部的方法大概是nio中所有Channel子类的总和……也就是说，netty中的Channel，聚合了nio所有Channel分散的方法。两种截然不同的设计思想，不能说好坏，从接口设计的角度讲，nio中的Channel当然更加优雅——每个Channel的子类职责单一，分工明确。不过从使用的角度来说，netty显然更胜一筹，大而全的接口设计，总是让人一目了然，<strong>NioServerSocketChannel</strong>或者<strong>NioSocketChannel</strong>，接口统一，实现重用，没有绕来绕去的东西。<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/27/Netty之旅（八）Channel/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（七）从官方例子展开" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/27/Netty之旅（七）从官方例子展开/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/27/Netty之旅（七）从官方例子展开/" itemprop="url">Netty之旅（七）从官方例子展开</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/27/Netty之旅（七）从官方例子展开/">Netty之旅（七）从官方例子展开</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T21:03:26+08:00">
-                2018-08-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/08/27/Netty之旅（七）从官方例子展开/" class="article-date">
+  <time datetime="2018-08-27T13:03:26.000Z" itemprop="datePublished">2018-08-27</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>&emsp;&emsp;运行example项目中的一个示例（代码基于netty branch 4.1），运行的时候如果报缺少LongObjectHashMap类的错误，进入common项目，运行 mvn clean install。贴一下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 来自example中的DiscardServer.class 精简了部分代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DiscardServer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = Integer.parseInt(System.getProperty(<span class="string">"port"</span>, <span class="string">"8009"</span>));</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">        EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">             .channel(NioServerSocketChannel.class)</span><br><span class="line">             .handler(<span class="keyword">new</span> LoggingHandler(LogLevel.INFO))</span><br><span class="line">             .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> </span>&#123;</span><br><span class="line">                     ChannelPipeline p = ch.pipeline();</span><br><span class="line">                     p.addLast(<span class="keyword">new</span> DiscardServerHandler());</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br><span class="line">            ChannelFuture f = b.bind(PORT).sync();</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/27/Netty之旅（七）从官方例子展开/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;运行example项目中的一个示例（代码基于netty branch 4.1），运行的时候如果报缺少LongObjectHashMap类的错误，进入common项目，运行 mvn clean install。贴一下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 来自example中的DiscardServer.class 精简了部分代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DiscardServer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PORT = Integer.parseInt(System.getProperty(<span class="string">"port"</span>, <span class="string">"8009"</span>));</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">        EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">            b.group(bossGroup, workerGroup)</span><br><span class="line">             .channel(NioServerSocketChannel.class)</span><br><span class="line">             .handler(<span class="keyword">new</span> LoggingHandler(LogLevel.INFO))</span><br><span class="line">             .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> </span>&#123;</span><br><span class="line">                     ChannelPipeline p = ch.pipeline();</span><br><span class="line">                     p.addLast(<span class="keyword">new</span> DiscardServerHandler());</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br><span class="line">            ChannelFuture f = b.bind(PORT).sync();</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/27/Netty之旅（七）从官方例子展开/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（二）namesrv" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/RocketMQ之旅（二）namesrv/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/18/RocketMQ之旅（二）namesrv/" itemprop="url">RocketMQ之旅（二）namesrv</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/18/RocketMQ之旅（二）namesrv/">RocketMQ之旅（二）namesrv</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-18T09:21:28+08:00">
-                2018-08-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/08/18/RocketMQ之旅（二）namesrv/" class="article-date">
+  <time datetime="2018-08-18T01:21:28.000Z" itemprop="datePublished">2018-08-18</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <h3 id="NamesrvController"><a href="#NamesrvController" class="headerlink" title="NamesrvController"></a>NamesrvController</h3><p>&emsp;&emsp;namesrv是一个注册中心，每个broker都会向namesrv注册。producer或者consumer根据topic到namesrv获取broker的信息。根据官网Qucik Start来启动namesrv：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; unzip rocketmq-all-4.3.0-source-release.zip</span><br><span class="line">&gt; cd rocketmq-all-4.3.0/</span><br><span class="line">&gt; mvn -Prelease-all -DskipTests clean install -U</span><br><span class="line">&gt; cd distribution/target/apache-rocketmq</span><br><span class="line">&gt; nohup sh bin/mqnamesrv &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/namesrv.log</span><br><span class="line">The Name Server boot success...</span><br></pre></td></tr></table></figure></p>
+        <h3 id="NamesrvController"><a href="#NamesrvController" class="headerlink" title="NamesrvController"></a>NamesrvController</h3><p>&emsp;&emsp;namesrv是一个注册中心，每个broker都会向namesrv注册。producer或者consumer根据topic到namesrv获取broker的信息。根据官网Qucik Start来启动namesrv：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; unzip rocketmq-all-4.3.0-source-release.zip</span><br><span class="line">&gt; cd rocketmq-all-4.3.0/</span><br><span class="line">&gt; mvn -Prelease-all -DskipTests clean install -U</span><br><span class="line">&gt; cd distribution/target/apache-rocketmq</span><br><span class="line">&gt; nohup sh bin/mqnamesrv &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/namesrv.log</span><br><span class="line">The Name Server boot success...</span><br></pre></td></tr></table></figure></p>
 <p>查看mqnamesrv脚本，指定启动org.apache.rocketmq.namesrv.NamesrvStartup。进入NamesrvStartup查看代码，是一个main函数，主要分两步：<strong>创建NamesrvController</strong>，<strong>启动NamesrvController</strong>，所以我们重点还是看一下NamesrvController这个类。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/18/RocketMQ之旅（二）namesrv/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/08/18/RocketMQ之旅（二）namesrv/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-RocketMQ之旅（一）概述" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/18/RocketMQ之旅（一）概述/" itemprop="url">RocketMQ之旅（一）概述</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/18/RocketMQ之旅（一）概述/">RocketMQ之旅（一）概述</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-18T09:21:15+08:00">
-                2018-08-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">RocketMQ之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/08/18/RocketMQ之旅（一）概述/" class="article-date">
+  <time datetime="2018-08-18T01:21:15.000Z" itemprop="datePublished">2018-08-18</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          
-            <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
+        <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
 <ol>
 <li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
 <li><strong>client</strong> 集结了consumer和producer</li>
@@ -792,1209 +209,345 @@
 </ol>
 <p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
 
-          
+      
+
+      
         
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（六）ByteBuf内存管理之PoolArena" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" itemprop="url">Netty之旅（六）ByteBuf内存管理之PoolArena</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/">Netty之旅（六）ByteBuf内存管理之PoolArena</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-08T21:28:46+08:00">
-                2018-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" class="article-date">
+  <time datetime="2018-08-08T13:28:46.000Z" itemprop="datePublished">2018-08-08</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <p>&emsp;&emsp;<a href="../Netty之旅（五）ByteBuf内存管理之PoolSubpage">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a>中描述PoolSubpage分配内存的时候，allocateSubpage方法开头就会调用PoolArena：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">allocateSubpage</span><span class="params">(<span class="keyword">int</span> normCapacity)</span> </span>&#123;</span><br><span class="line">    PoolSubpage&lt;T&gt; head = arena.findSubpagePoolHead(normCapacity);</span><br><span class="line">    ......（省略）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <p>&emsp;&emsp;<a href="../Netty之旅（五）ByteBuf内存管理之PoolSubpage">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a>中描述PoolSubpage分配内存的时候，allocateSubpage方法开头就会调用PoolArena：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">allocateSubpage</span><span class="params">(<span class="keyword">int</span> normCapacity)</span> </span>&#123;</span><br><span class="line">    PoolSubpage&lt;T&gt; head = arena.findSubpagePoolHead(normCapacity);</span><br><span class="line">    ......（省略）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>或者在<a href="../Netty之旅（三）ByteBuf内存管理">Netty之旅（三）ByteBuf内存管理</a>中，PooledByteBufAllocator来分配堆内存：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) &#123;</span><br><span class="line">    PoolThreadCache cache = threadCache.get();</span><br><span class="line">    PoolArena&lt;byte[]&gt; heapArena = cache.heapArena;</span><br><span class="line">    ......（省略）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（五）ByteBuf内存管理之PoolSubpage" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" itemprop="url">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/">Netty之旅（五）ByteBuf内存管理之PoolSubpage</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-08T21:28:16+08:00">
-                2018-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" class="article-date">
+  <time datetime="2018-08-08T13:28:16.000Z" itemprop="datePublished">2018-08-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（四）ByteBuf内存管理之PoolChunk" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" itemprop="url">Netty之旅（四）ByteBuf内存管理之PoolChunk</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/">Netty之旅（四）ByteBuf内存管理之PoolChunk</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-08T21:27:24+08:00">
-                2018-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" class="article-date">
+  <time datetime="2018-08-08T13:27:24.000Z" itemprop="datePublished">2018-08-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0                       1</span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line">1                    2      3</span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line">2                 4     5 6    7</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line">11         2048   2049  *** 4094   4095</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0                       1</span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line">1                    2      3</span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line">2                 4     5 6    7</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line">11         2048   2049  *** 4094   4095</span><br></pre></td></tr></table></figure></p>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Java基础（一）CountDownLatch源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/30/Java基础（一）CountDownLatch源码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" itemprop="url">Java并发之旅（一）CountDownLatch源码分析</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/30/Java基础（一）CountDownLatch源码分析/">Java并发之旅（一）CountDownLatch源码分析</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-30T13:48:28+08:00">
-                2018-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java并发之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Java并发之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" class="article-date">
+  <time datetime="2018-07-30T05:48:28.000Z" itemprop="datePublished">2018-07-30</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java并发之旅/">Java并发之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>&emsp;&emsp;CountDownLatch的源码其实很简单，因为其主要依靠<strong>AQS</strong>实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是<strong>await()</strong>,一个是<strong>countDown()</strong>。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>&emsp;&emsp;CountDownLatch的源码其实很简单，因为其主要依靠<strong>AQS</strong>实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是<strong>await()</strong>,一个是<strong>countDown()</strong>。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（三）ByteBuf内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（三）ByteBuf内存管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" itemprop="url">Netty之旅（三）ByteBuf内存三剑客以及算法概要</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/">Netty之旅（三）ByteBuf内存三剑客以及算法概要</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T18:02:39+08:00">
-                2018-07-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
+    <div class="article-meta">
+      <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" class="article-date">
+  <time datetime="2018-07-28T10:02:39.000Z" itemprop="datePublished">2018-07-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/#more">More...</a>
+          </p>
+        
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+        
+    </div>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
+
+  
+    <article id="post-Netty之旅（二）ByteBuf引用计数" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（二）ByteBuf引用计数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix22">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="迷宫式编程">
-    </span>
-
-    
-      <header class="post-header">
-
+      <header class="article-header">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" itemprop="url">Netty之旅（二）ByteBuf引用计数</a></h1>
-        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/">Netty之旅（二）ByteBuf引用计数</a>
+    </h1>
+  
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T17:07:16+08:00">
-                2018-07-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
-                    <span itemprop="name">Netty之旅</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
       </header>
     
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+    <div class="article-meta">
+      <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" class="article-date">
+  <time datetime="2018-07-28T09:07:16.000Z" itemprop="datePublished">2018-07-28</time>
+</a>
       
-      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
 
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-        
-          <h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>&emsp;&emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。<br>&emsp;&emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点分析：</p>
+        <h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>&emsp;&emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。<br>&emsp;&emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点分析：</p>
 <ol>
 <li>ByteBuf可以从直接内存上分配，直接内存不会由JVM直接控制。创建和释放Direct Buffer的代价要比Heap Buffer高很多，使用引用计数可以大大提高内存的释放效率。</li>
 <li>池化Bytebuf也是提高Netty内存分配的一种手段，为了更方便的管理这个对象池，使用引用计数也是一个好的办法。</li>
 </ol>
 <hr>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+        
+          <p class="article-more-link">
+            <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/#more">More...</a>
+          </p>
         
       
+
+      
+        
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
   
-  
-  
-  </article>
+</article>
 
 
-    
-  </section>
 
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
   </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
 
-
-
-          </div>
-          
-
-
-          
-
-        </div>
-        
-          
+      </div>
+      <footer id="footer">
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">matrix22</p>
-              <p class="site-description motion-element" itemprop="description"></p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-
-      
+	<div id="footer-info" class="inner">
+	  &copy; 2019 matrix22 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
 
     </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">matrix22</span>
-
+    <nav id="mobile-nav">
   
-</div>
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
     
 
-    
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
 
   </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
 </body>
 </html>

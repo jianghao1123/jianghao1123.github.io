@@ -29,6 +29,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-RocketMQ之旅（七）broker处理消息" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/01/RocketMQ之旅（七）broker处理消息/">RocketMQ之旅（七）broker处理消息</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2019/02/01/RocketMQ之旅（七）broker处理消息/" class="article-date">
+  <time datetime="2019-02-01T13:00:12.000Z" itemprop="datePublished">2019-02-01</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
+  </div>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="消息接收"><a href="#消息接收" class="headerlink" title="消息接收"></a>消息接收</h4><p>&emsp;&emsp;在<strong>BrokerController</strong>的<strong>registerProcessor()</strong>中，注册了很多网络处理器：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * SendMessageProcessor</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    SendMessageProcessor sendProcessor = <span class="keyword">new</span> SendMessageProcessor(<span class="keyword">this</span>);</span><br><span class="line">    sendProcessor.registerSendMessageHook(sendMessageHookList);</span><br><span class="line">    sendProcessor.registerConsumeMessageHook(consumeMessageHookList);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="comment">// ...省略部分的注册逻辑...</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中<strong>SendMessageProcessor</strong>主要负责接收Producer发过来的消息，继承于NettyRequestProcessor，每个继承于NettyRequestProcessor的子类都需要实现<strong>processRequest()</strong>：<br>
+        
+          <p class="article-more-link">
+            <a href="/2019/02/01/RocketMQ之旅（七）broker处理消息/#more">More...</a>
+          </p>
+        
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-算法国（二）字符串匹配" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
@@ -432,50 +477,6 @@
         
           <p class="article-more-link">
             <a href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Netty之旅（九）ChannelPipeline" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/08/Netty之旅（九）ChannelPipeline/">Netty之旅（九）ChannelPipeline</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/" class="article-date">
-  <time datetime="2018-09-08T02:25:08.000Z" itemprop="datePublished">2018-09-08</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelPipeline和ChannelHandler实现了一种Intercepting Filter Pattern（拦截过滤器）。每一个netty Channel都有他自己的ChannelPipeline，当Channel收到事件，他就会将事件传递给自己的ChannelPipeline，事件在ChannelPipeline中流动，从一个ChannelHandler传播到下一个ChannelHandler。源码里面有一个经典的流动图可以解释：<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/#more">More...</a>
           </p>
         
       

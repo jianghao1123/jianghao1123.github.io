@@ -29,6 +29,50 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Netty之旅（九）ChannelPipeline" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/08/Netty之旅（九）ChannelPipeline/">Netty之旅（九）ChannelPipeline</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/" class="article-date">
+  <time datetime="2018-09-08T02:25:08.000Z" itemprop="datePublished">2018-09-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelPipeline和ChannelHandler实现了一种Intercepting Filter Pattern（拦截过滤器）。每一个netty Channel都有他自己的ChannelPipeline，当Channel收到事件，他就会将事件传递给自己的ChannelPipeline，事件在ChannelPipeline中流动，从一个ChannelHandler传播到下一个ChannelHandler。源码里面有一个经典的流动图可以解释：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/09/08/Netty之旅（九）ChannelPipeline/#more">More...</a>
+          </p>
+        
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Netty之旅（八）Channel" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
@@ -428,55 +472,6 @@
         
           <p class="article-more-link">
             <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Netty之旅（二）ByteBuf引用计数" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/">Netty之旅（二）ByteBuf引用计数</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" class="article-date">
-  <time datetime="2018-07-28T09:07:16.000Z" itemprop="datePublished">2018-07-28</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>&emsp;&emsp;当我们创建一个对象的时候，对象的引用计数为1。当有一个其他对象指向该对象时，通过retain该对象使其引用计数+1，如果某个对象不再指向该对象时，通过release该对象使其引用计数-1。当该对象的引用计数为0的时候，说明该对象可以被销毁了。<br>&emsp;&emsp;Java既然已经有了很优秀的内存回收算法了，为什么Netty还要使用引用计数？究其原因，可以从以下两点分析：</p>
-<ol>
-<li>ByteBuf可以从直接内存上分配，直接内存不会由JVM直接控制。创建和释放Direct Buffer的代价要比Heap Buffer高很多，使用引用计数可以大大提高内存的释放效率。</li>
-<li>池化Bytebuf也是提高Netty内存分配的一种手段，为了更方便的管理这个对象池，使用引用计数也是一个好的办法。</li>
-</ol>
-<hr>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/#more">More...</a>
           </p>
         
       

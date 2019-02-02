@@ -5,18 +5,18 @@
   
   <title>谈谈Java垃圾收集算法 | 迷宫式编程</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此诞生了两种算法：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性">
+  <meta name="description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可">
 <meta name="keywords" content="Java虚拟机">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈谈Java垃圾收集算法">
 <meta property="og:url" content="http://yoursite.com/2019/02/02/谈谈Java垃圾收集算法/index.html">
 <meta property="og:site_name" content="迷宫式编程">
-<meta property="og:description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此诞生了两种算法：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性">
+<meta property="og:description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-02T13:27:43.000Z">
+<meta property="og:updated_time" content="2019-02-02T13:29:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈Java垃圾收集算法">
-<meta name="twitter:description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此诞生了两种算法：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性">
+<meta name="twitter:description" content="三个问题 哪些内存需要回收？ 什么时候回收？ 如何回收？  哪些内存需要回收？&amp;emsp;&amp;emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可">
   
     <link rel="alternative" href="/atom.xml" title="迷宫式编程" type="application/atom+xml">
   
@@ -59,7 +59,7 @@
 <li>什么时候回收？</li>
 <li>如何回收？</li>
 </ol>
-<h3 id="哪些内存需要回收？"><a href="#哪些内存需要回收？" class="headerlink" title="哪些内存需要回收？"></a>哪些内存需要回收？</h3><p>&emsp;&emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此诞生了两种算法：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性分析算法来判断对象的是否存活。这个算法的基本思路是通过一系列的GC Roots对象作为起始点，从这些节点向下搜索，搜索所走过的路径（Reference Chain），当一个对象没有任何路径可以到达GC Roots时，证明该对象不可用。在Java语言中，可作为GC Roots的对象包括下面几种：</p>
+<h3 id="哪些内存需要回收？"><a href="#哪些内存需要回收？" class="headerlink" title="哪些内存需要回收？"></a>哪些内存需要回收？</h3><p>&emsp;&emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性分析算法来判断对象的是否存活。这个算法的基本思路是通过一系列的GC Roots对象作为起始点，从这些节点向下搜索，搜索所走过的路径（Reference Chain），当一个对象没有任何路径可以到达GC Roots时，证明该对象不可用。在Java语言中，可作为GC Roots的对象包括下面几种：</p>
 <blockquote>
 <ol>
 <li>虚拟机栈（栈帧中的本地变量表）中引用的对象。</li>

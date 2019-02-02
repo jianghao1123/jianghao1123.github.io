@@ -29,6 +29,135 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-谈谈Java垃圾收集算法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/02/谈谈Java垃圾收集算法/">谈谈Java垃圾收集算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2019/02/02/谈谈Java垃圾收集算法/" class="article-date">
+  <time datetime="2019-02-02T13:26:05.000Z" itemprop="datePublished">2019-02-02</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题"></a>三个问题</h3><ol>
+<li>哪些内存需要回收？</li>
+<li>什么时候回收？</li>
+<li>如何回收？</li>
+</ol>
+<h3 id="哪些内存需要回收？"><a href="#哪些内存需要回收？" class="headerlink" title="哪些内存需要回收？"></a>哪些内存需要回收？</h3><p>&emsp;&emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此诞生了两种算法：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性分析算法来判断对象的是否存活。这个算法的基本思路是通过一系列的GC Roots对象作为起始点，从这些节点向下搜索，搜索所走过的路径（Reference Chain），当一个对象没有任何路径可以到达GC Roots时，证明该对象不可用。在Java语言中，可作为GC Roots的对象包括下面几种：</p>
+<blockquote>
+<ol>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象。</li>
+<li>方法区中类静态属性引用的对象。</li>
+<li>方法区中常量引用的对象。</li>
+<li>本地方法栈中JNI（即一般说的Native方法）引用的对象。</li>
+</ol>
+</blockquote>
+<h3 id="什么时候回收？"><a href="#什么时候回收？" class="headerlink" title="什么时候回收？"></a>什么时候回收？</h3><p>&emsp;&emsp;现代Java虚拟机的GC都是采用的“分代收集算法”，一般把Java堆分为新生代和老年代：新生代存放朝生夕死的对象，老年代存放长寿的对象。要回答这个问题，先从触发GC的时机说起。触发GC的条件一般有两种：系统自动决定GC触发和手动触发GC。</p>
+<ol>
+<li>系统自动触发GC，一般发生在新对象申请的时候，当Eden空间不足的时候，触发Minor GC，回收不可用的对象。此时Minor GC完成之后，如果Eden空间剩余大小依然不足以分配对象，此时会判断Survivor空间是否充足，如果Survivor空间充足，将Eden空间部分活跃对象保存到Survivor空间，剩余Eden空间存放新对象。当然如果此时Survivor空间不充足，会检查Tenured空间是否充足，如果充足，会将Survivor部分活跃对象保存到Tenured空间，否则触发一次Full GC。</li>
+<li>手动触发GC，调用System.gc()的时候触发Full GC，不过需要确保DisableExplicitGC为false。</li>
+</ol>
+<p>&emsp;&emsp;在触发GC的时候，使用可达性分析对象是否存活。上面在分析哪些内存需要回收的时候说过，不过需要补充一点，即使在可达性分析中作为不可达对象，也不是立即被回收的。要真正宣告一个对象死亡，至少需要经历两次标记过程：如果发现对象没有与GC Roots关联的引用链，那么它会进行第一次标记，并且进行一次筛选。筛选的条件是，该对象是否有必要执行<strong>finalize()</strong>方法：比如对象未覆写<strong>finalize()</strong>，或者已经执行过<strong>finalize()</strong>，那就没有必要执行<strong>finalize()</strong>了，此时该对象就处于要被回收的状态。如果该对象被判定为有必要执行<strong>finalize()</strong>，那么该对象就会被放入一个叫F-Queue的队列中，由虚拟机线程执行<strong>finalize()</strong>。<strong>finalize()</strong>是对象逃离死亡的最后一次机会，比如在<strong>finalize()</strong>中可以将自己赋给GC Roots引用链上的某一个变量，那么，再第二次标记的时候，它就会被移除“即将回收”的集合。否则的话，这个对象基本就是宣告死亡了。</p>
+<h3 id="如何回收？"><a href="#如何回收？" class="headerlink" title="如何回收？"></a>如何回收？</h3><p>&emsp;&emsp;在根搜索算法的基础上，现代虚拟机的垃圾收集算法大致有三种：</p>
+<ol>
+<li>标记-清除算法。</li>
+<li>复制算法。</li>
+<li>标记-整理算法。</li>
+</ol>
+<p>&emsp;&emsp;先来说说标记-清除算法。对于这个算法其实有两种说法，我心中也一直有一个疑问。按照《深入理解Java虚拟机》中说：</p>
+<blockquote>
+<p>算法分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象</p>
+</blockquote>
+<p>&emsp;&emsp;维基百科上的说法是标记所有可达对象，回收不可达对象：</p>
+<blockquote>
+<p>The first stage is the mark stage which does a tree traversal of the entire ‘root set’ and marks each object that is pointed to by a root as being ‘in-use’.</p>
+</blockquote>
+<p>&emsp;&emsp;在采用标记-清除算法的CMS收集器中，实际上是标记出存活对象，清理掉垃圾对象。那么到底是哪一种准确，亦或者是两种皆可？可以逆向思考一下，假设是标记不可达对象，那么如何标记不可达对象？为了标记一个不可达对象，必然要证明该对象对于所有可达的对象，都是无关联的。所以这样来说，标记不可达对象，其实仍然无法避免需要先标记处出可达对象。<br>&emsp;&emsp;标记-清除算法实现简单，缺点是效率不高，且会造成大量内存碎片。再说说复制算法，复制算法的基本思想是将可用的内存按容量等分成两块。然后每次只使用其中的一块，当这一块快用完的时候，就会触发垃圾回收，它会把还存活的对象全部复制到另外一块内存中去，然后把这块内存全部清理了。复制算法可以很好地解决了标记-清除算法中内存碎片的问题，而且效率也高，但是其自身也有缺点，比如在存活对象较多的场合复制的效率会变慢，而且因为将内存空间进行分块，造成了空间上的浪费。<br>&emsp;&emsp;为了解决存活对象较多复制算法效率变慢的问题，出现了标记-整理算法。标记-整理算法在标记-清除算法的基础上做了一些优化。和标记-清除算法一样，标记-整理算法需要从根节点开始，对所有可达对象做一次标记；但之后，它并不是简单地清理未标记的对象，而是将所有的存活对象压缩到内存的一端；之后，清理边界外所有的空间。同标记-清除算法一样，标记-整理的效率也不是很高。<br>&emsp;&emsp;每个算法都有自己的优点和缺点，没有一种垃圾收集算法可以完美地适用于所有垃圾回收的场景。现代商业虚拟机的垃圾收集一般都采用“分代收集”算法。他根据对象的存活周期的不同将内存划分为几块，比如前面已经提到的新生代和老年代。<br>&emsp;&emsp;在新生代中，每次垃圾收集都有大量对象死亡，那么可以采用复制算法，而且依据新生代对象朝生夕死的特点，其实并不需要把空间划分为1:1大小，通常会将内存划分成一块很大的Eden空间和两快较小的Survivor空间，每次使用时只使用Eden空间和其中的一块Survivor空间，当回收时，将Eden空间和Survivor空间存活的对象一次性复制到另外一块Survivor空间上，最后清理掉Eden空间和之前使用的Survivor空间。HotSpot虚拟机默认Eden和Survivor的大小为8:1，即只浪费10%空间。但是我们并不能保证每次回收只有不多于10%的对象存活，当Survivor空间不足的时候，就需要依赖老年代空间来做分配担保。前面在什么时候回收中说过Minor GC的触发时机，其实在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果大于，则此次Minor GC是安全的。如果小于且<strong>HandlePromotionFailure=true</strong>，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，则尝试进行一次Minor GC（仍有风险）；如果小于且<strong>HandlePromotionFailure=false</strong>，则改为进行一次Full GC。<br>&emsp;&emsp;老年代中对象存活率高，采用标记-清除或者标记整理算法。这里我们以CMS收集器作为例子，简单看一下标记-清除算法是如何进行的。CMS收集器一般分为以下几个步骤：</p>
+<ol>
+<li>InitialMarking（初始标记，整个过程STW）</li>
+<li>Marking（并发标记）</li>
+<li>Precleaning（预清理）</li>
+<li>AbortablePreclean（可中断的预清理）</li>
+<li>FinalMarking（重新标记，STW过程）</li>
+<li>ConcurrentSweep(并发清除)</li>
+</ol>
+<p>可以看到CMS收集器有三次标记，初始标记仅标记了GC Roots能直接关联到的对象，并发标记遍历初始标记阶段标记出来的存活对象，然后继续递归标记这些对象可达的对象。而重新标记是因为并发标记阶段是和用户线程并行执行的，在这期间的用户线程有可能改变了部分对象的引用关系。经过多轮标记，最后阶段由收集器并发清除掉未标记的对象。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-谈谈高并发之分页缓存的设计" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/02/谈谈高并发之分页缓存的设计/">谈谈高并发之分页缓存的设计</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2019/02/02/谈谈高并发之分页缓存的设计/" class="article-date">
+  <time datetime="2019-02-02T13:25:48.000Z" itemprop="datePublished">2019-02-02</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一个问题"><a href="#一个问题" class="headerlink" title="一个问题"></a>一个问题</h3><p>&emsp;&emsp;在策划印记读书（小程序）这款小产品的时候，考虑到一些问题，比如如何去设计一个针对文章列表的分页缓存系统。在这过程中也总结了一些业务的需求点：</p>
+<ol>
+<li>后台发布文章，马上展示到新用户的首页，首页的文章按照发布的时间降序排列。</li>
+<li>某个用户浏览首页的时候，不要出现重复的文章，过程中也不要丢失文章。</li>
+<li>文章会有点赞、评论等操作，列表展示文章的点赞数和评论数。</li>
+<li>从用户体验的角度讲，尽量缩短首屏的加载时间。</li>
+</ol>
+<h3 id="客户端缓存"><a href="#客户端缓存" class="headerlink" title="客户端缓存"></a>客户端缓存</h3><p>&emsp;&emsp;从第4点的用户体验上来说，最先考虑的是客户端缓存。比如客户端加载了一页数据，可以把它缓存到本地，当用户退出再次进入页面的时候，先加载本地的缓存数据，然后再去请求服务端的新数据。这样的设计有几个要点：</p>
+<ol>
+<li>必须记下缓存中最新的文章，基于此（比如最新文章的主键）来请求服务器增量更新数据。</li>
+<li>当上拉加载的时候，为了避免服务器返回重复的数据，需要记下缓存中最旧的文章，基于此加载列表之前的数据。</li>
+<li>基于以上两点，必须保证本地文章列表的连贯性，即下拉刷新返回的文章，必须和本地缓存是连贯的，中间不能出现断层，不然会出现文章丢失的情况。</li>
+</ol>
+<p>当然这里的缓存也不能是无限制缓存，不然首屏加载了缓存中大量的数据，在小程序上可能出现卡顿的现象。最好还是只缓存最新的一页数据，这样也可以降低后续分页的复杂性。</p>
+<h3 id="服务器缓存"><a href="#服务器缓存" class="headerlink" title="服务器缓存"></a>服务器缓存</h3><p>&emsp;&emsp;考虑一个最简单的数据库分页，取page和size，在分页的过程中假设新增了一条数据，会出现什么情况？这种场景无可避免地会让用户刷到重复的文章，比如A文章本来是在第一页的最后一项，用户请求第一页拉取了A，正要请求第二页数据，这时候更新了一篇文章B，这条临时插入的数据无疑让A文章再次出现在用户的第二页中。不过这个问题在考虑客户端缓存设计中的第二点，其实已经解决了。<br>&emsp;&emsp;当后台发布文章的时候，同步将文章加入到缓存中。用户对文章的点赞评论操作，同样也会更新缓存中的数据。基于这两个要素，设计列表缓存的时候，可以考虑将列表数据进行拆分。即将列表数据分拆分成两个篮子，其中一个篮子装列表主键专门用于分页，一个篮子装具体的列表item项。假设使用redis作为缓存层，可以使用zset来存储列表主键，zset的score可以使用文章主键或者创建时间戳来作为排序依据。每次客户端请求数据的时候，都会携带page、size和当前数据项的标记，服务器先从列表主键缓存中查找一页数据，然后可以依据查找到的主键从文章缓存中索引到具体的文章。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-RocketMQ之旅（七）broker处理消息" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
@@ -389,94 +518,6 @@
         
           <p class="article-more-link">
             <a href="/2018/10/08/Netty之旅（十二）EventLoop/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Netty之旅（十一）ChannelHandler" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/25/Netty之旅（十一）ChannelHandler/">Netty之旅（十一）ChannelHandler</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/09/25/Netty之旅（十一）ChannelHandler/" class="article-date">
-  <time datetime="2018-09-25T08:41:05.000Z" itemprop="datePublished">2018-09-25</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg" alt=""><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/09/25/Netty之旅（十一）ChannelHandler/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Netty之旅（十）ChannelHandlerContext" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/">Netty之旅（十）ChannelHandlerContext</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/" class="article-date">
-  <time datetime="2018-09-08T02:25:23.000Z" itemprop="datePublished">2018-09-08</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&emsp;&emsp;<strong>Netty之旅（九）ChannelPipeline</strong>中我们知道ChannelPipeline的事件接收后真正处理者是ChannelHandlerContext，所以围绕前文，我们来探讨一下ChannelHandlerContext是如何处理这些事件的。ChannelHandlerContext的类图也很简单：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fuv6uq2j3gj21640modmg.jpg" alt=""><br>
-        
-          <p class="article-more-link">
-            <a href="/2018/09/08/Netty之旅（十）ChannelHandlerContext/#more">More...</a>
           </p>
         
       

@@ -29,6 +29,94 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Java基础（一）CountDownLatch源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/30/Java基础（一）CountDownLatch源码分析/">Java并发之旅（一）CountDownLatch源码分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" class="article-date">
+  <time datetime="2018-07-30T05:48:28.000Z" itemprop="datePublished">2018-07-30</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java并发之旅/">Java并发之旅</a>
+  </div>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>&emsp;&emsp;CountDownLatch的源码其实很简单，因为其主要依靠<strong>AQS</strong>实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是<strong>await()</strong>,一个是<strong>countDown()</strong>。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/#more">More...</a>
+          </p>
+        
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Netty之旅（三）ByteBuf内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/">Netty之旅（三）ByteBuf内存三剑客以及算法概要</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" class="article-date">
+  <time datetime="2018-07-28T10:02:39.000Z" itemprop="datePublished">2018-07-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/#more">More...</a>
+          </p>
+        
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Netty之旅（二）ByteBuf引用计数" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">

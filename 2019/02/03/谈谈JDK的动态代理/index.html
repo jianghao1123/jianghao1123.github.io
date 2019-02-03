@@ -3,15 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>迷宫式编程</title>
+  <title>谈谈JDK的动态代理 | 迷宫式编程</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="迷宫式编程">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="由一个错误引发的思考&amp;emsp;&amp;emsp;Spring有大量使用动态代理的地方，如果不理解代理，不清楚动态代理的实现，很可能会造成一些使用上的错误。举一个例子，在Spring中我们常常使用@Transactional来开启一个事务，@Transactional就是利用动态代理来实现事务的。下面是一个错误的示范： 123456789101112131415161718192021222324252">
+<meta name="keywords" content="Java基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈JDK的动态代理">
+<meta property="og:url" content="http://yoursite.com/2019/02/03/谈谈JDK的动态代理/index.html">
 <meta property="og:site_name" content="迷宫式编程">
+<meta property="og:description" content="由一个错误引发的思考&amp;emsp;&amp;emsp;Spring有大量使用动态代理的地方，如果不理解代理，不清楚动态代理的实现，很可能会造成一些使用上的错误。举一个例子，在Spring中我们常常使用@Transactional来开启一个事务，@Transactional就是利用动态代理来实现事务的。下面是一个错误的示范： 123456789101112131415161718192021222324252">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-03T09:25:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="迷宫式编程">
+<meta name="twitter:title" content="谈谈JDK的动态代理">
+<meta name="twitter:description" content="由一个错误引发的思考&amp;emsp;&amp;emsp;Spring有大量使用动态代理的地方，如果不理解代理，不清楚动态代理的实现，很可能会造成一些使用上的错误。举一个例子，在Spring中我们常常使用@Transactional来开启一个事务，@Transactional就是利用动态代理来实现事务的。下面是一个错误的示范： 123456789101112131415161718192021222324252">
   
     <link rel="alternative" href="/atom.xml" title="迷宫式编程" type="application/atom+xml">
   
@@ -27,17 +32,15 @@
   <div id="container">
     <div id="wrap">
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-谈谈JDK的动态代理" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-谈谈JDK的动态代理" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/03/谈谈JDK的动态代理/">谈谈JDK的动态代理</a>
+    <h1 class="article-title" itemprop="name">
+      谈谈JDK的动态代理
     </h1>
   
 
@@ -94,446 +97,21 @@
     </div>
   </div>
   
-</article>
-
-
-
-  
-    <article id="post-谈谈Java垃圾收集算法" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
     
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/02/谈谈Java垃圾收集算法/">谈谈Java垃圾收集算法</a>
-    </h1>
   
+    <a href="/2019/02/02/谈谈Java垃圾收集算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">谈谈Java垃圾收集算法</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2019/02/02/谈谈Java垃圾收集算法/" class="article-date">
-  <time datetime="2019-02-02T13:26:05.000Z" itemprop="datePublished">2019-02-02</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题"></a>三个问题</h3><ol>
-<li>哪些内存需要回收？</li>
-<li>什么时候回收？</li>
-<li>如何回收？</li>
-</ol>
-<h3 id="哪些内存需要回收？"><a href="#哪些内存需要回收？" class="headerlink" title="哪些内存需要回收？"></a>哪些内存需要回收？</h3><p>&emsp;&emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性分析算法来判断对象的是否存活。这个算法的基本思路是通过一系列的GC Roots对象作为起始点，从这些节点向下搜索，搜索所走过的路径（Reference Chain），当一个对象没有任何路径可以到达GC Roots时，证明该对象不可用。在Java语言中，可作为GC Roots的对象包括下面几种：</p>
-<blockquote>
-<ol>
-<li>虚拟机栈（栈帧中的本地变量表）中引用的对象。</li>
-<li>方法区中类静态属性引用的对象。</li>
-<li>方法区中常量引用的对象。</li>
-<li>本地方法栈中JNI（即一般说的Native方法）引用的对象。</li>
-</ol>
-</blockquote>
-        
-          <p class="article-more-link">
-            <a href="/2019/02/02/谈谈Java垃圾收集算法/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
   
 </article>
 
 
-
-  
-    <article id="post-谈谈高并发之分页缓存的设计" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/02/谈谈高并发之分页缓存的设计/">谈谈高并发之分页缓存的设计</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2019/02/02/谈谈高并发之分页缓存的设计/" class="article-date">
-  <time datetime="2019-02-02T13:25:48.000Z" itemprop="datePublished">2019-02-02</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/高并发/">高并发</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一个问题"><a href="#一个问题" class="headerlink" title="一个问题"></a>一个问题</h3><p>&emsp;&emsp;在策划印记读书（小程序）这款小产品的时候，考虑到一些问题，比如如何去设计一个针对文章列表的分页缓存系统。在这过程中也总结了一些业务的需求点：</p>
-<ol>
-<li>后台发布文章，马上展示到新用户的首页，首页的文章按照发布的时间降序排列。</li>
-<li>某个用户浏览首页的时候，不要出现重复的文章，过程中也不要丢失文章。</li>
-<li>文章会有点赞、评论等操作，列表展示文章的点赞数和评论数。</li>
-<li>从用户体验的角度讲，尽量缩短首屏的加载时间。</li>
-</ol>
-        
-          <p class="article-more-link">
-            <a href="/2019/02/02/谈谈高并发之分页缓存的设计/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RocketMQ之旅（七）broker处理消息" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/01/RocketMQ之旅（七）broker处理消息/">RocketMQ之旅（七）broker处理消息</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2019/02/01/RocketMQ之旅（七）broker处理消息/" class="article-date">
-  <time datetime="2019-02-01T13:00:12.000Z" itemprop="datePublished">2019-02-01</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="消息接收"><a href="#消息接收" class="headerlink" title="消息接收"></a>消息接收</h4><p>&emsp;&emsp;在<strong>BrokerController</strong>的<strong>registerProcessor()</strong>中，注册了很多网络处理器：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * SendMessageProcessor</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    SendMessageProcessor sendProcessor = <span class="keyword">new</span> SendMessageProcessor(<span class="keyword">this</span>);</span><br><span class="line">    sendProcessor.registerSendMessageHook(sendMessageHookList);</span><br><span class="line">    sendProcessor.registerConsumeMessageHook(consumeMessageHookList);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.remotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="keyword">this</span>.fastRemotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="keyword">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="comment">// ...省略部分的注册逻辑...</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中<strong>SendMessageProcessor</strong>主要负责接收Producer发过来的消息，继承于NettyRequestProcessor，每个继承于NettyRequestProcessor的子类都需要实现<strong>processRequest()</strong>：<br>
-        
-          <p class="article-more-link">
-            <a href="/2019/02/01/RocketMQ之旅（七）broker处理消息/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-算法国（二）字符串匹配" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/17/算法国（二）字符串匹配/">算法国（二）字符串匹配</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/12/17/算法国（二）字符串匹配/" class="article-date">
-  <time datetime="2018-12-17T14:22:55.000Z" itemprop="datePublished">2018-12-17</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/算法国/">算法国</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
-<blockquote>
-<p><strong>算法就是思考的方式</strong></p>
-</blockquote>
-<h4 id="很长的开头"><a href="#很长的开头" class="headerlink" title="很长的开头"></a>很长的开头</h4><p>&emsp;&emsp;很久以前，算法国的人只知道0和1。有一天，来了一个外国人，外国人会一种新奇的语言，它简单却又多变，生动而且内涵，它有二十六个字母组成，对比可怜又枯燥的0和1，这实在太有趣了！算法国的人一下子爱上了这种语言。外国人很开心算法国的人喜欢他们的语言，于是他很慷慨地教他们，他大笔一挥，写下算法国第一行外文：</p>
-<blockquote>
-<p><strong>“Hello World。”</strong></p>
-</blockquote>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/17/算法国（二）字符串匹配/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RocketMQ之旅（六）broker启动" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/17/RocketMQ之旅（六）broker启动/">RocketMQ之旅（六）broker启动</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/12/17/RocketMQ之旅（六）broker启动/" class="article-date">
-  <time datetime="2018-12-17T14:22:41.000Z" itemprop="datePublished">2018-12-17</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="命令行启动"><a href="#命令行启动" class="headerlink" title="命令行启动"></a>命令行启动</h4><p>&emsp;&emsp;先从官方的一段启动命令开始我们的旅程：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; nohup sh bin/mqbroker -n localhost:<span class="number">9876</span> &amp;</span><br><span class="line">&gt; tail -f ~/logs/rocketmqlogs/broker.log </span><br><span class="line">The broker[%s, <span class="number">172.30</span>.30.233:<span class="number">10911</span>] boot success...</span><br></pre></td></tr></table></figure></p>
-<p>mqbroker脚本放在distribution模块的bin目录下。贴一下该脚本的启动命令语句：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh $&#123;ROCKETMQ_HOME&#125;/bin/runbroker.sh org.apache.rocketmq.broker.BrokerStartup $@</span><br></pre></td></tr></table></figure></p>
-<p>从这句sh命令可知，mqbroker脚本主要是启动broker模块的<strong>BrokerStartup</strong>，<strong>BrokerStartup</strong>是整个broker的入口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    start(createBrokerController(args));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/17/RocketMQ之旅（六）broker启动/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RocketMQ之旅（五）remoting" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/19/RocketMQ之旅（五）remoting/">RocketMQ之旅（五）remoting</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/11/19/RocketMQ之旅（五）remoting/" class="article-date">
-  <time datetime="2018-11-19T09:02:22.000Z" itemprop="datePublished">2018-11-19</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手就可以了。</p>
-<h4 id="NettyRemotingServer"><a href="#NettyRemotingServer" class="headerlink" title="NettyRemotingServer"></a>NettyRemotingServer</h4><p>&emsp;&emsp;NettyRemotingServer在RocketMQ中主要用在两个地方，BrokerController和NamesrvController，先来看一下类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg" alt=""><br>
-        
-          <p class="article-more-link">
-            <a href="/2018/11/19/RocketMQ之旅（五）remoting/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-算法国（一）排序" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/17/算法国（一）排序/">算法国（一）排序</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/11/17/算法国（一）排序/" class="article-date">
-  <time datetime="2018-11-17T11:39:02.000Z" itemprop="datePublished">2018-11-17</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/算法国/">算法国</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&emsp;&emsp;本故事除了算法纯属虚构。</p>
-<blockquote>
-<p><strong>在算法国里面，谁掌握的算法越多，谁就是王。</strong></p>
-</blockquote>
-<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>&emsp;&emsp;排序是最基础的算法，在算法国连小孩都会，什么，如果你连一个排序算法都不会，呵，那人家就会喊你码农，哦不对，码农现在高级了，那叫你码畜，也不对，可能他们会直接喊码拉格比，你连个排序都不会？当然，连排序算法都不会一个的人，在算法国是找不到工作的。算法国的工作其实很简单，复制算法，然后粘贴算法。当然，有时候需要改造一下算法。那已经是比较高级的工作了。至于能创造算法的人，他就是神。<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/11/17/算法国（一）排序/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RocketMQ之旅（四）client之Consumer" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/12/RocketMQ之旅（四）client之Consumer/">RocketMQ之旅（四）client之Consumer</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/11/12/RocketMQ之旅（四）client之Consumer/" class="article-date">
-  <time datetime="2018-11-12T07:54:12.000Z" itemprop="datePublished">2018-11-12</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><p>&emsp;&emsp;先看一下Consumer的类图结构：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1fwno96uqyvj20ta0j20wf.jpg" alt=""><br>Consumer按照拉取的方式分为MQPullConsumer和MQPushConsumer，先从一个官网的MQPushConsumer示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, MQClientException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Instantiate with specified consumer group name.</span></span><br><span class="line">        DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">         </span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        consumer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Subscribe one more more topics to consume.</span></span><br><span class="line">        consumer.subscribe(<span class="string">"TopicTest"</span>, <span class="string">"*"</span>);</span><br><span class="line">        <span class="comment">// Register callback to execute on arrival of messages fetched from brokers.</span></span><br><span class="line">        consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(List&lt;MessageExt&gt; msgs,</span></span></span><br><span class="line"><span class="function"><span class="params">                ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">                System.out.printf(<span class="string">"%s Receive New Messages: %s %n"</span>, Thread.currentThread().getName(), msgs);</span><br><span class="line">                <span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Launch the consumer instance.</span></span><br><span class="line">        consumer.start();</span><br><span class="line"></span><br><span class="line">        System.out.printf(<span class="string">"Consumer Started.%n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/11/12/RocketMQ之旅（四）client之Consumer/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RocketMQ之旅（三）client之Producer" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/25/RocketMQ之旅（三）client之Producer/">RocketMQ之旅（三）client之Producer</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/10/25/RocketMQ之旅（三）client之Producer/" class="article-date">
-  <time datetime="2018-10-25T05:49:21.000Z" itemprop="datePublished">2018-10-25</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/RocketMQ之旅/">RocketMQ之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="从官方示例开始"><a href="#从官方示例开始" class="headerlink" title="从官方示例开始"></a>从官方示例开始</h3><p>&emsp;&emsp;先从一个官网的同步消息发送示例开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SyncProducer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//Instantiate with a producer group name.</span></span><br><span class="line">        DefaultMQProducer producer = <span class="keyword">new</span></span><br><span class="line">            DefaultMQProducer(<span class="string">"please_rename_unique_group_name"</span>);</span><br><span class="line">        <span class="comment">// Specify name server addresses.</span></span><br><span class="line">        producer.setNamesrvAddr(<span class="string">"localhost:9876"</span>);</span><br><span class="line">        <span class="comment">//Launch the instance.</span></span><br><span class="line">        producer.start();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">            <span class="comment">//Create a message instance, specifying topic, tag and message body.</span></span><br><span class="line">            Message msg = <span class="keyword">new</span> Message(<span class="string">"TopicTest"</span> <span class="comment">/* Topic */</span>,</span><br><span class="line">                <span class="string">"TagA"</span> <span class="comment">/* Tag */</span>,</span><br><span class="line">                (<span class="string">"Hello RocketMQ "</span> +</span><br><span class="line">                    i).getBytes(RemotingHelper.DEFAULT_CHARSET) <span class="comment">/* Message body */</span></span><br><span class="line">            );</span><br><span class="line">            <span class="comment">//Call send message to deliver message to one of brokers.</span></span><br><span class="line">            SendResult sendResult = producer.send(msg);</span><br><span class="line">            System.out.printf(<span class="string">"%s%n"</span>, sendResult);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//Shut down once the producer instance is not longer in use.</span></span><br><span class="line">        producer.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/10/25/RocketMQ之旅（三）client之Producer/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
         <aside id="sidebar">
   <nav class="menus">

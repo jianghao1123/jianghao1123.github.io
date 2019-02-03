@@ -29,6 +29,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Netty之旅（十二）EventLoop" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/08/Netty之旅（十二）EventLoop/">Netty之旅（十二）EventLoop</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/10/08/Netty之旅（十二）EventLoop/" class="article-date">
+  <time datetime="2018-10-08T09:51:59.000Z" itemprop="datePublished">2018-10-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+  </div>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Reactor线程模型"><a href="#Reactor线程模型" class="headerlink" title="Reactor线程模型"></a>Reactor线程模型</h3><p>&emsp;&emsp;<strong>Netty之旅（七）从官方例子展开</strong>中的例子有这么一段：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br></pre></td></tr></table></figure></p>
+<p>这也是我们初次接触EventLoop的地方。这两句有什么用？想要理解这两句的意义，不得不说一下Reactor的线程模型。Reactor 线程模型有三种:</p>
+<ol>
+<li>单线程。历史是循序渐进的，Reactor的线程模型发展也是循序渐进的。单线程是最简单的线程模型，Reactor线程无所不能，一边负责多路套接字的分离，接受新的链接，处理I/O操作，一边分配请求到不同的处理器进行消息编解码处理业务。可以很容易地看出单线程模型的缺陷，在同一个线程，一旦哪里有阻塞，整个系统都不得动弹。</li>
+<li>多线程。多线程模型是对单线程的改进，我们将负责监听连接处理I/O的操作和业务处理器分开了。有一个专门的Reactor线程，处理连接和I/O操作，也有专门的业务处理线程池。</li>
+<li>主从多线程。高并发环境下，Reactor线程要同时处理成百上千的链路，既要监听连接还要处理I/O，性能上无法支撑。这时候将Reactor分离，有一个主Reactor线程负责连接的监听，另有一个从Reactor线程池负责处理I/O。</li>
+</ol>
+<p>这里的bossGroup和workerGroup就是两个Reactor线程池，一个用于网络链路连接，另一个是处理I/O读写，或者是一些系统的定时任务。<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/10/08/Netty之旅（十二）EventLoop/#more">More...</a>
+          </p>
+        
+      
+
+      
+        
+    </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Netty之旅（十一）ChannelHandler" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
@@ -428,50 +479,6 @@
         
           <p class="article-more-link">
             <a href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/#more">More...</a>
-          </p>
-        
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Netty之旅（四）ByteBuf内存管理之PoolChunk" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/">Netty之旅（四）ByteBuf内存管理之PoolChunk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/" class="article-date">
-  <time datetime="2018-08-08T13:27:24.000Z" itemprop="datePublished">2018-08-08</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
-  </div>
-
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>&emsp;&emsp;PoolChunk的设计借鉴了Buddy算法的核心，它内部通过byte数组memoryMap来构建一颗完全二叉树：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0                       1</span><br><span class="line">                       / \</span><br><span class="line">                      /   \</span><br><span class="line">1                    2      3</span><br><span class="line">                    / \    / \</span><br><span class="line">                   /   \  /   \</span><br><span class="line">2                 4     5 6    7</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">                         *</span><br><span class="line">               / \              / \</span><br><span class="line">11         2048   2049  *** 4094   4095</span><br></pre></td></tr></table></figure></p>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/08/Netty之旅（四）ByteBuf内存管理之PoolChunk/#more">More...</a>
           </p>
         
       

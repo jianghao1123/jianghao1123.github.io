@@ -1,11 +1,85 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
+
+
+
   
-  <title>Netty之旅（三）ByteBuf内存三剑客以及算法概要 | 迷宫式编程</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="内存分配器ByteBufAllocator&amp;emsp;&amp;emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们">
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Netty之旅," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="内存分配器ByteBufAllocator&amp;emsp;&amp;emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们">
 <meta name="keywords" content="Netty之旅">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty之旅（三）ByteBuf内存三剑客以及算法概要">
@@ -22,46 +96,246 @@
 <meta name="twitter:title" content="Netty之旅（三）ByteBuf内存三剑客以及算法概要">
 <meta name="twitter:description" content="内存分配器ByteBufAllocator&amp;emsp;&amp;emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/28/Netty之旅（三）ByteBuf内存管理/"/>
+
+
+
+
+
+  <title>Netty之旅（三）ByteBuf内存三剑客以及算法概要 | 迷宫式编程</title>
   
-    <link rel="alternative" href="/atom.xml" title="迷宫式编程" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css">
-  
+
+
+
+
+
+
+
 
 </head>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <div class="outer">
-        <section id="main"><article id="post-Netty之旅（三）ByteBuf内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Netty之旅（三）ByteBuf内存三剑客以及算法概要
-    </h1>
   
 
-      </header>
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
     
-    <div class="article-meta">
-      <a href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" class="article-date">
-  <time datetime="2018-07-28T10:02:39.000Z" itemprop="datePublished">2018-07-28</time>
-</a>
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">迷宫式编程</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
       
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty之旅/">Netty之旅</a>
+        <p class="site-subtitle"></p>
+      
   </div>
 
-    </div>
-    <div class="article-entry" itemprop="articleBody">
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-文章"></i> <br />
+            
+            所有文章
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/Netty之旅（三）ByteBuf内存管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Netty之旅（三）ByteBuf内存三剑客以及算法概要</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T18:02:39+08:00">
+                2018-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Netty之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">Netty之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
       
         <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">final int defaultMinNumArena = NettyRuntime.availableProcessors() * 2;</span><br><span class="line">final int defaultChunkSize = DEFAULT_PAGE_SIZE &lt;&lt; DEFAULT_MAX_ORDER;</span><br><span class="line">DEFAULT_NUM_HEAP_ARENA = Math.max(0,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                &quot;io.netty.allocator.numHeapArenas&quot;,</span><br><span class="line">                (int) Math.min(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        runtime.maxMemory() / defaultChunkSize / 2 / 3)));</span><br><span class="line">DEFAULT_NUM_DIRECT_ARENA = Math.max(0,</span><br><span class="line">        SystemPropertyUtil.getInt(</span><br><span class="line">                &quot;io.netty.allocator.numDirectArenas&quot;,</span><br><span class="line">                (int) Math.min(</span><br><span class="line">                        defaultMinNumArena,</span><br><span class="line">                        PlatformDependent.maxDirectMemory() / defaultChunkSize / 2 / 3)));</span><br></pre></td></tr></table></figure></p>
 <p><strong>DEFAULT_PAGE_SIZE</strong>默认为8192，<strong>DEFAULT_MAX_ORDER</strong>默认为11，这两个常量很重要，跟后面的内存管理息息相关。来看下PooledByteBufAllocator实际分配heapBuffer的地方：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) &#123;</span><br><span class="line">        // 优先获取线程缓存的 PoolArena，这就是上面说为什么有多个PoolArena</span><br><span class="line">        PoolThreadCache cache = threadCache.get();</span><br><span class="line">        PoolArena&lt;byte[]&gt; heapArena = cache.heapArena;</span><br><span class="line"></span><br><span class="line">        final ByteBuf buf;</span><br><span class="line">        if (heapArena != null) &#123;</span><br><span class="line">            // 使用PoolArena来获取ByteBuf</span><br><span class="line">            buf = heapArena.allocate(cache, initialCapacity, maxCapacity);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // 第一次进来，线程没有PoolArena缓存，直接返回一个未池化的ByteBuf</span><br><span class="line">            buf = PlatformDependent.hasUnsafe() ?</span><br><span class="line">                    new UnpooledUnsafeHeapByteBuf(this, initialCapacity, maxCapacity) :</span><br><span class="line">                    new UnpooledHeapByteBuf(this, initialCapacity, maxCapacity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return toLeakAwareBuffer(buf);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
@@ -71,88 +345,389 @@
 <h4 id="jemalloc内存分配"><a href="#jemalloc内存分配" class="headerlink" title="jemalloc内存分配"></a>jemalloc内存分配</h4><p>&emsp;&emsp;Netty的内存设计很大程度上借鉴了jemalloc，比如<strong>Arena</strong>和<strong>Thread Cache</strong>。<strong>Arena</strong>是一个完全自治的区域，他将内存页划分为<strong>Chunk</strong>，多个页构成一个<strong>Chunk</strong>，比如在jemalloc中建议<strong>Chunk</strong>为4MB大小。<strong>Arena</strong>内部维护了一个bin数组，bin中有多个Run，一个Run就是Chunk内的一块区域，每个Run大于等于一个Page，根据Page Run的内存使用率，将其分为QINIT，Q0，Q25，Q50，Q75，Q100，使用率分组参照下面：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu0bnudmx4j20ho0c13z6.jpg" alt="Alt text"><br>bin还管理着内存的分配方式，它根据内存大小分为三个尺寸，分别是<strong>small</strong>，<strong>large</strong>，<strong>huge</strong>，具体参照下图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu0clp6lz8j20940cvdgd.jpg" alt="Alt text"><br>&emsp;&emsp;<strong>Thread Cache</strong>保证多线程并发下更高效地分配内存，每个<strong>Thread Cache</strong>对应一个<strong>Arena</strong>（通常有多个Arena），同时其内部还维护了<strong>small</strong>的缓存，每次分配小内存的时候，都会优先检测本地缓存，更有效地消除了锁竞争的开销。</p>
 
       
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Netty之旅/" rel="tag"># Netty之旅</a>
+          
+        </div>
+      
 
       
-        
-    </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" rel="next" title="Netty之旅（二）ByteBuf引用计数">
+                <i class="fa fa-chevron-left"></i> Netty之旅（二）ByteBuf引用计数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" rel="prev" title="Java并发之旅（一）CountDownLatch源码分析">
+                Java并发之旅（一）CountDownLatch源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
     
-<nav id="article-nav">
-  
-    <a href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Java并发之旅（一）CountDownLatch源码分析
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/07/28/Netty之旅（二）ByteBuf引用计数/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Netty之旅（二）ByteBuf引用计数</div>
-    </a>
-  
-</nav>
+    <div class="sidebar-inner">
 
-  
-</article>
+      
 
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-</section>
-        <aside id="sidebar">
-  <nav class="menus">
-  	<ul>
-  		<li><a href="/"><i class="icon icon-home"></i></a></li>
-  		
-			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
-  		
-  		
-			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
-  		
-  		
-  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
-  		
-  	</ul>
-  </nav>
-  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
-</aside>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">matrix22</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
 
-      </div>
-      <footer id="footer">
-  
-	<div id="footer-info" class="inner">
-	  &copy; 2019 matrix22 
-	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
-	</div>
-</footer>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存分配器ByteBufAllocator"><span class="nav-number">1.</span> <span class="nav-text">内存分配器ByteBufAllocator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Netty内存管理概要"><span class="nav-number">2.</span> <span class="nav-text">Netty内存管理概要</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Buddy算法和Slab机制"><span class="nav-number">2.1.</span> <span class="nav-text">Buddy算法和Slab机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jemalloc内存分配"><span class="nav-number">2.2.</span> <span class="nav-text">jemalloc内存分配</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
 
     </div>
-    <nav id="mobile-nav">
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">matrix22</span>
+
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-    <a href="/tags" class="mobile-nav-link">Tag</a>
-  
-    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
-  
-</nav>
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
+    
 
   </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>

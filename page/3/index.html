@@ -249,6 +249,178 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/18/RocketMQ之旅（一）概述/" itemprop="url">RocketMQ之旅（一）概述</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-18T09:21:15+08:00">
+                2018-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">RocketMQ之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/18/RocketMQ之旅（一）概述/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/18/RocketMQ之旅（一）概述/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
+<ol>
+<li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
+<li><strong>client</strong> 集结了consumer和producer</li>
+<li><strong>common</strong> 提供通用基础方法给其他模块调用</li>
+<li><strong>dev</strong> 是一个版本控制脚本不用管</li>
+<li><strong>distribution</strong> 提供了一些部署的脚本</li>
+<li><strong>filter</strong> 过滤器，提供SQL92标准的过滤方式</li>
+<li><strong>logappender</strong> 日志模块</li>
+<li><strong>logging</strong> 也是日志</li>
+<li><strong>namesrv</strong> 注册中心，管理broker和topic信息</li>
+<li><strong>openmessaging</strong> openmessaging是由阿里巴巴发起的分布式消息领域的国际标准，这个包主要提供openmessaging标准的部分实现</li>
+<li><strong>remoting</strong> 是一个通用的网络通信基础模块，基于netty实现</li>
+<li><strong>srvutil</strong> 工具包，里面只有三个类</li>
+<li><strong>store</strong> 消息相关存储服务</li>
+<li><strong>style</strong> 统一代码风格不用管</li>
+<li><strong>test</strong> 测试相关</li>
+<li><strong>tools</strong> 工具类，提供一些后台管理的工具</li>
+</ol>
+<p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1534,7 +1706,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1545,7 +1717,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1556,7 +1728,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>

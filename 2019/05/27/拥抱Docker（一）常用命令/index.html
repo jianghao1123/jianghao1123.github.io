@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。 镜像查找仓库镜像 docker search [镜像仓库]12345678luyundeMacBook-Pro:~">
+<meta name="description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。">
 <meta name="keywords" content="Docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="拥抱Docker（一）常用命令">
 <meta property="og:url" content="http://yoursite.com/2019/05/27/拥抱Docker（一）常用命令/index.html">
 <meta property="og:site_name" content="迷宫式编程">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。 镜像查找仓库镜像 docker search [镜像仓库]12345678luyundeMacBook-Pro:~">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g3erlk4ez1j20xk0eon4e.jpg">
-<meta property="og:updated_time" content="2019-05-27T11:09:04.000Z">
+<meta property="og:updated_time" content="2019-05-27T11:10:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拥抱Docker（一）常用命令">
-<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。 镜像查找仓库镜像 docker search [镜像仓库]12345678luyundeMacBook-Pro:~">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g3erlk4ez1j20xk0eon4e.jpg">
 
 
@@ -355,7 +355,7 @@
       
 
       
-        <p>&emsp;&emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。</p>
+        <p>&emsp;&emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。<br><a id="more"></a></p>
 <h4 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h4><h5 id="查找仓库镜像"><a href="#查找仓库镜像" class="headerlink" title="查找仓库镜像"></a>查找仓库镜像</h5><blockquote>
 <p><strong>docker search [镜像仓库]</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker search nginx</span><br><span class="line">NAME                              DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">nginx                             Official build of Nginx.                        <span class="number">11463</span>               [OK]</span><br><span class="line">jwilder/nginx-proxy               Automated Nginx reverse proxy <span class="keyword">for</span> docker con…   <span class="number">1602</span>                                    [OK]</span><br><span class="line">richarvey/nginx-php-fpm           Container running Nginx + PHP-FPM capable of…   <span class="number">715</span>                                     [OK]</span><br><span class="line">bitnami/nginx                     Bitnami nginx Docker Image                      <span class="number">66</span>                                      [OK]</span><br><span class="line">linuxserver/nginx                 An Nginx container, brought to you by LinuxS…   <span class="number">62</span></span><br><span class="line">tiangolo/nginx-rtmp               Docker image with Nginx using the nginx-rtmp…   <span class="number">45</span>                                      [OK]</span><br></pre></td></tr></table></figure></p>
 </blockquote>

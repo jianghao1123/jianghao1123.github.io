@@ -353,49 +353,17 @@
 
       
         
-          
-            <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>&emsp;&emsp;缓存是一种用于提升系统响应速度的技术，在分布式服务领域，常见的缓存有进程内缓存和缓存服务：</p>
+          <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>&emsp;&emsp;缓存是一种用于提升系统响应速度的技术，在分布式服务领域，常见的缓存有进程内缓存和缓存服务：</p>
 <ul>
 <li>进程内缓存 一般指将数据缓存在客户端、浏览器，或者是服务端的进程内，常见的比如我们使用HashMap在内存中缓存键值对数据，或者是有名的进程缓存框架如Ehcache、Guava Cache等。</li>
-<li>缓存服务 集中式的应用级缓存机制，区别于进程内缓存，应用级缓存单独部署缓存服务，常见的如Redis、Memcached等。</li>
-</ul>
-<h4 id="先缓存还是先数据库"><a href="#先缓存还是先数据库" class="headerlink" title="先缓存还是先数据库"></a>先缓存还是先数据库</h4><p>&emsp;&emsp;接下来我们主要探讨一下缓存服务，以及在实际缓存服务的应用中如何操作（更新、删除）数据，才能保证其在数据库和缓存中保持一致。在实际的使用场景中，由于数据库和缓存同时存在，很容易就会碰到数据操作的时候，先操作缓存还是先操作数据库的问题。</p>
-<h5 id="数据库优先"><a href="#数据库优先" class="headerlink" title="数据库优先"></a>数据库优先</h5><p>&emsp;&emsp;最先想到的是先操作数据库的方案，因为从普遍的观点来说，一个服务可以没有缓存，但是不能没有数据库。要想得出数据库优先的策略是否靠谱（符合缓存一致性），必须先考虑以下几种失败的情况发生：</p>
-<ul>
-<li>数据库操作失败 数据库如果操作失败，只要数据库能保证事务，那么数据库中的数据应该不会发生变更，此时对缓存也是没有影响的，符合缓存一致性的要求。</li>
-<li><strong>数据库操作成功，缓存操作失败</strong> 很明显这种情况会造成数据库中的数据和缓存中的数据不一致。</li>
-</ul>
-<p>&emsp;&emsp;针对<strong>数据库操作成功，缓存操作失败</strong>的场景，也并非完全无解，比如我们可以将数据库操作和缓存操作做成一个事务，这样缓存操作失败回滚整个事务，这样似乎也达到了我们的目的，这个问题其实也演变成了一个分布式事务的问题。</p>
-<h5 id="缓存优先"><a href="#缓存优先" class="headerlink" title="缓存优先"></a>缓存优先</h5><p>&emsp;&emsp;先操作缓存同样也会面临两种类型的失败：</p>
-<ul>
-<li>操作缓存失败 这种情况下应该也没什么问题，只要不弄脏数据就行。</li>
-<li>操作缓存成功，数据库操作失败 这种情况需要考虑操作的真实含义，即删除还是更新。如果仅仅是整体删除缓存，那么也没有大问题，按照Cache Aside Pattern的实践，最多造成一次cache miss。但是如果是更新缓存，那么需要讨论的话题应该和数据库优先一样，如要保持数据一致，其实还是一个分布式事务的问题。</li>
-</ul>
-<h5 id="删除还是修改"><a href="#删除还是修改" class="headerlink" title="删除还是修改"></a>删除还是修改</h5><p>&emsp;&emsp;上面在更新数据的时候，为了不引起歧义，所以使用了”操作“这个词，对缓存中的数据进行更新操作，不外乎两种方式：删除和修改。先说一下这两种方式的不同点，首先删除比修改简单，但是删除会造成一次cache miss。按照上面分析的<strong>缓存优先</strong>来说，删除显然比更新更加有优势，一般场景下，选择删除也总不会出错。<br>&emsp;&emsp;综上，如果选择了<strong>缓存优先</strong>且<strong>删除</strong>的方式，不仅可以保证数据一致性，而且还可以避开事务带来的开销，这似乎是一种很不错的方案。不过事情当然也没有这么简单，就像天下没有免费的午餐，这个留着后面再来讨论。</p>
-<h4 id="Design-Pattern"><a href="#Design-Pattern" class="headerlink" title="Design Pattern"></a>Design Pattern</h4><p>&emsp;&emsp;上面提到了Cache Aside Pattern，顺便来说一下更新数据的Design Pattern。</p>
-<h5 id="Cache-Aside-Pattern"><a href="#Cache-Aside-Pattern" class="headerlink" title="Cache Aside Pattern"></a>Cache Aside Pattern</h5><p>&emsp;&emsp;<strong>先操作数据库</strong>这个方案，其实和Cache Aside Pattern有点不谋而合。Cache Aside Pattern是缓存更新中的一种模式，简单介绍一下这个模式的逻辑：</p>
-<ul>
-<li><strong>失效：</strong>应用程序会先从cache取数据，如果取不到，则从数据库中取数据，成功后放到缓存中。</li>
-<li><strong>命中：</strong>应用程序从cache中取数据，取到后直接返回。</li>
-<li><strong>更新：</strong>先把数据存到数据库中，成功后，再让缓存失效。</li>
-</ul>
-<h5 id="Read-Write-Through-Pattern"><a href="#Read-Write-Through-Pattern" class="headerlink" title="Read/Write Through Pattern"></a>Read/Write Through Pattern</h5><p>&emsp;&emsp;缓存层屏蔽了数据库，应用程序只需要和缓存交互，由缓存来代理数据库的全部操作。</p>
-<h5 id="Write-Behind-Caching-Pattern"><a href="#Write-Behind-Caching-Pattern" class="headerlink" title="Write Behind Caching Pattern"></a>Write Behind Caching Pattern</h5><p>&emsp;&emsp;更新数据的时候，只更新缓存，不更新数据库，缓存会异步批量更新到数据库。</p>
-<h4 id="再谈缓存优先"><a href="#再谈缓存优先" class="headerlink" title="再谈缓存优先"></a>再谈缓存优先</h4><p>&emsp;&emsp;介绍完缓存更新的Design Pattern，再来看缓存优先似乎是违背Cache Aside Pattern的。在缓存优先的方案中，其实有一个缺陷前面没有说明，这也是为什么Cache Aside Pattern推荐数据库优先的原因。考虑读写并发情况下可能会出现如下现象：</p>
-<ol>
-<li>写请求先删除缓存。</li>
-<li>此时读请求发现缓存为空，尝试从数据库中读数据</li>
-<li>读请求读数据库并更新了缓存，但是此时写请求可能还未更新数据库，或者由于主从不一致，读了从服务器的旧数据。</li>
-</ol>
-<p>上面这种场景就导致了缓存不一致的情况，所以Cache Aside Pattern建议采用先操作数据库，再删除缓存的策略。不过令人遗憾的是，Cache Aside Pattern并不能完全避免这种情况，尤其在主从不一致的前提下。那么在不考虑主从同步延时的情况下，如何解决这个问题？下面是我想到一种解决的策略：<strong>写请求在写完数据后，将数据同步写回缓存或者删除缓存。</strong>当然任何补救措施其实都会增加系统的复杂度，因为我们还需要考虑补救失败的情况，这时候先缓存的策略和先数据库来比，其实已经没有什么优势了。</p>
-<h4 id="数据库主从不一致"><a href="#数据库主从不一致" class="headerlink" title="数据库主从不一致"></a>数据库主从不一致</h4><p>&emsp;&emsp;上面讨论了不论是先数据库还是先缓存，都避免不了因为主从同步导致的缓存不一致，那么如何解决这个问题？下面是两种常见的方案：</p>
-<ul>
-<li>在主从同步期间，强制读操作读主库。比如写数据的时候先往缓存中写一个db:table:pk（数据库、表、行）组合的key，并设置一个过期时间（一般为主从同步延时），读操作读数据库的时候先去缓存中看一下这个key是否存在，如果存在，就强制从主库读数据。</li>
-<li>订阅主库的binlog，主动更新或者删除缓存，这也是高可用的一种方案。</li>
-</ul>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&emsp;&emsp;Facebook在论文<a href="https://www.usenix.org/system/files/conference/nsdi13/nsdi13-final170_update.pdf" target="_blank" rel="noopener">《Scaling Memcache at Facebook》</a>中分享了他们是如何使用memcached来构建和扩展一个分布式的key-value存储来为世界上最大的社交网站服务的，其中就提到缓存更新的策略使用了经典的Cache Aside Pattern：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1g56mdug19dj20gd076weu.jpg" alt><br>&emsp;&emsp;其实不管数据库优先还是缓存优先，都不是最完美解决策略，不过只要熟悉这两种方案各自的优点和缺点，结合业务上的需求，相信也可以做出一套可行的缓存一致性方案。当然真正施行的时候，我们需要考虑更多的情况，比如高可用场景下，缓存的主从架构必不可少，这时候我们就需要考虑缓存之间如何保证一致。</p>
-
-          
+<li>缓存服务 集中式的应用级缓存机制，区别于进程内缓存，应用级缓存单独部署缓存服务，常见的如Redis、Memcached等。
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/20/谈谈分布式缓存一致性/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

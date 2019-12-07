@@ -88,7 +88,7 @@
 <meta property="og:site_name" content="迷宫式编程">
 <meta property="og:description" content="PoolChunk分配小内存过程&amp;emsp;&amp;emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。&amp;emsp;&amp;emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-05T07:25:06.000Z">
+<meta property="og:updated_time" content="2019-10-24T16:22:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty之旅（五）ByteBuf内存管理之PoolSubpage">
 <meta name="twitter:description" content="PoolChunk分配小内存过程&amp;emsp;&amp;emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。&amp;emsp;&amp;emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，">

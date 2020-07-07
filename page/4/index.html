@@ -250,6 +250,178 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/RocketMQ之旅（一）概述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/18/RocketMQ之旅（一）概述/" itemprop="url">RocketMQ之旅（一）概述</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-18T09:21:15+08:00">
+                2018-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RocketMQ之旅/" itemprop="url" rel="index">
+                    <span itemprop="name">RocketMQ之旅</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/18/RocketMQ之旅（一）概述/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/18/RocketMQ之旅（一）概述/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;&emsp;本文基于rocketmq-all-4.3.0。RocketMQ是阿里巴巴开源的分布式消息中间件，使用java语言编写。下面是整个项目模块：<img src="http://ww1.sinaimg.cn/large/639cfad5gy1fu6tj0zaeoj20ke0hwdiw.jpg" alt="Alt text"><br>&emsp;&emsp;简单介绍下项目各个模块的用途：</p>
+<ol>
+<li><strong>broker</strong> 是整个消息服务的中心，负责收发消息，连接consumer和producer。</li>
+<li><strong>client</strong> 集结了consumer和producer</li>
+<li><strong>common</strong> 提供通用基础方法给其他模块调用</li>
+<li><strong>dev</strong> 是一个版本控制脚本不用管</li>
+<li><strong>distribution</strong> 提供了一些部署的脚本</li>
+<li><strong>filter</strong> 过滤器，提供SQL92标准的过滤方式</li>
+<li><strong>logappender</strong> 日志模块</li>
+<li><strong>logging</strong> 也是日志</li>
+<li><strong>namesrv</strong> 注册中心，管理broker和topic信息</li>
+<li><strong>openmessaging</strong> openmessaging是由阿里巴巴发起的分布式消息领域的国际标准，这个包主要提供openmessaging标准的部分实现</li>
+<li><strong>remoting</strong> 是一个通用的网络通信基础模块，基于netty实现</li>
+<li><strong>srvutil</strong> 工具包，里面只有三个类</li>
+<li><strong>store</strong> 消息相关存储服务</li>
+<li><strong>style</strong> 统一代码风格不用管</li>
+<li><strong>test</strong> 测试相关</li>
+<li><strong>tools</strong> 工具类，提供一些后台管理的工具</li>
+</ol>
+<p>&emsp;&emsp;模块众多，重点还是关注<strong>broker</strong>、<strong>client</strong>、<strong>namesrv</strong>、<strong>remoting</strong>、<strong>store</strong>这几个模块，这些也是一个消息中间件的核心模块。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/08/Netty之旅（六）ByteBuf内存管理之PoolArena/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -511,7 +683,7 @@
 
       
         
-          <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br>
+          <h3 id="PoolChunk分配小内存过程"><a href="#PoolChunk分配小内存过程" class="headerlink" title="PoolChunk分配小内存过程"></a>PoolChunk分配小内存过程</h3><p>&emsp;&emsp;1. 在Netty中内存以页为最小单位划分，假设分配2048KB大小的内存，如果使用PoolChunk直接分配一页，那真是太浪费了。参照Slab机制，Netty将一页内存进行更细致化的管理，使用PoolSubpage来分配小于一页的内存。<br>&emsp;&emsp;2. PoolChunk内部维护一个PoolSubpage的数组subpages，数组大小为1 &lt;&lt; maxOrder即默认为2048，相当于PoolChunk二叉树的叶子节点数量。<br>&emsp;&emsp;3. PoolSubpage每次分配内存的时候，只会去二叉树的叶子节点搜寻，当某一个节点被选中时，会根据节点的id，找到subpages数组种对应的PoolSubpage实例，如果该实例为空，则新建一个，然后使用PoolSubpage进行内存分配。看一下PoolChunk的内存分配入口<strong>allocateSubpage</strong>方法：<br></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/08/08/Netty之旅（五）ByteBuf内存管理之PoolSubpage/" rel="contents">
@@ -825,7 +997,7 @@
 
       
         
-          <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>&emsp;&emsp;CountDownLatch的源码其实很简单，因为其主要依靠<strong>AQS</strong>实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是<strong>await()</strong>,一个是<strong>countDown()</strong>。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：<br>
+          <h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>&emsp;&emsp;CountDownLatch的源码其实很简单，因为其主要依靠<strong>AQS</strong>实现（所以AQS不简单，大部分代码都会进入AQS讲解）。CountDownLatch由一个内部静态类Sync继承AQS。分析整个CountDownLatch的源码，抓住两个函数入口即可，一个是<strong>await()</strong>,一个是<strong>countDown()</strong>。当然为了熟悉这两个方法的环境，先来看下AQS的实现Sync：<br></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/07/30/Java基础（一）CountDownLatch源码分析/" rel="contents">
@@ -982,7 +1154,7 @@
 
       
         
-          <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br>
+          <h3 id="内存分配器ByteBufAllocator"><a href="#内存分配器ByteBufAllocator" class="headerlink" title="内存分配器ByteBufAllocator"></a>内存分配器ByteBufAllocator</h3><p>&emsp;&emsp;ByteBufAllocator是ByteBuf的内存分配器，下面是其实现：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fts8nj8gyvj20s80c43zi.jpg" alt="Alt text"><br>UnpooledByteBufAllocator不说了，这里主要是探讨一下PooledByteBufAllocator。PooledByteBufAllocator是池化空间的内存分配器，其内部实际依赖于PoolArena来分配内存。PoolArena是我们内存管理的第一剑客，为了提高并发效率，PooledByteBufAllocator可以有多个PoolArena来分配内存，下面是默认的堆内存PoolArena数量和直接内存PoolArena数量：<br></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/07/28/Netty之旅（三）ByteBuf内存管理/" rel="contents">
@@ -1346,6 +1518,145 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/22/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix22">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="迷宫式编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/22/hello-world/" itemprop="url">Hello World</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-22T22:27:37+08:00">
+                2018-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/22/hello-world/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/07/22/hello-world/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1396,7 +1707,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

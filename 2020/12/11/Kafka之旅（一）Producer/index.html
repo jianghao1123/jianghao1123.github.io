@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="referrer" content="same-origin">
+<meta name="referrer" content="no-referrer" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kafka," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;看Kafka源码主要是因为业务使用过程中的一个异常，异常部分堆栈如下：12345678910111213141516171819202122org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed since the group has already rebala">
+<meta name="keywords" content="Kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka之旅（一）Producer">
+<meta property="og:url" content="http://yoursite.com/2020/12/11/Kafka之旅（一）Producer/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;看Kafka源码主要是因为业务使用过程中的一个异常，异常部分堆栈如下：12345678910111213141516171819202122org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed since the group has already rebala">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-11T02:43:51.556Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka之旅（一）Producer">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;看Kafka源码主要是因为业务使用过程中的一个异常，异常部分堆栈如下：12345678910111213141516171819202122org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed since the group has already rebala">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/11/Kafka之旅（一）Producer/"/>
+
+
+
+
+
+  <title>Kafka之旅（一）Producer | 矩阵编程</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d29e6fba8e07d1a8af2414a20e5f2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">矩阵编程</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-文章"></i> <br />
+            
+            所有文章
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/11/Kafka之旅（一）Producer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="matrix">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kafka之旅（一）Producer</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-11T10:43:51+08:00">
+                2020-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/12/11/Kafka之旅（一）Producer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/12/11/Kafka之旅（一）Producer/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;看Kafka源码主要是因为业务使用过程中的一个异常，异常部分堆栈如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member. <span class="function">This means that the time between subsequent calls to <span class="title">poll</span><span class="params">()</span> was longer than the configured max.poll.interval.ms, which typically implies that the poll loop is spending too much time message processing. You can address <span class="keyword">this</span> either by increasing max.poll.interval.ms or by reducing the maximum size of batches returned in <span class="title">poll</span><span class="params">()</span> with max.poll.records.</span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator$OffsetCommitResponseHandler.<span class="title">handle</span><span class="params">(ConsumerCoordinator.java:<span class="number">900</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator$OffsetCommitResponseHandler.<span class="title">handle</span><span class="params">(ConsumerCoordinator.java:<span class="number">840</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.<span class="title">onSuccess</span><span class="params">(AbstractCoordinator.java:<span class="number">978</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.<span class="title">onSuccess</span><span class="params">(AbstractCoordinator.java:<span class="number">958</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.RequestFuture$1.<span class="title">onSuccess</span><span class="params">(RequestFuture.java:<span class="number">204</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.RequestFuture.<span class="title">fireSuccess</span><span class="params">(RequestFuture.java:<span class="number">167</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.RequestFuture.<span class="title">complete</span><span class="params">(RequestFuture.java:<span class="number">127</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient$RequestFutureCompletionHandler.<span class="title">fireCompletion</span><span class="params">(ConsumerNetworkClient.java:<span class="number">578</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.<span class="title">firePendingCompletedRequests</span><span class="params">(ConsumerNetworkClient.java:<span class="number">388</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.<span class="title">poll</span><span class="params">(ConsumerNetworkClient.java:<span class="number">294</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.<span class="title">poll</span><span class="params">(ConsumerNetworkClient.java:<span class="number">233</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.<span class="title">poll</span><span class="params">(ConsumerNetworkClient.java:<span class="number">212</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.<span class="title">commitOffsetsSync</span><span class="params">(ConsumerCoordinator.java:<span class="number">693</span>)</span></span></span><br><span class="line"><span class="function">	at org.apache.kafka.clients.consumer.KafkaConsumer.<span class="title">commitSync</span><span class="params">(KafkaConsumer.java:<span class="number">1454</span>)</span></span></span><br><span class="line"><span class="function">	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.<span class="title">commitIfNecessary</span><span class="params">(KafkaMessageListenerContainer.java:<span class="number">2039</span>)</span></span></span><br><span class="line"><span class="function">	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.<span class="title">processCommits</span><span class="params">(KafkaMessageListenerContainer.java:<span class="number">1862</span>)</span></span></span><br><span class="line"><span class="function">	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.<span class="title">pollAndInvoke</span><span class="params">(KafkaMessageListenerContainer.java:<span class="number">983</span>)</span></span></span><br><span class="line"><span class="function">	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.<span class="title">run</span><span class="params">(KafkaMessageListenerContainer.java:<span class="number">929</span>)</span></span></span><br><span class="line"><span class="function">	at java.util.concurrent.Executors$RunnableAdapter.<span class="title">call</span><span class="params">(Executors.java:<span class="number">511</span>)</span></span></span><br><span class="line"><span class="function">	at java.util.concurrent.FutureTask.<span class="title">run</span><span class="params">(FutureTask.java:<span class="number">266</span>)</span></span></span><br><span class="line"><span class="function">	at java.lang.Thread.<span class="title">run</span><span class="params">(Thread.java:<span class="number">748</span>)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>本着技术源于业务但不止于业务，我决定带着这个问题去Kafka源码探究一番。当然本文的专题不是为了寻找或者解决这个问题，这个问题会在下一篇Consumer的笔记中分析，本文还是着重于Kafka Producer的剖析。<br><a id="more"></a></p>
+<h3 id="KafkaProducer"><a href="#KafkaProducer" class="headerlink" title="KafkaProducer"></a>KafkaProducer</h3><h5 id="send"><a href="#send" class="headerlink" title="send"></a>send</h5><p>&emsp;&emsp;直接从KafkaProducer的<strong>send(ProducerRecord&lt;K, V&gt; record, Callback callback)</strong>开始：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Future&lt;RecordMetadata&gt; <span class="title">send</span><span class="params">(ProducerRecord&lt;K, V&gt; record, Callback callback)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// intercept the record, which can be potentially modified; this method does not throw exceptions</span></span><br><span class="line">    ProducerRecord&lt;K, V&gt; interceptedRecord = <span class="keyword">this</span>.interceptors.onSend(record);</span><br><span class="line">    <span class="keyword">return</span> doSend(interceptedRecord, callback);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Implementation of asynchronously send a record to a topic.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Future&lt;RecordMetadata&gt; <span class="title">doSend</span><span class="params">(ProducerRecord&lt;K, V&gt; record, Callback callback)</span> </span>&#123;</span><br><span class="line">    TopicPartition tp = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        throwIfProducerClosed();</span><br><span class="line">        <span class="comment">// first make sure the metadata for the topic is available</span></span><br><span class="line">        <span class="keyword">long</span> nowMs = time.milliseconds();</span><br><span class="line">        ClusterAndWaitTime clusterAndWaitTime;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            clusterAndWaitTime = waitOnMetadata(record.topic(), record.partition(), nowMs, maxBlockTimeMs);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (KafkaException e) &#123;</span><br><span class="line">            <span class="keyword">if</span> (metadata.isClosed())</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> KafkaException(<span class="string">"Producer closed while send in progress"</span>, e);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        nowMs += clusterAndWaitTime.waitedOnMetadataMs;</span><br><span class="line">        <span class="keyword">long</span> remainingWaitMs = Math.max(<span class="number">0</span>, maxBlockTimeMs - clusterAndWaitTime.waitedOnMetadataMs);</span><br><span class="line">        Cluster cluster = clusterAndWaitTime.cluster;</span><br><span class="line">        <span class="keyword">byte</span>[] serializedKey;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            serializedKey = keySerializer.serialize(record.topic(), record.headers(), record.key());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassCastException cce) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Can't convert key of class "</span> + record.key().getClass().getName() +</span><br><span class="line">                    <span class="string">" to class "</span> + producerConfig.getClass(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG).getName() +</span><br><span class="line">                    <span class="string">" specified in key.serializer"</span>, cce);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">byte</span>[] serializedValue;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            serializedValue = valueSerializer.serialize(record.topic(), record.headers(), record.value());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassCastException cce) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SerializationException(<span class="string">"Can't convert value of class "</span> + record.value().getClass().getName() +</span><br><span class="line">                    <span class="string">" to class "</span> + producerConfig.getClass(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG).getName() +</span><br><span class="line">                    <span class="string">" specified in value.serializer"</span>, cce);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> partition = partition(record, serializedKey, serializedValue, cluster);</span><br><span class="line">        tp = <span class="keyword">new</span> TopicPartition(record.topic(), partition);</span><br><span class="line"></span><br><span class="line">        setReadOnly(record.headers());</span><br><span class="line">        Header[] headers = record.headers().toArray();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> serializedSize = AbstractRecords.estimateSizeInBytesUpperBound(apiVersions.maxUsableProduceMagic(),</span><br><span class="line">                compressionType, serializedKey, serializedValue, headers);</span><br><span class="line">        ensureValidRecordSize(serializedSize);</span><br><span class="line">        <span class="keyword">long</span> timestamp = record.timestamp() == <span class="keyword">null</span> ? nowMs : record.timestamp();</span><br><span class="line">        <span class="keyword">if</span> (log.isTraceEnabled()) &#123;</span><br><span class="line">            log.trace(<span class="string">"Attempting to append record &#123;&#125; with callback &#123;&#125; to topic &#123;&#125; partition &#123;&#125;"</span>, record, callback, record.topic(), partition);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// producer callback will make sure to call both 'callback' and interceptor callback</span></span><br><span class="line">        Callback interceptCallback = <span class="keyword">new</span> InterceptorCallback&lt;&gt;(callback, <span class="keyword">this</span>.interceptors, tp);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (transactionManager != <span class="keyword">null</span> &amp;&amp; transactionManager.isTransactional()) &#123;</span><br><span class="line">            transactionManager.failIfNotReadyForSend();</span><br><span class="line">        &#125;</span><br><span class="line">        RecordAccumulator.RecordAppendResult result = accumulator.append(tp, timestamp, serializedKey,</span><br><span class="line">                serializedValue, headers, interceptCallback, remainingWaitMs, <span class="keyword">true</span>, nowMs);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (result.abortForNewBatch) &#123;</span><br><span class="line">            <span class="keyword">int</span> prevPartition = partition;</span><br><span class="line">            partitioner.onNewBatch(record.topic(), cluster, prevPartition);</span><br><span class="line">            partition = partition(record, serializedKey, serializedValue, cluster);</span><br><span class="line">            tp = <span class="keyword">new</span> TopicPartition(record.topic(), partition);</span><br><span class="line">            <span class="keyword">if</span> (log.isTraceEnabled()) &#123;</span><br><span class="line">                log.trace(<span class="string">"Retrying append due to new batch creation for topic &#123;&#125; partition &#123;&#125;. The old partition was &#123;&#125;"</span>, record.topic(), partition, prevPartition);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// producer callback will make sure to call both 'callback' and interceptor callback</span></span><br><span class="line">            interceptCallback = <span class="keyword">new</span> InterceptorCallback&lt;&gt;(callback, <span class="keyword">this</span>.interceptors, tp);</span><br><span class="line"></span><br><span class="line">            result = accumulator.append(tp, timestamp, serializedKey,</span><br><span class="line">                serializedValue, headers, interceptCallback, remainingWaitMs, <span class="keyword">false</span>, nowMs);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (transactionManager != <span class="keyword">null</span> &amp;&amp; transactionManager.isTransactional())</span><br><span class="line">            transactionManager.maybeAddPartitionToTransaction(tp);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (result.batchIsFull || result.newBatchCreated) &#123;</span><br><span class="line">            log.trace(<span class="string">"Waking up the sender since topic &#123;&#125; partition &#123;&#125; is either full or getting a new batch"</span>, record.topic(), partition);</span><br><span class="line">            <span class="keyword">this</span>.sender.wakeup();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result.future;</span><br><span class="line">        <span class="comment">// handling exceptions and record the errors;</span></span><br><span class="line">        <span class="comment">// for API exceptions return them in the future,</span></span><br><span class="line">        <span class="comment">// for other exceptions throw directly</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (ApiException e) &#123;</span><br><span class="line">        log.debug(<span class="string">"Exception occurred during message send:"</span>, e);</span><br><span class="line">        <span class="keyword">if</span> (callback != <span class="keyword">null</span>)</span><br><span class="line">            callback.onCompletion(<span class="keyword">null</span>, e);</span><br><span class="line">        <span class="keyword">this</span>.errors.record();</span><br><span class="line">        <span class="keyword">this</span>.interceptors.onSendError(record, tp, e);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FutureFailure(e);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="keyword">this</span>.errors.record();</span><br><span class="line">        <span class="keyword">this</span>.interceptors.onSendError(record, tp, e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InterruptException(e);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (KafkaException e) &#123;</span><br><span class="line">        <span class="keyword">this</span>.errors.record();</span><br><span class="line">        <span class="keyword">this</span>.interceptors.onSendError(record, tp, e);</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// we notify interceptor about all exceptions, since onSend is called before anything else in this method</span></span><br><span class="line">        <span class="keyword">this</span>.interceptors.onSendError(record, tp, e);</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>从send方法很简单，主要调用doSend，不过从这里可以大致看出来kafka的发送其实是异步的，下面主要是分析doSend步骤</li>
+<li><strong>waitOnMetadata</strong>通过<strong>ProducerMetadata</strong>获取topic metadata信息，这里分两种情况：如果topic元数据已经存在会立即返回，否则需要等待broker响应（先不细讲）</li>
+<li>使用用户设定的<strong>keySerializer</strong>和<strong>valueSerializer</strong>进行编码，根据<strong>Partitioner</strong>进行分区</li>
+<li>往<strong>RecordAccumulator</strong>追加消息，如果在append的时候发现该batch已经出队，需要创建一个新的batch，会退出append方法并再次回调<strong>Partitioner</strong>进行分区，然后重新append（abortOnNewBatch参数标识）。</li>
+<li>忽略一些<strong>TransactionManager</strong>的代码，最后可以看到如果该batch已经满了，或者是新的batch，调用<strong>Sender#wakeup()</strong>，其实这个wakeup实际是调用<strong>java.nio.channels.Selector#wakeup()</strong>。</li>
+</ol>
+<blockquote>
+<p><strong>java.nio.channels.Selector#wakeup()</strong> 该方法会让处在阻塞状态的select()方法立刻返回（selector上的第一个未返回的选择操作），如果当前没有线程阻塞在select上，那么下一次对select方法的一次调用将立即返回。</p>
+</blockquote>
+<h3 id="RecordAccumulator"><a href="#RecordAccumulator" class="headerlink" title="RecordAccumulator"></a>RecordAccumulator</h3><h5 id="append"><a href="#append" class="headerlink" title="append"></a>append</h5><p>&emsp;&emsp;接下来看<strong>RecordAccumulator</strong>的代码，<strong>RecordAccumulator</strong>其实是一个基于内存的消息队列管理器，其内部维护了一个ConcurrentMap&lt;TopicPartition, Deque<producerbatch>&gt;，即一个topic分区对应一个发送批次队列。我们看append方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> RecordAppendResult <span class="title">append</span><span class="params">(TopicPartition tp,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">long</span> timestamp,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">byte</span>[] key,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">byte</span>[] value,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 Header[] headers,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 Callback callback,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">long</span> maxTimeToBlock,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">boolean</span> abortOnNewBatch,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">long</span> nowMs)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">// We keep track of the number of appending thread to make sure we do not miss batches in</span></span><br><span class="line">    <span class="comment">// abortIncompleteBatches().</span></span><br><span class="line">    appendsInProgress.incrementAndGet();</span><br><span class="line">    ByteBuffer buffer = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (headers == <span class="keyword">null</span>) headers = Record.EMPTY_HEADERS;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// check if we have an in-progress batch</span></span><br><span class="line">        Deque&lt;ProducerBatch&gt; dq = getOrCreateDeque(tp);</span><br><span class="line">        <span class="keyword">synchronized</span> (dq) &#123;</span><br><span class="line">            <span class="keyword">if</span> (closed)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> KafkaException(<span class="string">"Producer closed while send in progress"</span>);</span><br><span class="line">            RecordAppendResult appendResult = tryAppend(timestamp, key, value, headers, callback, dq, nowMs);</span><br><span class="line">            <span class="keyword">if</span> (appendResult != <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> appendResult;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// we don't have an in-progress record batch try to allocate a new batch</span></span><br><span class="line">        <span class="keyword">if</span> (abortOnNewBatch) &#123;</span><br><span class="line">            <span class="comment">// Return a result that will cause another call to append.</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RecordAppendResult(<span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span> maxUsableMagic = apiVersions.maxUsableProduceMagic();</span><br><span class="line">        <span class="keyword">int</span> size = Math.max(<span class="keyword">this</span>.batchSize, AbstractRecords.estimateSizeInBytesUpperBound(maxUsableMagic, compression, key, value, headers));</span><br><span class="line">        log.trace(<span class="string">"Allocating a new &#123;&#125; byte message buffer for topic &#123;&#125; partition &#123;&#125;"</span>, size, tp.topic(), tp.partition());</span><br><span class="line">        buffer = free.allocate(size, maxTimeToBlock);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update the current time in case the buffer allocation blocked above.</span></span><br><span class="line">        nowMs = time.milliseconds();</span><br><span class="line">        <span class="keyword">synchronized</span> (dq) &#123;</span><br><span class="line">            <span class="comment">// Need to check if producer is closed again after grabbing the dequeue lock.</span></span><br><span class="line">            <span class="keyword">if</span> (closed)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> KafkaException(<span class="string">"Producer closed while send in progress"</span>);</span><br><span class="line"></span><br><span class="line">            RecordAppendResult appendResult = tryAppend(timestamp, key, value, headers, callback, dq, nowMs);</span><br><span class="line">            <span class="keyword">if</span> (appendResult != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// Somebody else found us a batch, return the one we waited for! Hopefully this doesn't happen often...</span></span><br><span class="line">                <span class="keyword">return</span> appendResult;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            MemoryRecordsBuilder recordsBuilder = recordsBuilder(buffer, maxUsableMagic);</span><br><span class="line">            ProducerBatch batch = <span class="keyword">new</span> ProducerBatch(tp, recordsBuilder, nowMs);</span><br><span class="line">            FutureRecordMetadata future = Objects.requireNonNull(batch.tryAppend(timestamp, key, value, headers,</span><br><span class="line">                    callback, nowMs));</span><br><span class="line"></span><br><span class="line">            dq.addLast(batch);</span><br><span class="line">            incomplete.add(batch);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Don't deallocate this buffer in the finally block as it's being used in the record batch</span></span><br><span class="line">            buffer = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RecordAppendResult(future, dq.size() &gt; <span class="number">1</span> || batch.isFull(), <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (buffer != <span class="keyword">null</span>)</span><br><span class="line">            free.deallocate(buffer);</span><br><span class="line">        appendsInProgress.decrementAndGet();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></producerbatch></p>
+<ol>
+<li>KafkaProducer是否线程安全可以在此处看出，每次append消息的操作会先锁住当前topic的分区，而每个分区之间追加消息互不干扰。</li>
+<li><strong>tryAppend</strong>会尝试往当前队列的最后一个<strong>ProducerBatch</strong>追加消息（如果这个ProducerBatch存在且还有空间的话）</li>
+<li>如果往队列中的<strong>ProducerBatch</strong>追加消息失败，会使用使用<strong>BufferPool#allocate(int size, long maxTimeToBlockMs)</strong>来申请一块空间用于创建新的<strong>ProducerBatch</strong>。Kafka在内存管理这一块和Netty类似，通过自主分配来绕过Java GC。</li>
+<li><strong>ProducerBatch</strong>通过<strong>MemoryRecordsBuilder</strong>往申请到的ByteBuffer中写入消息。</li>
+</ol>
+<h3 id="Sender"><a href="#Sender" class="headerlink" title="Sender"></a>Sender</h3><h5 id="run"><a href="#run" class="headerlink" title="run"></a>run</h5><p>&emsp;&emsp;在<strong>KafkaProducer#send</strong>的最后可以看到如果该<strong>ProducerBatch</strong>已经满了，或者是新的batch，会调用<strong>Sender#wakeup()</strong>。这里Sender的作用其实不只是唤醒selector操作，首先Sender会运行在一个独立的线程中，它是一个<strong>Runnable</strong>，来看一下它的run逻辑：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      log.debug(<span class="string">"Starting Kafka producer I/O thread."</span>);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// main loop, runs until close is called</span></span><br><span class="line">      <span class="keyword">while</span> (running) &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              runOnce();</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">              log.error(<span class="string">"Uncaught error in kafka producer I/O thread: "</span>, e);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      log.debug(<span class="string">"Beginning shutdown of Kafka producer I/O thread, sending remaining records."</span>);</span><br><span class="line">  <span class="comment">// ...删除了后面一部分的代码...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">runOnce</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">// ...删除了一些事务相关的代码...</span></span><br><span class="line">      <span class="keyword">long</span> currentTimeMs = time.milliseconds();</span><br><span class="line">      <span class="keyword">long</span> pollTimeout = sendProducerData(currentTimeMs);</span><br><span class="line">      client.poll(pollTimeout, currentTimeMs);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>从这里可以看到Kafka消息发送的一些痕迹，看一下sendProducerData处理：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">sendProducerData</span><span class="params">(<span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    Cluster cluster = metadata.fetch();</span><br><span class="line">    <span class="comment">// get the list of partitions with data ready to send</span></span><br><span class="line">    RecordAccumulator.ReadyCheckResult result = <span class="keyword">this</span>.accumulator.ready(cluster, now);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// if there are any partitions whose leaders are not known yet, force metadata update</span></span><br><span class="line">    <span class="keyword">if</span> (!result.unknownLeaderTopics.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">// The set of topics with unknown leader contains topics with leader election pending as well as</span></span><br><span class="line">        <span class="comment">// topics which may have expired. Add the topic again to metadata to ensure it is included</span></span><br><span class="line">        <span class="comment">// and request metadata update, since there are messages to send to the topic.</span></span><br><span class="line">        <span class="keyword">for</span> (String topic : result.unknownLeaderTopics)</span><br><span class="line">            <span class="keyword">this</span>.metadata.add(topic, now);</span><br><span class="line"></span><br><span class="line">        log.debug(<span class="string">"Requesting metadata update due to unknown leader topics from the batched records: &#123;&#125;"</span>,</span><br><span class="line">            result.unknownLeaderTopics);</span><br><span class="line">        <span class="keyword">this</span>.metadata.requestUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// remove any nodes we aren't ready to send to</span></span><br><span class="line">    Iterator&lt;Node&gt; iter = result.readyNodes.iterator();</span><br><span class="line">    <span class="keyword">long</span> notReadyTimeout = Long.MAX_VALUE;</span><br><span class="line">    <span class="keyword">while</span> (iter.hasNext()) &#123;</span><br><span class="line">        Node node = iter.next();</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.client.ready(node, now)) &#123;</span><br><span class="line">            iter.remove();</span><br><span class="line">            notReadyTimeout = Math.min(notReadyTimeout, <span class="keyword">this</span>.client.pollDelayMs(node, now));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create produce requests</span></span><br><span class="line">    Map&lt;Integer, List&lt;ProducerBatch&gt;&gt; batches = <span class="keyword">this</span>.accumulator.drain(cluster, result.readyNodes, <span class="keyword">this</span>.maxRequestSize, now);</span><br><span class="line">    addToInflightBatches(batches);</span><br><span class="line">    <span class="keyword">if</span> (guaranteeMessageOrder) &#123;</span><br><span class="line">        <span class="comment">// Mute all the partitions drained</span></span><br><span class="line">        <span class="keyword">for</span> (List&lt;ProducerBatch&gt; batchList : batches.values()) &#123;</span><br><span class="line">            <span class="keyword">for</span> (ProducerBatch batch : batchList)</span><br><span class="line">                <span class="keyword">this</span>.accumulator.mutePartition(batch.topicPartition);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    accumulator.resetNextBatchExpiryTime();</span><br><span class="line">    List&lt;ProducerBatch&gt; expiredInflightBatches = getExpiredInflightBatches(now);</span><br><span class="line">    List&lt;ProducerBatch&gt; expiredBatches = <span class="keyword">this</span>.accumulator.expiredBatches(now);</span><br><span class="line">    expiredBatches.addAll(expiredInflightBatches);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reset the producer id if an expired batch has previously been sent to the broker. Also update the metrics</span></span><br><span class="line">    <span class="comment">// for expired batches. see the documentation of @TransactionState.resetIdempotentProducerId to understand why</span></span><br><span class="line">    <span class="comment">// we need to reset the producer id here.</span></span><br><span class="line">    <span class="keyword">if</span> (!expiredBatches.isEmpty())</span><br><span class="line">        log.trace(<span class="string">"Expired &#123;&#125; batches in accumulator"</span>, expiredBatches.size());</span><br><span class="line">    <span class="keyword">for</span> (ProducerBatch expiredBatch : expiredBatches) &#123;</span><br><span class="line">        String errorMessage = <span class="string">"Expiring "</span> + expiredBatch.recordCount + <span class="string">" record(s) for "</span> + expiredBatch.topicPartition</span><br><span class="line">            + <span class="string">":"</span> + (now - expiredBatch.createdMs) + <span class="string">" ms has passed since batch creation"</span>;</span><br><span class="line">        failBatch(expiredBatch, -<span class="number">1</span>, NO_TIMESTAMP, <span class="keyword">new</span> TimeoutException(errorMessage), <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (transactionManager != <span class="keyword">null</span> &amp;&amp; expiredBatch.inRetry()) &#123;</span><br><span class="line">            <span class="comment">// This ensures that no new batches are drained until the current in flight batches are fully resolved.</span></span><br><span class="line">            transactionManager.markSequenceUnresolved(expiredBatch);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    sensors.updateProduceRequestMetrics(batches);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If we have any nodes that are ready to send + have sendable data, poll with 0 timeout so this can immediately</span></span><br><span class="line">    <span class="comment">// loop and try sending more data. Otherwise, the timeout will be the smaller value between next batch expiry</span></span><br><span class="line">    <span class="comment">// time, and the delay time for checking data availability. Note that the nodes may have data that isn't yet</span></span><br><span class="line">    <span class="comment">// sendable due to lingering, backing off, etc. This specifically does not include nodes with sendable data</span></span><br><span class="line">    <span class="comment">// that aren't ready to send since they would cause busy looping.</span></span><br><span class="line">    <span class="keyword">long</span> pollTimeout = Math.min(result.nextReadyCheckDelayMs, notReadyTimeout);</span><br><span class="line">    pollTimeout = Math.min(pollTimeout, <span class="keyword">this</span>.accumulator.nextExpiryTimeMs() - now);</span><br><span class="line">    pollTimeout = Math.max(pollTimeout, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (!result.readyNodes.isEmpty()) &#123;</span><br><span class="line">        log.trace(<span class="string">"Nodes with data ready to send: &#123;&#125;"</span>, result.readyNodes);</span><br><span class="line">        <span class="comment">// if some partitions are already ready to be sent, the select time would be 0;</span></span><br><span class="line">        <span class="comment">// otherwise if some partition already has some data accumulated but not ready yet,</span></span><br><span class="line">        <span class="comment">// the select time will be the time difference between now and its linger expiry time;</span></span><br><span class="line">        <span class="comment">// otherwise the select time will be the time difference between now and the metadata expiry time;</span></span><br><span class="line">        pollTimeout = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    sendProduceRequests(batches, now);</span><br><span class="line">    <span class="keyword">return</span> pollTimeout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><strong>RecordAccumulator#ready</strong> 返回一些ProducerBatch的可用发送节点（Node）用于发送消息，以及一些无leader分区的topic以便再次请求其元数据。这里获取可用节点的逻辑是通过RecordAccumulator每个队列的ProducerBatch去验证，比如batch满了、达到linger.ms上限等。</li>
+<li><strong>RecordAccumulator#drain</strong> 从筛选过的Node中获取相应的ProducerBatch（按照node分组），放入对应的inFlightBatches字典中，inFlightBatches是一个HashMap（Map&lt;TopicPartition, List<producerbatch>&gt;），用于存放发送中的消息批次。</producerbatch></li>
+<li><strong>guaranteeMessageOrder</strong>这个参数源于<strong>max.in.flight.requests.per.connection</strong>，connection=1的时候<strong>guaranteeMessageOrder=true</strong>，这时候发送中的Topic分区信息放入<strong>RecordAccumulator.muted</strong>的列表中，标识这些topic分区的消息在发送中，在步骤2中将不会返回muted列表中对应topic分区的ProducerBatch（步骤1同理也不会返回对应topic分区的node）。以上可以看出<strong>guaranteeMessageOrder</strong>保证了同一个分区消息的有序性。</li>
+<li>从inFlightBatches和RecordAccumulator的batch队列中移除一些超时的消息批次，过期时间由<strong>delivery.timeout.ms</strong>指定。这是Kafka 2.4中新增的参数，用于控制消息错误重试。</li>
+<li>最后调用<strong>sendProduceRequests</strong>发送消息</li>
+</ol>
+<blockquote>
+<p><strong>max.in.flight.requests.per.connection</strong> 指定生产者在收到Broker响应之前可以发送多少请求，如果设置为1可以保证同分区消息的有序性，否则可能因为retries&gt;1导致乱序。</p>
+</blockquote>
+<p>继续看<strong>Sender#sendProduceRequests</strong>方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendProduceRequests</span><span class="params">(Map&lt;Integer, List&lt;ProducerBatch&gt;&gt; collated, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;Integer, List&lt;ProducerBatch&gt;&gt; entry : collated.entrySet())</span><br><span class="line">        sendProduceRequest(now, entry.getKey(), acks, requestTimeoutMs, entry.getValue());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendProduceRequest</span><span class="params">(<span class="keyword">long</span> now, <span class="keyword">int</span> destination, <span class="keyword">short</span> acks, <span class="keyword">int</span> timeout, List&lt;ProducerBatch&gt; batches)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (batches.isEmpty())</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    Map&lt;TopicPartition, MemoryRecords&gt; produceRecordsByPartition = <span class="keyword">new</span> HashMap&lt;&gt;(batches.size());</span><br><span class="line">    <span class="keyword">final</span> Map&lt;TopicPartition, ProducerBatch&gt; recordsByPartition = <span class="keyword">new</span> HashMap&lt;&gt;(batches.size());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// find the minimum magic version used when creating the record sets</span></span><br><span class="line">    <span class="keyword">byte</span> minUsedMagic = apiVersions.maxUsableProduceMagic();</span><br><span class="line">    <span class="keyword">for</span> (ProducerBatch batch : batches) &#123;</span><br><span class="line">        <span class="keyword">if</span> (batch.magic() &lt; minUsedMagic)</span><br><span class="line">            minUsedMagic = batch.magic();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (ProducerBatch batch : batches) &#123;</span><br><span class="line">        TopicPartition tp = batch.topicPartition;</span><br><span class="line">        MemoryRecords records = batch.records();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// down convert if necessary to the minimum magic used. In general, there can be a delay between the time</span></span><br><span class="line">        <span class="comment">// that the producer starts building the batch and the time that we send the request, and we may have</span></span><br><span class="line">        <span class="comment">// chosen the message format based on out-dated metadata. In the worst case, we optimistically chose to use</span></span><br><span class="line">        <span class="comment">// the new message format, but found that the broker didn't support it, so we need to down-convert on the</span></span><br><span class="line">        <span class="comment">// client before sending. This is intended to handle edge cases around cluster upgrades where brokers may</span></span><br><span class="line">        <span class="comment">// not all support the same message format version. For example, if a partition migrates from a broker</span></span><br><span class="line">        <span class="comment">// which is supporting the new magic version to one which doesn't, then we will need to convert.</span></span><br><span class="line">        <span class="keyword">if</span> (!records.hasMatchingMagic(minUsedMagic))</span><br><span class="line">            records = batch.records().downConvert(minUsedMagic, <span class="number">0</span>, time).records();</span><br><span class="line">        produceRecordsByPartition.put(tp, records);</span><br><span class="line">        recordsByPartition.put(tp, batch);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String transactionalId = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (transactionManager != <span class="keyword">null</span> &amp;&amp; transactionManager.isTransactional()) &#123;</span><br><span class="line">        transactionalId = transactionManager.transactionalId();</span><br><span class="line">    &#125;</span><br><span class="line">    ProduceRequest.Builder requestBuilder = ProduceRequest.Builder.forMagic(minUsedMagic, acks, timeout,</span><br><span class="line">            produceRecordsByPartition, transactionalId);</span><br><span class="line">    RequestCompletionHandler callback = response -&gt; handleProduceResponse(response, recordsByPartition, time.milliseconds());</span><br><span class="line"></span><br><span class="line">    String nodeId = Integer.toString(destination);</span><br><span class="line">    ClientRequest clientRequest = client.newClientRequest(nodeId, requestBuilder, now, acks != <span class="number">0</span>,</span><br><span class="line">            requestTimeoutMs, callback);</span><br><span class="line">    client.send(clientRequest, now);</span><br><span class="line">    log.trace(<span class="string">"Sent produce request to &#123;&#125;: &#123;&#125;"</span>, nodeId, requestBuilder);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>构造ClientRequest通过KafkaClient发送到各个node，并通过RequestCompletionHandler进行回调。这里发送完之后再回到<strong>Sender#runOnce</strong>中，可以看到马上调用了<strong>KafkaClient#poll</strong>。</p>
+<h3 id="KafkaClient"><a href="#KafkaClient" class="headerlink" title="KafkaClient"></a>KafkaClient</h3><p>&emsp;&emsp;KafkaClient是一个接口，目前只有<strong>NetworkClient</strong>可用（另一个是mock测试），所以我们主要还是看<strong>NetworkClient</strong></p>
+<h5 id="send-1"><a href="#send-1" class="headerlink" title="send"></a>send</h5><p><strong>NetworkClient#send</strong>主要调用doSend，doSend有多个方法重载，删繁就简这里只展示最底层的doSend：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSend</span><span class="params">(ClientRequest clientRequest, <span class="keyword">boolean</span> isInternalRequest, <span class="keyword">long</span> now, AbstractRequest request)</span> </span>&#123;</span><br><span class="line">    String destination = clientRequest.destination();</span><br><span class="line">    RequestHeader header = clientRequest.makeHeader(request.version());</span><br><span class="line">    <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        log.debug(<span class="string">"Sending &#123;&#125; request with header &#123;&#125; and timeout &#123;&#125; to node &#123;&#125;: &#123;&#125;"</span>,</span><br><span class="line">            clientRequest.apiKey(), header, clientRequest.requestTimeoutMs(), destination, request);</span><br><span class="line">    &#125;</span><br><span class="line">    Send send = request.toSend(destination, header);</span><br><span class="line">    InFlightRequest inFlightRequest = <span class="keyword">new</span> InFlightRequest(</span><br><span class="line">            clientRequest,</span><br><span class="line">            header,</span><br><span class="line">            isInternalRequest,</span><br><span class="line">            request,</span><br><span class="line">            send,</span><br><span class="line">            now);</span><br><span class="line">    <span class="keyword">this</span>.inFlightRequests.add(inFlightRequest);</span><br><span class="line">    selector.send(send);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将<strong>ClientRequest</strong>转换为<strong>NetworkSend</strong>，并构造InFlightRequest加入InFlightRequests中作为进行中的请求，最后调用<strong>Selectable#send</strong>。Selectable也是一个接口，目前只有<strong>Selector</strong>可用（其余为测试），继续看<strong>Selector#send</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(Send send)</span> </span>&#123;</span><br><span class="line">    String connectionId = send.destination();</span><br><span class="line">    KafkaChannel channel = openOrClosingChannelOrFail(connectionId);</span><br><span class="line">    <span class="keyword">if</span> (closingChannels.containsKey(connectionId)) &#123;</span><br><span class="line">        <span class="comment">// ensure notification via `disconnected`, leave channel in the state in which closing was triggered</span></span><br><span class="line">        <span class="keyword">this</span>.failedSends.add(connectionId);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            channel.setSend(send);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// update the state for consistency, the channel will be discarded after `close`</span></span><br><span class="line">            channel.state(ChannelState.FAILED_SEND);</span><br><span class="line">            <span class="comment">// ensure notification via `disconnected` when `failedSends` are processed in the next poll</span></span><br><span class="line">            <span class="keyword">this</span>.failedSends.add(connectionId);</span><br><span class="line">            close(channel, CloseMode.DISCARD_NO_NOTIFY);</span><br><span class="line">            <span class="keyword">if</span> (!(e <span class="keyword">instanceof</span> CancelledKeyException)) &#123;</span><br><span class="line">                log.error(<span class="string">"Unexpected exception during send, closing connection &#123;&#125; and rethrowing exception &#123;&#125;"</span>,</span><br><span class="line">                        connectionId, e);</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用<strong>KafkaChannel#setSend</strong>，似乎不像个正经的发送方法，查看<strong>KafkaChannel#setSend</strong>代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSend</span><span class="params">(Send send)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.send != <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Attempt to begin a send operation with prior send operation still in progress, connection id is "</span> + id);</span><br><span class="line">    <span class="keyword">this</span>.send = send;</span><br><span class="line">    <span class="keyword">this</span>.transportLayer.addInterestOps(SelectionKey.OP_WRITE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只是设置了<strong>NetworkSend</strong>，并向NIO中的<strong>SelectionKey</strong>注册一个写操作。send方法居然不是实际发送网络数据的地方，那么<strong>KafkaClient</strong>何时发数据？</p>
+<h5 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h5><p>一下子没找到发网络请求的地方，既然没发数据那么poll的意义是什么？带着这个问题去看<strong>NetworkClient#poll</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;ClientResponse&gt; <span class="title">poll</span><span class="params">(<span class="keyword">long</span> timeout, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">        ensureActive();</span><br><span class="line">		<span class="comment">// ...这里删除了一些异常情况的代码...</span></span><br><span class="line">        <span class="keyword">long</span> metadataTimeout = metadataUpdater.maybeUpdate(now);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.selector.poll(Utils.min(timeout, metadataTimeout, defaultRequestTimeoutMs));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            log.error(<span class="string">"Unexpected error during I/O"</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// process completed actions</span></span><br><span class="line">        <span class="keyword">long</span> updatedNow = <span class="keyword">this</span>.time.milliseconds();</span><br><span class="line">        List&lt;ClientResponse&gt; responses = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        handleCompletedSends(responses, updatedNow);</span><br><span class="line">        handleCompletedReceives(responses, updatedNow);</span><br><span class="line">        handleDisconnections(responses, updatedNow);</span><br><span class="line">        handleConnections();</span><br><span class="line">        handleInitiateApiVersionRequests(updatedNow);</span><br><span class="line">        handleTimedOutRequests(responses, updatedNow);</span><br><span class="line">        completeResponses(responses);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> responses;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用<strong>Selector#poll</strong>，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">poll</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"><span class="comment">// ...篇幅原因删除上面一部分代码...</span></span><br><span class="line">      <span class="keyword">int</span> numReadyKeys = select(timeout);</span><br><span class="line">      <span class="keyword">long</span> endSelect = time.nanoseconds();</span><br><span class="line">      <span class="keyword">this</span>.sensors.selectTime.record(endSelect - startSelect, time.milliseconds());</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (numReadyKeys &gt; <span class="number">0</span> || !immediatelyConnectedKeys.isEmpty() || dataInBuffers) &#123;</span><br><span class="line">          Set&lt;SelectionKey&gt; readyKeys = <span class="keyword">this</span>.nioSelector.selectedKeys();</span><br><span class="line"></span><br><span class="line">          <span class="comment">// Poll from channels that have buffered data (but nothing more from the underlying socket)</span></span><br><span class="line">          <span class="keyword">if</span> (dataInBuffers) &#123;</span><br><span class="line">              keysWithBufferedRead.removeAll(readyKeys); <span class="comment">//so no channel gets polled twice</span></span><br><span class="line">              Set&lt;SelectionKey&gt; toPoll = keysWithBufferedRead;</span><br><span class="line">              keysWithBufferedRead = <span class="keyword">new</span> HashSet&lt;&gt;(); <span class="comment">//poll() calls will repopulate if needed</span></span><br><span class="line">              pollSelectionKeys(toPoll, <span class="keyword">false</span>, endSelect);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// Poll from channels where the underlying socket has more data</span></span><br><span class="line">          pollSelectionKeys(readyKeys, <span class="keyword">false</span>, endSelect);</span><br><span class="line">          <span class="comment">// Clear all selected keys so that they are included in the ready count for the next select</span></span><br><span class="line">          readyKeys.clear();</span><br><span class="line"></span><br><span class="line">          pollSelectionKeys(immediatelyConnectedKeys, <span class="keyword">true</span>, endSelect);</span><br><span class="line">          immediatelyConnectedKeys.clear();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          madeReadProgressLastPoll = <span class="keyword">true</span>; <span class="comment">//no work is also "progress"</span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">// ...篇幅原因删除下面一部分代码...</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的select是调用<strong>java.nio.channels.Selector#select</strong>，通过遍历<strong>SelectionKey</strong>进行读写操作，这里删除了<strong>pollSelectionKeys</strong>大部分代码，只留下一个主干：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pollSelectionKeys</span><span class="params">(Set&lt;SelectionKey&gt; selectionKeys,</span></span></span><br><span class="line"><span class="function"><span class="params">                       <span class="keyword">boolean</span> isImmediatelyConnected,</span></span></span><br><span class="line"><span class="function"><span class="params">                       <span class="keyword">long</span> currentTimeNanos)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (SelectionKey key : determineHandlingOrder(selectionKeys)) &#123;</span><br><span class="line">        KafkaChannel channel = channel(key);</span><br><span class="line">        <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">            <span class="keyword">if</span> (channel.ready() &amp;&amp; (key.isReadable() || channel.hasBytesBuffered()) &amp;&amp; !hasCompletedReceive(channel)</span><br><span class="line">                    &amp;&amp; !explicitlyMutedChannels.contains(channel)) &#123;</span><br><span class="line">                attemptRead(channel);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                attemptWrite(key, channel, nowNanos);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                sendFailed = <span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// ...删除一部分代码...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><strong>Selector#attemptRead</strong> 从<strong>KafkaChannel</strong>中读数据写入到<strong>NetworkReceive</strong>，当然实质上其实是从<strong>ScatteringByteChannel</strong>读数据写入到一个<strong>ByteBuffer</strong>中。</li>
+<li><strong>Selector#attemptWrite</strong> 调用<strong>KafkaChannel#write</strong>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">write</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (send == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    midWrite = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">return</span> send.writeTo(transportLayer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这个send似曾相识，不就是上面的<strong>NetworkSend</strong>，这里writeTo其实是调用<strong>NetworkSend</strong>父类<strong>ByteBufferSend#writeTo</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">writeTo</span><span class="params">(GatheringByteChannel channel)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> written = channel.write(buffers);</span><br><span class="line">    <span class="keyword">if</span> (written &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EOFException(<span class="string">"Wrote negative bytes to channel. This shouldn't happen."</span>);</span><br><span class="line">    remaining -= written;</span><br><span class="line">    pending = TransportLayers.hasPendingWrites(channel);</span><br><span class="line">    <span class="keyword">return</span> written;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>这里不论是<strong>GatheringByteChannel</strong>还是<strong>ScatteringByteChannel</strong>其实都是<strong>TransportLayer</strong>，<strong>TransportLayer</strong>实现了两者，不过它也是一个接口，实际的实现主要有：<strong>PlaintextTransportLayer</strong>和<strong>SslTransportLayer</strong>。</p>
+</blockquote>
+<p>发送网络数据的地方居然是在poll方法里面！不过<strong>NetworkClient#poll</strong>还未结束，回过头分析<strong>Selectable#poll</strong>，再继续看着下面做了什么（重新贴一遍这个代码回顾下）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;ClientResponse&gt; <span class="title">poll</span><span class="params">(<span class="keyword">long</span> timeout, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">        ensureActive();</span><br><span class="line">		<span class="comment">// ...这里删除了一些异常情况的代码...</span></span><br><span class="line">        <span class="keyword">long</span> metadataTimeout = metadataUpdater.maybeUpdate(now);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.selector.poll(Utils.min(timeout, metadataTimeout, defaultRequestTimeoutMs));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            log.error(<span class="string">"Unexpected error during I/O"</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// process completed actions</span></span><br><span class="line">        <span class="keyword">long</span> updatedNow = <span class="keyword">this</span>.time.milliseconds();</span><br><span class="line">        List&lt;ClientResponse&gt; responses = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        handleCompletedSends(responses, updatedNow);</span><br><span class="line">        handleCompletedReceives(responses, updatedNow);</span><br><span class="line">        handleDisconnections(responses, updatedNow);</span><br><span class="line">        handleConnections();</span><br><span class="line">        handleInitiateApiVersionRequests(updatedNow);</span><br><span class="line">        handleTimedOutRequests(responses, updatedNow);</span><br><span class="line">        completeResponses(responses);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> responses;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p><strong>handleCompletedSends</strong> 遍历已完成的数据发送请求，获取无需返回的请求在InFlightRequests队列中清除出去并加入到responses（List<clientresponse>）列表中，代码如下</clientresponse></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleCompletedSends</span><span class="params">(List&lt;ClientResponse&gt; responses, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// if no response is expected then when the send is completed, return it</span></span><br><span class="line">    <span class="keyword">for</span> (Send send : <span class="keyword">this</span>.selector.completedSends()) &#123;</span><br><span class="line">        InFlightRequest request = <span class="keyword">this</span>.inFlightRequests.lastSent(send.destination());</span><br><span class="line">        <span class="keyword">if</span> (!request.expectResponse) &#123;</span><br><span class="line">            <span class="keyword">this</span>.inFlightRequests.completeLastSent(send.destination());</span><br><span class="line">            responses.add(request.completed(<span class="keyword">null</span>, now));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>handleCompletedReceives</strong> 遍历poll中的响应数据NetworkReceive，在InFlightRequests队列中清除请求后根据不同的响应类型做处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleCompletedReceives</span><span class="params">(List&lt;ClientResponse&gt; responses, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (NetworkReceive receive : <span class="keyword">this</span>.selector.completedReceives()) &#123;</span><br><span class="line">        String source = receive.source();</span><br><span class="line">        InFlightRequest req = inFlightRequests.completeNext(source);</span><br><span class="line">        Struct responseStruct = parseStructMaybeUpdateThrottleTimeMetrics(receive.payload(), req.header,</span><br><span class="line">            throttleTimeSensor, now);</span><br><span class="line">        AbstractResponse response = AbstractResponse.</span><br><span class="line">            parseResponse(req.header.apiKey(), responseStruct, req.header.apiVersion());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">            log.debug(<span class="string">"Received &#123;&#125; response from node &#123;&#125; for request with header &#123;&#125;: &#123;&#125;"</span>,</span><br><span class="line">                req.header.apiKey(), req.destination, req.header, response);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If the received response includes a throttle delay, throttle the connection.</span></span><br><span class="line">        maybeThrottle(response, req.header.apiVersion(), req.destination, now);</span><br><span class="line">        <span class="keyword">if</span> (req.isInternalRequest &amp;&amp; response <span class="keyword">instanceof</span> MetadataResponse)</span><br><span class="line">            metadataUpdater.handleSuccessfulResponse(req.header, now, (MetadataResponse) response);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (req.isInternalRequest &amp;&amp; response <span class="keyword">instanceof</span> ApiVersionsResponse)</span><br><span class="line">            handleApiVersionsResponse(responses, req, now, (ApiVersionsResponse) response);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            responses.add(req.completed(response, now));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>handleDisconnections</strong> 获取失活节点并更新节点状态为失活（ConnectionState.DISCONNECTED），并从InFlightRequests删除这些节点的请求。</p>
+</li>
+<li><strong>handleConnections</strong> 处理活跃节点，如果该节点时首次连接标识节点状态为ConnectionState.CHECKING_API_VERSIONS（需要获取节点的API版本信息），否则标识为ConnectionState.READY。</li>
+<li><strong>handleInitiateApiVersionRequests</strong> 对于步骤4新加入的节点构造一些请求用于获取API版本，以便下一次poll能够获取。</li>
+<li><strong>handleTimedOutRequests</strong> 遍历InFlightRequests中超时的请求，断开连接，后续处理和步骤3一样。</li>
+<li><strong>completeResponses</strong> 回调<strong>RequestCompletionHandler#onComplete</strong>。在消息发送的请求中RequestCompletionHandler其实是在<strong>Sender#sendProduceRequest</strong>这一步传入，其回调处理如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Handle a produce response</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleProduceResponse</span><span class="params">(ClientResponse response, Map&lt;TopicPartition, ProducerBatch&gt; batches, <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    RequestHeader requestHeader = response.requestHeader();</span><br><span class="line">    <span class="keyword">int</span> correlationId = requestHeader.correlationId();</span><br><span class="line">    <span class="keyword">if</span> (response.wasDisconnected()) &#123;</span><br><span class="line">        log.trace(<span class="string">"Cancelled request with header &#123;&#125; due to node &#123;&#125; being disconnected"</span>,</span><br><span class="line">            requestHeader, response.destination());</span><br><span class="line">        <span class="keyword">for</span> (ProducerBatch batch : batches.values())</span><br><span class="line">            completeBatch(batch, <span class="keyword">new</span> ProduceResponse.PartitionResponse(Errors.NETWORK_EXCEPTION), correlationId, now);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (response.versionMismatch() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        log.warn(<span class="string">"Cancelled request &#123;&#125; due to a version mismatch with node &#123;&#125;"</span>,</span><br><span class="line">                response, response.destination(), response.versionMismatch());</span><br><span class="line">        <span class="keyword">for</span> (ProducerBatch batch : batches.values())</span><br><span class="line">            completeBatch(batch, <span class="keyword">new</span> ProduceResponse.PartitionResponse(Errors.UNSUPPORTED_VERSION), correlationId, now);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        log.trace(<span class="string">"Received produce response from node &#123;&#125; with correlation id &#123;&#125;"</span>, response.destination(), correlationId);</span><br><span class="line">        <span class="comment">// if we have a response, parse it</span></span><br><span class="line">        <span class="keyword">if</span> (response.hasResponse()) &#123;</span><br><span class="line">            ProduceResponse produceResponse = (ProduceResponse) response.responseBody();</span><br><span class="line">            <span class="keyword">for</span> (Map.Entry&lt;TopicPartition, ProduceResponse.PartitionResponse&gt; entry : produceResponse.responses().entrySet()) &#123;</span><br><span class="line">                TopicPartition tp = entry.getKey();</span><br><span class="line">                ProduceResponse.PartitionResponse partResp = entry.getValue();</span><br><span class="line">                ProducerBatch batch = batches.get(tp);</span><br><span class="line">                completeBatch(batch, partResp, correlationId, now);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.sensors.recordLatency(response.destination(), response.requestLatencyMs());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// this is the acks = 0 case, just complete all requests</span></span><br><span class="line">            <span class="keyword">for</span> (ProducerBatch batch : batches.values()) &#123;</span><br><span class="line">                completeBatch(batch, <span class="keyword">new</span> ProduceResponse.PartitionResponse(Errors.NONE), correlationId, now);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>都是在调用<strong>Sender#completeBatch</strong>，根据不同的响应结果传入不同的<strong>ProduceResponse.PartitionResponse</strong>参数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">completeBatch</span><span class="params">(ProducerBatch batch, ProduceResponse.PartitionResponse response, <span class="keyword">long</span> correlationId,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">long</span> now)</span> </span>&#123;</span><br><span class="line">    Errors error = response.error;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (error == Errors.MESSAGE_TOO_LARGE &amp;&amp; batch.recordCount &gt; <span class="number">1</span> &amp;&amp; !batch.isDone() &amp;&amp;</span><br><span class="line">            (batch.magic() &gt;= RecordBatch.MAGIC_VALUE_V2 || batch.isCompressed())) &#123;</span><br><span class="line">        <span class="comment">// If the batch is too large, we split the batch and send the split batches again. We do not decrement</span></span><br><span class="line">        <span class="comment">// the retry attempts in this case.</span></span><br><span class="line">        log.warn(</span><br><span class="line">            <span class="string">"Got error produce response in correlation id &#123;&#125; on topic-partition &#123;&#125;, splitting and retrying (&#123;&#125; attempts left). Error: &#123;&#125;"</span>,</span><br><span class="line">            correlationId,</span><br><span class="line">            batch.topicPartition,</span><br><span class="line">            <span class="keyword">this</span>.retries - batch.attempts(),</span><br><span class="line">            error);</span><br><span class="line">        <span class="keyword">if</span> (transactionManager != <span class="keyword">null</span>)</span><br><span class="line">            transactionManager.removeInFlightBatch(batch);</span><br><span class="line">        <span class="keyword">this</span>.accumulator.splitAndReenqueue(batch);</span><br><span class="line">        maybeRemoveAndDeallocateBatch(batch);</span><br><span class="line">        <span class="keyword">this</span>.sensors.recordBatchSplit();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error != Errors.NONE) &#123;</span><br><span class="line">        <span class="keyword">if</span> (canRetry(batch, response, now)) &#123;</span><br><span class="line">            log.warn(</span><br><span class="line">                <span class="string">"Got error produce response with correlation id &#123;&#125; on topic-partition &#123;&#125;, retrying (&#123;&#125; attempts left). Error: &#123;&#125;"</span>,</span><br><span class="line">                correlationId,</span><br><span class="line">                batch.topicPartition,</span><br><span class="line">                <span class="keyword">this</span>.retries - batch.attempts() - <span class="number">1</span>,</span><br><span class="line">                error);</span><br><span class="line">            reenqueueBatch(batch, now);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error == Errors.DUPLICATE_SEQUENCE_NUMBER) &#123;</span><br><span class="line">            <span class="comment">// If we have received a duplicate sequence error, it means that the sequence number has advanced beyond</span></span><br><span class="line">            <span class="comment">// the sequence of the current batch, and we haven't retained batch metadata on the broker to return</span></span><br><span class="line">            <span class="comment">// the correct offset and timestamp.</span></span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">            <span class="comment">// The only thing we can do is to return success to the user and not return a valid offset and timestamp.</span></span><br><span class="line">            completeBatch(batch, response);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> RuntimeException exception;</span><br><span class="line">            <span class="keyword">if</span> (error == Errors.TOPIC_AUTHORIZATION_FAILED)</span><br><span class="line">                exception = <span class="keyword">new</span> TopicAuthorizationException(Collections.singleton(batch.topicPartition.topic()));</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (error == Errors.CLUSTER_AUTHORIZATION_FAILED)</span><br><span class="line">                exception = <span class="keyword">new</span> ClusterAuthorizationException(<span class="string">"The producer is not authorized to do idempotent sends"</span>);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                exception = error.exception();</span><br><span class="line">            <span class="comment">// tell the user the result of their request. We only adjust sequence numbers if the batch didn't exhaust</span></span><br><span class="line">            <span class="comment">// its retries -- if it did, we don't know whether the sequence number was accepted or not, and</span></span><br><span class="line">            <span class="comment">// thus it is not safe to reassign the sequence.</span></span><br><span class="line">            failBatch(batch, response, exception, batch.attempts() &lt; <span class="keyword">this</span>.retries);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (error.exception() <span class="keyword">instanceof</span> InvalidMetadataException) &#123;</span><br><span class="line">            <span class="keyword">if</span> (error.exception() <span class="keyword">instanceof</span> UnknownTopicOrPartitionException) &#123;</span><br><span class="line">                log.warn(<span class="string">"Received unknown topic or partition error in produce request on partition &#123;&#125;. The "</span> +</span><br><span class="line">                        <span class="string">"topic-partition may not exist or the user may not have Describe access to it"</span>,</span><br><span class="line">                    batch.topicPartition);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                log.warn(<span class="string">"Received invalid metadata error in produce request on partition &#123;&#125; due to &#123;&#125;. Going "</span> +</span><br><span class="line">                        <span class="string">"to request metadata update now"</span>, batch.topicPartition, error.exception().toString());</span><br><span class="line">            &#125;</span><br><span class="line">            metadata.requestUpdate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        completeBatch(batch, response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Unmute the completed partition.</span></span><br><span class="line">    <span class="keyword">if</span> (guaranteeMessageOrder)</span><br><span class="line">        <span class="keyword">this</span>.accumulator.unmutePartition(batch.topicPartition);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>做一些错误处理，比如针对MESSAGE_TOO_LARGE这种错误，直接删除inFlightBatches中的batch并回收ByteBuffer内存，不会做什么重试处理；对于能重试的情况，会重新将ProducerBatch入RecordAccumulator对应的队列等等……</li>
+<li>做一些回调处理，比如在KafkaProducer#send(ProducerRecord&lt;K, V&gt; record, Callback callback)中的callback会在此时进行回调</li>
+<li>guaranteeMessageOrder=true（保证消息顺序）情况下，从之前的<strong>muted</strong>列表中移除当前批次的topic分区。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;主要是总结下本次源码中看到的<strong>Kafka Producer</strong>高性能的一些点：</p>
+<ul>
+<li>异步、批量发送消息数据</li>
+<li>以Partition为细粒度的并发能力</li>
+<li><strong>BufferPool</strong>自主管理内存</li>
+<li>Java NIO网络传输</li>
+</ul>
+<p>最后贴一下本次代码分析用到的调试Demo的pom依赖：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.kafka<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-kafka<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>kafka client版本为：kafka_2.13:2.6.0 。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/05/领域驱动设计（DDD）笔记/" rel="next" title="领域驱动设计（DDD）笔记">
+                <i class="fa fa-chevron-left"></i> 领域驱动设计（DDD）笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">matrix</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#KafkaProducer"><span class="nav-number">1.</span> <span class="nav-text">KafkaProducer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#send"><span class="nav-number">1.0.1.</span> <span class="nav-text">send</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RecordAccumulator"><span class="nav-number">2.</span> <span class="nav-text">RecordAccumulator</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#append"><span class="nav-number">2.0.1.</span> <span class="nav-text">append</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sender"><span class="nav-number">3.</span> <span class="nav-text">Sender</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#run"><span class="nav-number">3.0.1.</span> <span class="nav-text">run</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KafkaClient"><span class="nav-number">4.</span> <span class="nav-text">KafkaClient</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#send-1"><span class="nav-number">4.0.1.</span> <span class="nav-text">send</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#poll"><span class="nav-number">4.0.2.</span> <span class="nav-text">poll</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">matrix</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<div class=BbeiAn-info">
+  浙ICP备 -
+  <a href="http://www.beian.miit.gov.cn">18040498号</a>
+  </a>
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://luyun.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2020/12/11/Kafka之旅（一）Producer/';
+          this.page.identifier = '2020/12/11/Kafka之旅（一）Producer/';
+          this.page.title = 'Kafka之旅（一）Producer';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://luyun.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -83,22 +83,22 @@
 <meta name="description" content="&amp;emsp;&amp;emsp;最近在使用Dubbo做分布式系统RPC的通信，所以觉得有必要了解一下Dubbo的整体架构和源码。Dubbo是阿里巴巴开源贡献给Apache的一款高性能Java RPC框架，注意它是一个RPC框架，之前面试发现总有人问Dubbo和Spring Cloud的区别，很令人不解，两个不同层面的东西有什么好比较的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dubbo之旅（一）Hello,Dubbo">
-<meta property="og:url" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/index.html">
+<meta property="og:url" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;最近在使用Dubbo做分布式系统RPC的通信，所以觉得有必要了解一下Dubbo的整体架构和源码。Dubbo是阿里巴巴开源贡献给Apache的一款高性能Java RPC框架，注意它是一个RPC框架，之前面试发现总有人问Dubbo和Spring Cloud的区别，很令人不解，两个不同层面的东西有什么好比较的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-cluster.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-config.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-metadata.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-registry.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-remoting.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-rpc.jpg">
-<meta property="og:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-serialization.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-cluster.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-config.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-metadata.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-registry.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-remoting.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-rpc.jpg">
+<meta property="og:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-serialization.jpg">
 <meta property="og:updated_time" content="2020-07-07T06:45:26.871Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dubbo之旅（一）Hello,Dubbo">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;最近在使用Dubbo做分布式系统RPC的通信，所以觉得有必要了解一下Dubbo的整体架构和源码。Dubbo是阿里巴巴开源贡献给Apache的一款高性能Java RPC框架，注意它是一个RPC框架，之前面试发现总有人问Dubbo和Spring Cloud的区别，很令人不解，两个不同层面的东西有什么好比较的。">
-<meta name="twitter:image" content="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-cluster.jpg">
+<meta name="twitter:image" content="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/dubbo-cluster.jpg">
 
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/"/>
+  <link rel="canonical" href="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/"/>
 
 
 
@@ -261,10 +261,10 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/">
+    <link itemprop="mainEntityOfPage" href="http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="matrix">
+      <meta itemprop="name" content="functm">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -478,7 +478,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">matrix</p>
+              <p class="site-author-name" itemprop="name">functm</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -568,7 +568,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">matrix</span>
+  <span class="author" itemprop="copyrightHolder">functm</span>
 
   
 </div>
@@ -719,7 +719,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/';
+          this.page.url = 'http://www.functm.com/2020/07/07/Dubbo之旅（一）Hello-Dubbo/';
           this.page.identifier = '2020/07/07/Dubbo之旅（一）Hello-Dubbo/';
           this.page.title = 'Dubbo之旅（一）Hello,Dubbo';
         };

@@ -250,6 +250,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://functm.com/2021/07/25/Kafka之旅（四）Consumer-Commit模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="functm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/25/Kafka之旅（四）Consumer-Commit模型/" itemprop="url">Kafka之旅（四）Consumer-Commit模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-25T12:54:06+08:00">
+                2021-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/25/Kafka之旅（四）Consumer-Commit模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/25/Kafka之旅（四）Consumer-Commit模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>&emsp;&emsp;Kafka的Commit分为两种：<strong>commitSync</strong>和<strong>commitAsync</strong>，一种是同步调用，一种是异步调用，不过其实两者底层的接口是一致的。</p>
+<h3 id="commitSync"><a href="#commitSync" class="headerlink" title="commitSync"></a>commitSync</h3><p>&emsp;&emsp;先来说一下<strong>KafkaConsumer#commitSync</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">commitSync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    commitSync(Duration.ofMillis(defaultApiTimeoutMs));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">commitSync</span><span class="params">(Duration timeout)</span> </span>&#123;</span><br><span class="line">    acquireAndEnsureOpen();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        maybeThrowInvalidGroupIdException();</span><br><span class="line">        <span class="keyword">if</span> (!coordinator.commitOffsetsSync(subscriptions.allConsumed(), time.timer(timeout))) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TimeoutException(<span class="string">"Timeout of "</span> + timeout.toMillis() + <span class="string">"ms expired before successfully "</span> +</span><br><span class="line">                    <span class="string">"committing the current consumed offsets"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        release();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>SubscriptionState#allConsumed</strong>获取所有当前消费者所有topic分区的消费进度：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Map&lt;TopicPartition, OffsetAndMetadata&gt; <span class="title">allConsumed</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;TopicPartition, OffsetAndMetadata&gt; allConsumed = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    assignment.stream().forEach(state -&gt; &#123;</span><br><span class="line">        TopicPartitionState partitionState = state.value();</span><br><span class="line">        <span class="keyword">if</span> (partitionState.hasValidPosition())</span><br><span class="line">            allConsumed.put(state.topicPartition(), <span class="keyword">new</span> OffsetAndMetadata(partitionState.position.offset,</span><br><span class="line">                    partitionState.position.offsetEpoch, <span class="string">""</span>));</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> allConsumed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/07/25/Kafka之旅（四）Consumer-Commit模型/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://functm.com/2021/06/13/谈CGLIB以及和JDK动态代理的对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1652,174 +1811,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://functm.com/2020/11/29/记一次nacos刷新失败排查/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="functm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="矩阵编程">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/29/记一次nacos刷新失败排查/" itemprop="url">记一次nacos刷新失败排查</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-29T20:46:00+08:00">
-                2020-11-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/nacos/" itemprop="url" rel="index">
-                    <span itemprop="name">nacos</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2020/11/29/记一次nacos刷新失败排查/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2020/11/29/记一次nacos刷新失败排查/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>&emsp;&emsp;项目中使用nacos作为配置中心，在使用的时候发现一个问题，nacos手动修改配置但是变更总是收不到通知，这段代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogbackConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> String logLevel;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NacosValue</span>(value = <span class="string">"$&#123;logging.level.root:null&#125;"</span>, autoRefreshed = <span class="keyword">true</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLogLevel</span><span class="params">(String level)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ObjectUtils.isEmpty(level)</span><br><span class="line">                || <span class="string">"null"</span>.equals(level)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (level.equals(<span class="keyword">this</span>.logLevel)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.logLevel = level;</span><br><span class="line">        ch.qos.logback.classic.LoggerContext loggerContext</span><br><span class="line">                = (ch.qos.logback.classic.LoggerContext) LoggerFactory.getILoggerFactory();</span><br><span class="line">        Logger logger = loggerContext.getLogger(<span class="string">"root"</span>);</span><br><span class="line">        logger.setLevel(ch.qos.logback.classic.Level.toLevel(level));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这段代码的目的是期望logging.level.root有变动的时候，nacos能够主动通知调用<strong>setLogLevel</strong>方法来变更日志，很简单的功能，但是实际运行的现象很奇怪：</p>
-<ol>
-<li>在项目启动的时候，发现<strong>setLogLevel</strong>这个方法是能够调用并设值的。</li>
-<li>手动更新了nacos里面的配置，第一次修改<strong>setLogLevel</strong>能够调用，但是level是老的值。</li>
-<li>只有第一次修改<strong>setLogLevel</strong>能够被调用，后面无论修改多少次这个方法不再触发。</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/11/29/记一次nacos刷新失败排查/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1865,7 +1861,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

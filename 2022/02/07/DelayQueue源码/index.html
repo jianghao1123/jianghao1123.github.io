@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<meta name="referrer" content="same-origin">
+<meta name="referrer" content="no-referrer" />
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="很长的开头&amp;emsp;&amp;emsp;最近在看Kafka的一些代码，因为很久之前看过RocketMQ的代码，所以隐约可以看到两者相似的地方。在看到Kafka时间轮（TimingWheel）的时候在想，Kafka是否也能实现类似RocketMQ延时消息的功能，当然答案是肯定的，而且再进一步地资料查找后我发现，虽然开源版的RocketMQ只支持几个固定时间的延时消息，并且在一份指导文档里写不支持秒级精度的">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DelayQueue源码">
+<meta property="og:url" content="http://functm.com/2022/02/07/DelayQueue源码/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="很长的开头&amp;emsp;&amp;emsp;最近在看Kafka的一些代码，因为很久之前看过RocketMQ的代码，所以隐约可以看到两者相似的地方。在看到Kafka时间轮（TimingWheel）的时候在想，Kafka是否也能实现类似RocketMQ延时消息的功能，当然答案是肯定的，而且再进一步地资料查找后我发现，虽然开源版的RocketMQ只支持几个固定时间的延时消息，并且在一份指导文档里写不支持秒级精度的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-02-07T09:16:00.813Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DelayQueue源码">
+<meta name="twitter:description" content="很长的开头&amp;emsp;&amp;emsp;最近在看Kafka的一些代码，因为很久之前看过RocketMQ的代码，所以隐约可以看到两者相似的地方。在看到Kafka时间轮（TimingWheel）的时候在想，Kafka是否也能实现类似RocketMQ延时消息的功能，当然答案是肯定的，而且再进一步地资料查找后我发现，虽然开源版的RocketMQ只支持几个固定时间的延时消息，并且在一份指导文档里写不支持秒级精度的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://functm.com/2022/02/07/DelayQueue源码/"/>
+
+
+
+
+
+  <title>DelayQueue源码 | 矩阵编程</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d29e6fba8e07d1a8af2414a20e5f2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">矩阵编程</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-主页">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            主页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-所有文章">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-文章"></i> <br />
+            
+            所有文章
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://functm.com/2022/02/07/DelayQueue源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="functm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DelayQueue源码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-02-07T17:16:00+08:00">
+                2022-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/02/07/DelayQueue源码/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/02/07/DelayQueue源码/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="很长的开头"><a href="#很长的开头" class="headerlink" title="很长的开头"></a>很长的开头</h3><p>&emsp;&emsp;最近在看Kafka的一些代码，因为很久之前看过RocketMQ的代码，所以隐约可以看到两者相似的地方。在看到Kafka时间轮（TimingWheel）的时候在想，Kafka是否也能实现类似RocketMQ延时消息的功能，当然答案是肯定的，而且再进一步地资料查找后我发现，虽然开源版的RocketMQ只支持几个固定时间的延时消息，并且在一份指导文档里写不支持秒级精度的延时消息主要是为了从性能上考虑，但事实上，阿里云上收费的RocketMQ是支持秒级精度的延时/定时消息的，果然只有氪金才能变强大。不过话说回来，RocketMQ是如何实现延时/定时消息？无独有偶，滴滴开源的<a href="https://github.com/didi/DDMQ" target="_blank" rel="noopener">DDMQ</a>，以及去哪儿开源的<a href="https://github.com/qunarcorp/qmq" target="_blank" rel="noopener">QMQ</a>，都支持秒级精度的定时/延时消息，所以我特地去看了下这两家的实现方式。<br><a id="more"></a></p>
+<ul>
+<li><strong>DDMQ</strong> 是滴滴出行架构部基于 Apache RocketMQ 构建的消息队列产品，它对秒级延时消息支持主要是通过建立一个消息发送代理层实现的，如果发现Producer发送的是延时消息，则发到一个RockesDB的存储，并通过定时任务轮询扫描将数据转发投递至RocketMQ集群。</li>
+<li><strong>QMQ</strong> 去哪儿网的消息中间件，通过一个delay server提供延时/定时消息服务，延时消息先在delay server排队，时间到之后再发送给server（实时消息服务）。延迟消息到达 delya-server 的时候, 除了添加到指定目标时间的schedule log，还会直接投递到多层时间轮（如果在当前时间轮内）。</li>
+</ul>
+<p>&emsp;&emsp;这是网上找的资料，其实感觉这两种方案大同小异，DDMQ的延时服务应该也少不了时间轮的身影，可能实现方式有差异，可见时间轮的重要程度。不过本文的目的不是研究消息队列或者时间轮，而是研究JDK中类时间轮的队列DelayQueue。Kafka或者Netty都实现了自己的时间轮，按理来说DelayQueue完全能实现时间轮的延时效果，但是为什么大家都不用DelayQueue呢？原因就在于DelayQueue的offer和poll操作的时间复杂度为O(log n)，而Kafka和Netty时间轮的实现（Netty的HashedWheelTimer过期/执行任务最差情况下为O(n)，平均O(1)）时间复杂度可以达到O(1)。所以DelayQueue并不适合这种高性能要求的定时任务，不过Kafka TimingWheel并没有彻底抛弃DelayQueue，事实上 DelayQueue 在Kafka TimingWheel中专门负责时间推进的任务，所以DelayQueue并没有过时。</p>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>&emsp;&emsp;先从存数据开始，DelayQueue的add、put其实都是调用<strong>offer</strong>，所以直接看<strong>offer</strong>的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">offer</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        q.offer(e);</span><br><span class="line">        <span class="keyword">if</span> (q.peek() == e) &#123;</span><br><span class="line">            leader = <span class="keyword">null</span>;</span><br><span class="line">            available.signal();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的q是内部持有的PriorityQueue，所有实际上DelayQueue的大部分逻辑都是由PriorityQueue实现，所以直接看PriorityQueue的<strong>offer</strong>方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">offer</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">int</span> i = size;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= queue.length)</span><br><span class="line">        grow(i + <span class="number">1</span>);</span><br><span class="line">    size = i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>)</span><br><span class="line">        queue[<span class="number">0</span>] = e;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUp(i, e);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> oldCapacity = queue.length;</span><br><span class="line">    <span class="comment">// Double size if small; else grow by 50%</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + ((oldCapacity &lt; <span class="number">64</span>) ?</span><br><span class="line">                                     (oldCapacity + <span class="number">2</span>) :</span><br><span class="line">                                     (oldCapacity &gt;&gt; <span class="number">1</span>));</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    queue = Arrays.copyOf(queue, newCapacity);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftUp</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="keyword">null</span>)</span><br><span class="line">        siftUpUsingComparator(k, x);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpComparable(k, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>PriorityQueue是非线程安全的，modCount用于在迭代的时候判读队列是否有修改，有的话抛出ConcurrentModificationException。</li>
+<li>判断实际容量size是否超出queue数组容量，超出则进行<strong>grow</strong>扩容。这里扩容的逻辑：当实际容量小于64，成倍扩容，否则只扩容50%。</li>
+<li>如果是第一次插入，赋值到queue数组的第一个；如果队列不为空，那么走<strong>siftUp</strong>方法，因为comparator为null，所以直接看siftUpComparable。</li>
+</ol>
+<p><strong>siftUpComparable</strong>是队列在非空情况下插入数据的方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftUpComparable</span><span class="params">(<span class="keyword">int</span> k, E x)</span> </span>&#123;</span><br><span class="line">    Comparable&lt;? <span class="keyword">super</span> E&gt; key = (Comparable&lt;? <span class="keyword">super</span> E&gt;) x;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> parent = (k - <span class="number">1</span>) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        Object e = queue[parent];</span><br><span class="line">        <span class="keyword">if</span> (key.compareTo((E) e) &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        queue[k] = e;</span><br><span class="line">        k = parent;</span><br><span class="line">    &#125;</span><br><span class="line">    queue[k] = key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PriorityQueue其实是用小顶堆实现的，小顶堆的定义如下：</p>
+<blockquote>
+<p>根节点的关键字既小于或等于左子树的关键字值，又小于或等于右子树的关键字值，堆顶的关键字是堆里所有结点关键字中最小的。</p>
+</blockquote>
+<p>所以这就是为什么DelayQueue插入的时间复杂度为O(log n)，不过这相比于一个链表来说，已经好多了。PriorityQueue使用数组来构建小顶堆，比如如下小顶堆可以构建成数组[1,4,9,6,8,10,15]：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">       [<span class="number">01</span>]</span><br><span class="line">       / \</span><br><span class="line">   [<span class="number">04</span>]   [<span class="number">09</span>]</span><br><span class="line">   / \     / \</span><br><span class="line">[<span class="number">06</span>] [<span class="number">08</span>][<span class="number">10</span>][<span class="number">15</span>]</span><br></pre></td></tr></table></figure></p>
+<p>左节点数组下标、右节点数组下标、父节点数组下标可以得到如下的公式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">left = parent * <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">right = parent * <span class="number">2</span> + <span class="number">2</span></span><br><span class="line">parent = ( current - <span class="number">1</span> ) / <span class="number">2</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附<a href="https://gist.github.com/psayre23/c30a821239f4818b0709" target="_blank" rel="noopener">Github</a>上找的Java集合时间复杂度列表</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">List                 | Add  | Remove | Get  | Contains | Next | Data Structure</span><br><span class="line">---------------------|------|--------|------|----------|------|---------------</span><br><span class="line">ArrayList            | O(<span class="number">1</span>) |  O(n)  | O(<span class="number">1</span>) |   O(n)   | O(<span class="number">1</span>) | Array</span><br><span class="line">LinkedList           | O(<span class="number">1</span>) |  O(<span class="number">1</span>)  | O(n) |   O(n)   | O(<span class="number">1</span>) | Linked List</span><br><span class="line">CopyOnWriteArrayList | O(n) |  O(n)  | O(<span class="number">1</span>) |   O(n)   | O(<span class="number">1</span>) | Array</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Set                   |    Add   |  Remove  | Contains |   Next   | Size | Data Structure</span><br><span class="line">----------------------|----------|----------|----------|----------|------|-------------------------</span><br><span class="line">HashSet               | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(h/n)   | O(<span class="number">1</span>) | Hash Table</span><br><span class="line">LinkedHashSet         | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | Hash Table + Linked List</span><br><span class="line">EnumSet               | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | Bit Vector</span><br><span class="line">TreeSet               | O(log n) | O(log n) | O(log n) | O(log n) | O(<span class="number">1</span>) | Red-black tree</span><br><span class="line">CopyOnWriteArraySet   | O(n)     | O(n)     | O(n)     | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | Array</span><br><span class="line">ConcurrentSkipListSet | O(log n) | O(log n) | O(log n) | O(<span class="number">1</span>)     | O(n) | Skip List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Queue                   |  Offer   | Peak |   Poll   | Remove | Size | Data Structure</span><br><span class="line">------------------------|----------|------|----------|--------|------|---------------</span><br><span class="line">PriorityQueue           | O(log n) | O(<span class="number">1</span>) | O(log n) |  O(n)  | O(<span class="number">1</span>) | Priority Heap</span><br><span class="line">LinkedList              | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(<span class="number">1</span>)  | O(<span class="number">1</span>) | Array</span><br><span class="line">ArrayDequeue            | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(n)  | O(<span class="number">1</span>) | Linked List</span><br><span class="line">ConcurrentLinkedQueue   | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(n)  | O(n) | Linked List</span><br><span class="line">ArrayBlockingQueue      | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(n)  | O(<span class="number">1</span>) | Array</span><br><span class="line">PriorirityBlockingQueue | O(log n) | O(<span class="number">1</span>) | O(log n) |  O(n)  | O(<span class="number">1</span>) | Priority Heap</span><br><span class="line">SynchronousQueue        | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(n)  | O(<span class="number">1</span>) | None!</span><br><span class="line">DelayQueue              | O(log n) | O(<span class="number">1</span>) | O(log n) |  O(n)  | O(<span class="number">1</span>) | Priority Heap</span><br><span class="line">LinkedBlockingQueue     | O(<span class="number">1</span>)     | O(<span class="number">1</span>) | O(<span class="number">1</span>)     |  O(n)  | O(<span class="number">1</span>) | Linked List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Map                   |   Get    | ContainsKey |   Next   | Data Structure</span><br><span class="line">----------------------|----------|-------------|----------|-------------------------</span><br><span class="line">HashMap               | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(h / n) | Hash Table</span><br><span class="line">LinkedHashMap         | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(<span class="number">1</span>)     | Hash Table + Linked List</span><br><span class="line">IdentityHashMap       | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(h / n) | Array</span><br><span class="line">WeakHashMap           | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(h / n) | Hash Table</span><br><span class="line">EnumMap               | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(<span class="number">1</span>)     | Array</span><br><span class="line">TreeMap               | O(log n) |   O(log n)  | O(log n) | Red-black tree</span><br><span class="line">ConcurrentHashMap     | O(<span class="number">1</span>)     |   O(<span class="number">1</span>)      | O(h / n) | Hash Tables</span><br><span class="line">ConcurrentSkipListMap | O(log n) |   O(log n)  | O(<span class="number">1</span>)     | Skip List</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/25/Kafka之旅（四）Consumer-Commit模型/" rel="next" title="Kafka之旅（四）Consumer-Commit模型">
+                <i class="fa fa-chevron-left"></i> Kafka之旅（四）Consumer-Commit模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">functm</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#很长的开头"><span class="nav-number">1.</span> <span class="nav-text">很长的开头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">functm</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+<div class=BbeiAn-info">
+  浙ICP备 -
+  <a href="http://www.beian.miit.gov.cn">18040498号</a>
+  </a>
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://luyun.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://functm.com/2022/02/07/DelayQueue源码/';
+          this.page.identifier = '2022/02/07/DelayQueue源码/';
+          this.page.title = 'DelayQueue源码';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://luyun.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

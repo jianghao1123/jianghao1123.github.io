@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="&emsp;&emsp;在Docker的世界里有三个基本概念：  镜像（Image） 容器（Container） 仓库（Repository）  &emsp;&emsp;镜像就像一个打包好的应用程序，仓库则是应用程序的市场。我们去仓库下载镜像，然后在容器中运行这个镜像。容器的本质类似一个运行的进程，他是镜像的运行环境。Docker镜像极大地简化了应用的安装运行，我们不仅需要学会使用镜像运行容器，还">
 <meta property="og:type" content="article">
 <meta property="og:title" content="拥抱Docker（二）Dockerfile制作镜像">
-<meta property="og:url" content="http://example.com/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/index.html">
+<meta property="og:url" content="https://jianghao1123.github.io/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="&emsp;&emsp;在Docker的世界里有三个基本概念：  镜像（Image） 容器（Container） 仓库（Repository）  &emsp;&emsp;镜像就像一个打包好的应用程序，仓库则是应用程序的市场。我们去仓库下载镜像，然后在容器中运行这个镜像。容器的本质类似一个运行的进程，他是镜像的运行环境。Docker镜像极大地简化了应用的安装运行，我们不仅需要学会使用镜像运行容器，还">
 <meta property="og:locale">
@@ -33,10 +33,10 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/">
+<link rel="canonical" href="https://jianghao1123.github.io/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/","path":"2019/06/04/拥抱Docker（二）Dockerfile制作镜像/","title":"拥抱Docker（二）Dockerfile制作镜像"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/","path":"2019/06/04/拥抱Docker（二）Dockerfile制作镜像/","title":"拥抱Docker（二）Dockerfile制作镜像"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>拥抱Docker（二）Dockerfile制作镜像 | 矩阵编程</title>
@@ -171,7 +171,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

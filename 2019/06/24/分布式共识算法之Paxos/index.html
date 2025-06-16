@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="&emsp;&emsp;在讲共识算法的时候，我想先讨论一下一致性。因为我很长时间没有理解一致性（Consistency）和共识（Consensus）的区别，或者说，我一度以为他俩是一回事。 一致性&emsp;&emsp;在分布式系统中，通常一个服务会运行在多个节点上，如何保证多个节点对外呈现出同一个状态，就是分布式一致性需要探讨的话题。一致性的侧重点，在于节点之间的数据可见性约束，它实质上是一个副">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式共识算法之Paxos">
-<meta property="og:url" content="http://example.com/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/index.html">
+<meta property="og:url" content="https://jianghao1123.github.io/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="&emsp;&emsp;在讲共识算法的时候，我想先讨论一下一致性。因为我很长时间没有理解一致性（Consistency）和共识（Consensus）的区别，或者说，我一度以为他俩是一回事。 一致性&emsp;&emsp;在分布式系统中，通常一个服务会运行在多个节点上，如何保证多个节点对外呈现出同一个状态，就是分布式一致性需要探讨的话题。一致性的侧重点，在于节点之间的数据可见性约束，它实质上是一个副">
 <meta property="og:locale">
@@ -35,10 +35,10 @@
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g4azkh3ys5j20ts0cqn1q.jpg">
 
 
-<link rel="canonical" href="http://example.com/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/">
+<link rel="canonical" href="https://jianghao1123.github.io/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/","path":"2019/06/24/分布式共识算法之Paxos/","title":"分布式共识算法之Paxos"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/","path":"2019/06/24/分布式共识算法之Paxos/","title":"分布式共识算法之Paxos"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>分布式共识算法之Paxos | 矩阵编程</title>
@@ -173,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2019/06/24/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95%E4%B9%8BPaxos/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

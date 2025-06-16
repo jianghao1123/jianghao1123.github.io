@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="问题&emsp;&emsp;IoC是Inversion of Control的缩写，翻译过来即“控制反转”。IoC可以说是Spring的灵魂，想要读懂Spring，必先读懂IoC。不过有时候硬着头皮直接看源码，就像雾里看花，并不能一窥真谛。想要理解Spring的IoC，不如反过来思考一下，如果我们自己去实现IoC，需要考虑什么？遵循依赖大于配置的原则，我们这里只讨论注解式的控制反转容器，XML配置">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈谈Spring的IoC之注解扫描">
-<meta property="og:url" content="http://example.com/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/index.html">
+<meta property="og:url" content="https://jianghao1123.github.io/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="问题&emsp;&emsp;IoC是Inversion of Control的缩写，翻译过来即“控制反转”。IoC可以说是Spring的灵魂，想要读懂Spring，必先读懂IoC。不过有时候硬着头皮直接看源码，就像雾里看花，并不能一窥真谛。想要理解Spring的IoC，不如反过来思考一下，如果我们自己去实现IoC，需要考虑什么？遵循依赖大于配置的原则，我们这里只讨论注解式的控制反转容器，XML配置">
 <meta property="og:locale">
@@ -33,10 +33,10 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/">
+<link rel="canonical" href="https://jianghao1123.github.io/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/","path":"2019/04/03/谈谈Spring的IoC之注解扫描/","title":"谈谈Spring的IoC之注解扫描"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/","path":"2019/04/03/谈谈Spring的IoC之注解扫描/","title":"谈谈Spring的IoC之注解扫描"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>谈谈Spring的IoC之注解扫描 | 矩阵编程</title>
@@ -171,7 +171,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

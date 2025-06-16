@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="简介&emsp;&emsp;缓存是一种用于提升系统响应速度的技术，在分布式服务领域，常见的缓存有进程内缓存和缓存服务：  进程内缓存 一般指将数据缓存在客户端、浏览器，或者是服务端的进程内，常见的比如我们使用HashMap在内存中缓存键值对数据，或者是有名的进程缓存框架如Ehcache、Guava Cache等。 缓存服务 集中式的应用级缓存机制，区别于进程内缓存，应用级缓存单独部署缓存服务，常见">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈谈分布式缓存一致性">
-<meta property="og:url" content="http://example.com/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/index.html">
+<meta property="og:url" content="https://jianghao1123.github.io/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="简介&emsp;&emsp;缓存是一种用于提升系统响应速度的技术，在分布式服务领域，常见的缓存有进程内缓存和缓存服务：  进程内缓存 一般指将数据缓存在客户端、浏览器，或者是服务端的进程内，常见的比如我们使用HashMap在内存中缓存键值对数据，或者是有名的进程缓存框架如Ehcache、Guava Cache等。 缓存服务 集中式的应用级缓存机制，区别于进程内缓存，应用级缓存单独部署缓存服务，常见">
 <meta property="og:locale">
@@ -35,10 +35,10 @@
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g56mdug19dj20gd076weu.jpg">
 
 
-<link rel="canonical" href="http://example.com/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+<link rel="canonical" href="https://jianghao1123.github.io/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/","path":"2019/07/20/谈谈分布式缓存一致性/","title":"谈谈分布式缓存一致性"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/","path":"2019/07/20/谈谈分布式缓存一致性/","title":"谈谈分布式缓存一致性"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>谈谈分布式缓存一致性 | 矩阵编程</title>
@@ -173,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

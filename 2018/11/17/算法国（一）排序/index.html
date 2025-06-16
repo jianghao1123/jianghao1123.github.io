@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="&emsp;&emsp;本故事除了算法纯属虚构。  在算法国里面，谁掌握的算法越多，谁就是王。  前言&emsp;&emsp;排序是最基础的算法，在算法国连小孩都会，什么，如果你连一个排序算法都不会，呵，那人家就会喊你码农，哦不对，码农现在高级了，那叫你码畜，也不对，可能他们会直接喊码拉格比，你连个排序都不会？当然，连排序算法都不会一个的人，在算法国是找不到工作的。算法国的工作其实很简单，复制算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="算法国（一）排序">
-<meta property="og:url" content="http://example.com/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:url" content="https://jianghao1123.github.io/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/index.html">
 <meta property="og:site_name" content="矩阵编程">
 <meta property="og:description" content="&emsp;&emsp;本故事除了算法纯属虚构。  在算法国里面，谁掌握的算法越多，谁就是王。  前言&emsp;&emsp;排序是最基础的算法，在算法国连小孩都会，什么，如果你连一个排序算法都不会，呵，那人家就会喊你码农，哦不对，码农现在高级了，那叫你码畜，也不对，可能他们会直接喊码拉格比，你连个排序都不会？当然，连排序算法都不会一个的人，在算法国是找不到工作的。算法国的工作其实很简单，复制算法">
 <meta property="og:locale">
@@ -33,10 +33,10 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/">
+<link rel="canonical" href="https://jianghao1123.github.io/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/","path":"2018/11/17/算法国（一）排序/","title":"算法国（一）排序"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/","path":"2018/11/17/算法国（一）排序/","title":"算法国（一）排序"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>算法国（一）排序 | 矩阵编程</title>
@@ -171,7 +171,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

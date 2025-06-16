@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -155,6 +155,111 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2019/02/02/%E8%B0%88%E8%B0%88Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2019/02/02/%E8%B0%88%E8%B0%88Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">谈谈Java垃圾收集算法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-02-02 21:26:05" itemprop="dateCreated datePublished" datetime="2019-02-02T21:26:05+08:00">2019-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:02" itemprop="dateModified" datetime="2019-10-25T00:22:02+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">Java虚拟机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题"></a>三个问题</h3><ol>
+<li>哪些内存需要回收？</li>
+<li>什么时候回收？</li>
+<li>如何回收？</li>
+</ol>
+<h3 id="哪些内存需要回收？"><a href="#哪些内存需要回收？" class="headerlink" title="哪些内存需要回收？"></a>哪些内存需要回收？</h3><p>&emsp;&emsp;在Java的世界里，使用堆来管理几乎所有的对象实例，要知道那些内存需要回收，必须先知道哪些对象已经死亡，而哪些对象依然存活，由此有两种算法可供选择：引用计数和可达性分析。引用计数是一种实现简单且判定效率高的识别算法，但是很难解决对象与对象之间循环引用的问题。所以主流的Java垃圾收集算法都是采用可达性分析算法来判断对象的是否存活。这个算法的基本思路是通过一系列的GC Roots对象作为起始点，从这些节点向下搜索，搜索所走过的路径（Reference Chain），当一个对象没有任何路径可以到达GC Roots时，证明该对象不可用。在Java语言中，可作为GC Roots的对象包括下面几种：</p>
+<blockquote>
+<ol>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象。</li>
+<li>方法区中类静态属性引用的对象。</li>
+<li>方法区中常量引用的对象。</li>
+<li>本地方法栈中JNI（即一般说的Native方法）引用的对象。</li>
+</ol>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/02/02/%E8%B0%88%E8%B0%88Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -997,98 +1102,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/10/08/Netty%E4%B9%8B%E6%97%85%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89EventLoop/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2018/09/25/Netty%E4%B9%8B%E6%97%85%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89ChannelHandler/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="functm">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="矩阵编程">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 矩阵编程">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/09/25/Netty%E4%B9%8B%E6%97%85%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89ChannelHandler/" class="post-title-link" itemprop="url">Netty之旅（十一）ChannelHandler</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2018-09-25 16:41:05" itemprop="dateCreated datePublished" datetime="2018-09-25T16:41:05+08:00">2018-09-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2019-10-25 00:22:00" itemprop="dateModified" datetime="2019-10-25T00:22:00+08:00">2019-10-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Netty%E4%B9%8B%E6%97%85/" itemprop="url" rel="index"><span itemprop="name">Netty之旅</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>&emsp;&emsp;ChannelHandler应该是用户使用netty接触最多的组件，他的继承类也比较多，子类实现功能多不胜数，所以只列下一些基类，如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fv33xjyn28j212u0i8q4u.jpg"><br>&emsp;&emsp;根据事件在ChannelPipline中的流向，ChannelHandler按照出入站将事件分为两类，ChannelInboundHandler和ChannelOutboundHandler。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/09/25/Netty%E4%B9%8B%E6%97%85%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89ChannelHandler/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

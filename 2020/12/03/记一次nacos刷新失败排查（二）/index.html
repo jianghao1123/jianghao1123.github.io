@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;在上一篇记一次nacos刷新失败排查中为了屏蔽其他组带来的影响，并且更方便、快速地进行启停调试，我特地写了一个nacos-jasypt的demo，除了上文中的LogbackConfig、EncryptablePropertySourceCacheRefresher两个文件，还有一个启动类NacosDemoApplication如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次nacos刷新失败排查（二）">
+<meta property="og:url" content="http://example.com/2020/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;在上一篇记一次nacos刷新失败排查中为了屏蔽其他组带来的影响，并且更方便、快速地进行启停调试，我特地写了一个nacos-jasypt的demo，除了上文中的LogbackConfig、EncryptablePropertySourceCacheRefresher两个文件，还有一个启动类NacosDemoApplication如下：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-12-03T01:38:02.000Z">
+<meta property="article:modified_time" content="2020-12-03T01:38:02.234Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="nacos">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2020/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89/","path":"2020/12/03/记一次nacos刷新失败排查（二）/","title":"记一次nacos刷新失败排查（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>记一次nacos刷新失败排查（二） | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">从头开始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApplicationContextInitializer"><span class="nav-number">2.</span> <span class="nav-text">ApplicationContextInitializer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ImportBeanDefinitionRegistrar"><span class="nav-number">3.</span> <span class="nav-text">ImportBeanDefinitionRegistrar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="记一次nacos刷新失败排查（二） | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记一次nacos刷新失败排查（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-12-03 09:38:02" itemprop="dateCreated datePublished" datetime="2020-12-03T09:38:02+08:00">2020-12-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/nacos/" itemprop="url" rel="index"><span itemprop="name">nacos</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;在上一篇<a href="/2020/11/29/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5">记一次nacos刷新失败排查</a>中为了屏蔽其他组带来的影响，并且更方便、快速地进行启停调试，我特地写了一个nacos-jasypt的demo，除了上文中的<strong>LogbackConfig</strong>、<strong>EncryptablePropertySourceCacheRefresher</strong>两个文件，还有一个启动类<strong>NacosDemoApplication</strong>如下：</p>
+<span id="more"></span>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@NacosPropertySource(dataId = &quot;discover.bootstrap.properties&quot;, groupId = &quot;discover&quot;, autoRefreshed = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NacosDemoApplication</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(NacosDemoApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<strong>EncryptablePropertySourceCacheRefresher</strong>测试完nacos-jasypt的demo觉得没问题后，将这个文件复制到公司的主项目中，并再一次调试<strong>LogbackConfig#setLogLevel(String level)<strong>。正当我觉得打完收工的时候，却又又又发现，nacos服务端</strong>discover.bootstrap.properties</strong>上<strong>logging.level.root</strong>配置更新后，这个方法还是没有被调用……</p>
+<h3 id="从头开始"><a href="#从头开始" class="headerlink" title="从头开始"></a>从头开始</h3><p>&emsp;&emsp;我只能又默默地回到主项目，从**NacosValueAnnotationBeanPostProcessor#onApplicationEvent(NacosConfigReceivedEvent event)**开始：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(NacosConfigReceivedEvent event)</span> &#123;</span><br><span class="line">	<span class="comment">// In to this event receiver, the environment has been updated the</span></span><br><span class="line">	<span class="comment">// latest configuration information, pull directly from the environment</span></span><br><span class="line">	<span class="comment">// fix issue #142</span></span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, List&lt;NacosValueTarget&gt;&gt; entry : placeholderNacosValueTargetMap.entrySet()) &#123;</span><br><span class="line">		<span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> environment.resolvePlaceholders(entry.getKey());</span><br><span class="line">		<span class="type">String</span> <span class="variable">newValue</span> <span class="operator">=</span> environment.getProperty(key);</span><br><span class="line">		<span class="keyword">if</span> (newValue == <span class="literal">null</span>) &#123;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		List&lt;NacosValueTarget&gt; beanPropertyList = entry.getValue();</span><br><span class="line">		<span class="keyword">for</span> (NacosValueTarget target : beanPropertyList) &#123;</span><br><span class="line">			<span class="type">String</span> <span class="variable">md5String</span> <span class="operator">=</span> MD5.getInstance().getMD5String(newValue);</span><br><span class="line">			<span class="type">boolean</span> <span class="variable">isUpdate</span> <span class="operator">=</span> !target.lastMD5.equals(md5String);</span><br><span class="line">			<span class="keyword">if</span> (isUpdate) &#123;</span><br><span class="line">				target.updateLastMD5(md5String);</span><br><span class="line">				<span class="keyword">if</span> (target.method == <span class="literal">null</span>) &#123;</span><br><span class="line">					setField(target, newValue);</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					setMethod(target, newValue);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主项目中**environment.getProperty(key)<strong>返回的依然是老的value，</strong>environment.getProperty(key)<strong>实际调用</strong>PropertySourcesPropertyResolver#getProperty(String key, Class<T> targetValueType, boolean resolveNestedPlaceholders)**如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> &lt;T&gt; T <span class="title function_">getProperty</span><span class="params">(String key, Class&lt;T&gt; targetValueType, <span class="type">boolean</span> resolveNestedPlaceholders)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">this</span>.propertySources != <span class="literal">null</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> (PropertySource&lt;?&gt; propertySource : <span class="built_in">this</span>.propertySources) &#123;</span><br><span class="line">			<span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">				logger.trace(<span class="string">&quot;Searching for key &#x27;&quot;</span> + key + <span class="string">&quot;&#x27; in PropertySource &#x27;&quot;</span> +</span><br><span class="line">						propertySource.getName() + <span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> propertySource.getProperty(key);</span><br><span class="line">			<span class="keyword">if</span> (value != <span class="literal">null</span>) &#123;</span><br><span class="line">				<span class="keyword">if</span> (resolveNestedPlaceholders &amp;&amp; value <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">					value = resolveNestedPlaceholders((String) value);</span><br><span class="line">				&#125;</span><br><span class="line">				logKeyFound(key, propertySource, value);</span><br><span class="line">				<span class="keyword">return</span> convertValueIfNecessary(value, targetValueType);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">		logger.trace(<span class="string">&quot;Could not find key &#x27;&quot;</span> + key + <span class="string">&quot;&#x27; in any property source&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>this.propertySources</strong>是一个<strong>MutablePropertySources</strong>，其内部持有一个PropertySource列表，我看了下这个列表的数据，除了其他多个<strong>EncryptablePropertySourceWrapper</strong>之外，有两个很奇怪的PropertySource：</p>
+<ol>
+<li>代理了<strong>NacosPropertySource</strong>的<strong>EncryptablePropertySourceWrapper</strong>，其name为<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discover.bootstrap.properties|discover|||localhost:<span class="number">8848</span>|||||||</span><br></pre></td></tr></table></figure></li>
+<li>列表最后一个是<strong>NacosPropertySource</strong>，没有代理，name为<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discover.bootstrap.properties|discover|||localhost:<span class="number">8848</span>|||||UTF-<span class="number">8</span>||</span><br></pre></td></tr></table></figure>
+name是一个PropertySource的唯一标识，排序、去重都是依靠name来进行的。怎么会有两个discover.bootstrap.properties配置？而按照PropertySource获取配置的优先顺序来看，应该是会优先从第一个带<strong>EncryptablePropertySourceWrapper</strong>包装的<strong>NacosPropertySource</strong>中获取值，而很不幸的是，这个代理的<strong>NacosPropertySource</strong>并没有获得更新，所以此时获得的值还是老的，而最后一个<strong>NacosPropertySource</strong>则是最新的值，应该是在这里获得了更新：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addListenerIfAutoRefreshed</span><span class="params">(<span class="keyword">final</span> NacosPropertySource nacosPropertySource, Properties properties, <span class="keyword">final</span> ConfigurableEnvironment environment)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (nacosPropertySource.isAutoRefreshed()) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="type">String</span> <span class="variable">dataId</span> <span class="operator">=</span> nacosPropertySource.getDataId();</span><br><span class="line">            <span class="keyword">final</span> <span class="type">String</span> <span class="variable">groupId</span> <span class="operator">=</span> nacosPropertySource.getGroupId();</span><br><span class="line">            <span class="keyword">final</span> <span class="type">String</span> <span class="variable">type</span> <span class="operator">=</span> nacosPropertySource.getType();</span><br><span class="line">            <span class="type">NacosServiceFactory</span> <span class="variable">nacosServiceFactory</span> <span class="operator">=</span> NacosBeanUtils.getNacosServiceFactoryBean(beanFactory);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">ConfigService</span> <span class="variable">configService</span> <span class="operator">=</span> nacosServiceFactory.createConfigService(properties);</span><br><span class="line">                <span class="type">Listener</span> <span class="variable">listener</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AbstractListener</span>() &#123;</span><br><span class="line">                    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">receiveConfigInfo</span><span class="params">(String config)</span> &#123;</span><br><span class="line">                        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> nacosPropertySource.getName();</span><br><span class="line">                        <span class="type">NacosPropertySource</span> <span class="variable">newNacosPropertySource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NacosPropertySource</span>(dataId, groupId, name, config, type);</span><br><span class="line">                        newNacosPropertySource.copy(nacosPropertySource);</span><br><span class="line">                        <span class="type">MutablePropertySources</span> <span class="variable">propertySources</span> <span class="operator">=</span> environment.getPropertySources();</span><br><span class="line">                        propertySources.replace(name, newNacosPropertySource);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">                <span class="keyword">if</span> (configService <span class="keyword">instanceof</span> EventPublishingConfigService) &#123;</span><br><span class="line">                    ((EventPublishingConfigService)configService).addListener(dataId, groupId, type, listener);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    configService.addListener(dataId, groupId, listener);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">catch</span> (NacosException var9) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;ConfigService can&#x27;t add Listener with properties : &quot;</span> + properties, var9);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+上面的匿名Listener只是简单<strong>replace</strong>了<strong>NacosPropertySource</strong>，所以没有被<strong>EncryptablePropertySourceWrapper</strong>再次装饰。不过既然有两个同配置的<strong>NacosPropertySource</strong>，那么可以直接从<strong>NacosPropertySource</strong>的构造函数开始调试，最终我发现，在两个地方会分别加载discover.bootstrap.properties的<strong>NacosPropertySource</strong>：</li>
+<li><strong>NacosConfigApplicationContextInitializer</strong>，也是最早的一个。</li>
+<li><strong>NacosConfigBeanDefinitionRegistrar</strong></li>
+</ol>
+<h3 id="ApplicationContextInitializer"><a href="#ApplicationContextInitializer" class="headerlink" title="ApplicationContextInitializer"></a>ApplicationContextInitializer</h3><p>&emsp;&emsp;<strong>NacosConfigApplicationContextInitializer</strong>继承于<strong>ApplicationContextInitializer</strong>，<strong>ApplicationContextInitializer</strong>是Spring IoC容器提供的一个接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationContextInitializer</span>&lt;C <span class="keyword">extends</span> <span class="title class_">ConfigurableApplicationContext</span>&gt; &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Initialize the given application context.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> applicationContext the application to configure</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">initialize</span><span class="params">(C applicationContext)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要目的是允许用户在ConfigurableApplicationContext类型（或其子类型）的<strong>ApplicationContext#refresh</strong>调用刷新之前，对ConfigurableApplicationContext实例做进一步的设置或处理。在<a href="/2019/04/04/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E5%AE%9E%E4%BE%8B%E5%8C%96">谈谈Spring的IoC之实例化</a>中对<strong>ApplicationContext#refresh</strong>已经大致涉及一些，主要是Spring Bean的加载，也就是说其实<strong>ApplicationContextInitializer#initialize</strong>这个方法可以在Spring Bean加载之前做一些事情。看一下<strong>NacosConfigApplicationContextInitializer</strong>做了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initialize</span><span class="params">(ConfigurableApplicationContext context)</span> &#123;</span><br><span class="line">	singleton.setApplicationContext(context);</span><br><span class="line">	environment = context.getEnvironment();</span><br><span class="line">	nacosConfigProperties = NacosConfigPropertiesUtils</span><br><span class="line">			.buildNacosConfigProperties(environment);</span><br><span class="line">	<span class="keyword">final</span> <span class="type">NacosConfigLoader</span> <span class="variable">configLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NacosConfigLoader</span>(</span><br><span class="line">			nacosConfigProperties, environment, builder);</span><br><span class="line">	<span class="keyword">if</span> (!enable()) &#123;</span><br><span class="line">		logger.info(<span class="string">&quot;[Nacos Config Boot] : The preload configuration is not enabled&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// If it opens the log level loading directly will cache</span></span><br><span class="line">		<span class="comment">// DeferNacosPropertySource release</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (processor.enable()) &#123;</span><br><span class="line">			processor.publishDeferService(context);</span><br><span class="line">			configLoader</span><br><span class="line">					.addListenerIfAutoRefreshed(processor.getDeferPropertySources());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			configLoader.loadConfig();</span><br><span class="line">			configLoader.addListenerIfAutoRefreshed();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">final</span> <span class="type">ConfigurableListableBeanFactory</span> <span class="variable">factory</span> <span class="operator">=</span> context.getBeanFactory();</span><br><span class="line">	<span class="keyword">if</span> (!factory</span><br><span class="line">			.containsSingleton(NacosBeanUtils.GLOBAL_NACOS_PROPERTIES_BEAN_NAME)) &#123;</span><br><span class="line">		factory.registerSingleton(NacosBeanUtils.GLOBAL_NACOS_PROPERTIES_BEAN_NAME,</span><br><span class="line">				configLoader.buildGlobalNacosProperties());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>**enable()**判断在开启了nacos.config.bootstrap.enable&#x3D;true或者nacos.config.bootstrap.log-enable&#x3D;true的情况下，会往下走。</li>
+<li>事实上我运行的时候**enable()<strong>返回true，且未开启nacos.config.bootstrap.log-enable，所以直接调用</strong>configLoader.loadConfig()**以及添加监听者。</li>
+</ol>
+<p>**configLoader.loadConfig()**代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">loadConfig</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">Properties</span> <span class="variable">globalProperties</span> <span class="operator">=</span> buildGlobalNacosProperties();</span><br><span class="line">	<span class="type">MutablePropertySources</span> <span class="variable">mutablePropertySources</span> <span class="operator">=</span> environment.getPropertySources();</span><br><span class="line">	List&lt;NacosPropertySource&gt; sources = reqGlobalNacosConfig(globalProperties,</span><br><span class="line">			nacosConfigProperties.getType());</span><br><span class="line">	<span class="keyword">for</span> (NacosConfigProperties.Config config : nacosConfigProperties.getExtConfig()) &#123;</span><br><span class="line">		List&lt;NacosPropertySource&gt; elements = reqSubNacosConfig(config,</span><br><span class="line">				globalProperties, config.getType());</span><br><span class="line">		sources.addAll(elements);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (nacosConfigProperties.isRemoteFirst()) &#123;</span><br><span class="line">		<span class="keyword">for</span> (ListIterator&lt;NacosPropertySource&gt; itr = sources.listIterator(sources.size()); itr.hasPrevious();) &#123;</span><br><span class="line">			mutablePropertySources.addAfter(</span><br><span class="line">					StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, itr.previous());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> (NacosPropertySource propertySource : sources) &#123;</span><br><span class="line">			mutablePropertySources.addLast(propertySource);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我看了下项目里nacos配置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">nacos.config.data-ids=discover.bootstrap.properties</span><br><span class="line">nacos.config.type=properties</span><br><span class="line">nacos.config.bootstrap.enable=<span class="literal">true</span></span><br><span class="line">nacos.config.bootstrap.log-enable=<span class="literal">true</span></span><br><span class="line">nacos.config.group=discover</span><br><span class="line">nacos.config.remote-first=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>也就是**loadConfig()**会加载discover.bootstrap.properties的配置到NacosPropertySource，此时命名为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discover.bootstrap.properties|discover|||localhost:<span class="number">8848</span>|||||||</span><br></pre></td></tr></table></figure>
+
+<h3 id="ImportBeanDefinitionRegistrar"><a href="#ImportBeanDefinitionRegistrar" class="headerlink" title="ImportBeanDefinitionRegistrar"></a>ImportBeanDefinitionRegistrar</h3><p>&emsp;&emsp;<strong>NacosConfigBeanDefinitionRegistrar</strong>是第二次导入discover.bootstrap.properties配置的入口，<strong>NacosConfigBeanDefinitionRegistrar</strong>由<strong>EnableNacosConfig</strong>注解加载而来。<strong>NacosConfigBeanDefinitionRegistrar</strong>继承于<strong>ImportBeanDefinitionRegistrar</strong>，<strong>ImportBeanDefinitionRegistrar</strong>是一个接口，定义如下：</p>
+<ul>
+<li><strong>ImportBeanDefinitionRegistrar</strong>类只能通过其他类@Import的方式来加载，通常是启动类或配置类。</li>
+<li>实现该接口的类拥有注册bean的能力。</li>
+</ul>
+<p>直接看<strong>NacosConfigBeanDefinitionRegistrar</strong>的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata metadata,</span></span><br><span class="line"><span class="params">		BeanDefinitionRegistry registry)</span> &#123;</span><br><span class="line">	<span class="type">AnnotationAttributes</span> <span class="variable">attributes</span> <span class="operator">=</span> fromMap(</span><br><span class="line">			metadata.getAnnotationAttributes(EnableNacosConfig.class.getName()));</span><br><span class="line">	<span class="comment">// Register Global Nacos Properties Bean</span></span><br><span class="line">	registerGlobalNacosProperties(attributes, registry, environment,</span><br><span class="line">			CONFIG_GLOBAL_NACOS_PROPERTIES_BEAN_NAME);</span><br><span class="line">	<span class="comment">// Register Nacos Common Beans</span></span><br><span class="line">	registerNacosCommonBeans(registry);</span><br><span class="line">	<span class="comment">// Register Nacos Config Beans</span></span><br><span class="line">	registerNacosConfigBeans(registry, environment, beanFactory);</span><br><span class="line">	<span class="comment">// Invoke NacosPropertySourcePostProcessor immediately</span></span><br><span class="line">	<span class="comment">// in order to enhance the precedence of @NacosPropertySource process</span></span><br><span class="line"></span><br><span class="line">	invokeNacosPropertySourcePostProcessor(beanFactory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>nacos里面很多Bean都是手动加载到Spring中的，并没有使用注解，不过我们主要关注**invokeNacosPropertySourcePostProcessor(beanFactory)**做了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">invokeNacosPropertySourcePostProcessor</span><span class="params">(BeanFactory beanFactory)</span> &#123;</span><br><span class="line">	<span class="type">NacosPropertySourcePostProcessor</span> <span class="variable">postProcessor</span> <span class="operator">=</span> beanFactory.getBean(</span><br><span class="line">			NacosPropertySourcePostProcessor.BEAN_NAME,</span><br><span class="line">			NacosPropertySourcePostProcessor.class);</span><br><span class="line">	postProcessor</span><br><span class="line">			.postProcessBeanFactory((ConfigurableListableBeanFactory) beanFactory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>手动执行了**NacosPropertySourcePostProcessor#postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)**：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span></span><br><span class="line">		<span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">	String[] abstractNacosPropertySourceBuilderBeanNames = BeanUtils</span><br><span class="line">			.getBeanNames(beanFactory, AbstractNacosPropertySourceBuilder.class);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">this</span>.nacosPropertySourceBuilders = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;AbstractNacosPropertySourceBuilder&gt;(</span><br><span class="line">			abstractNacosPropertySourceBuilderBeanNames.length);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (String beanName : abstractNacosPropertySourceBuilderBeanNames) &#123;</span><br><span class="line">		<span class="built_in">this</span>.nacosPropertySourceBuilders.add(beanFactory.getBean(beanName,</span><br><span class="line">				AbstractNacosPropertySourceBuilder.class));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	NacosPropertySourcePostProcessor.beanFactory = beanFactory;</span><br><span class="line">	<span class="built_in">this</span>.configServiceBeanBuilder = getConfigServiceBeanBuilder(beanFactory);</span><br><span class="line"></span><br><span class="line">	String[] beanNames = beanFactory.getBeanDefinitionNames();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (String beanName : beanNames) &#123;</span><br><span class="line">		processPropertySource(beanName, beanFactory);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>该方法实现于<strong>BeanFactoryPostProcessor</strong>，<strong>BeanFactoryPostProcessor</strong>可以管理Bean工厂内所有的Beandefinition（未实例化）数据。这里获取了工厂内的所有Bean，然后遍历Bean调用<strong>processPropertySource</strong>处理。</li>
+</ol>
+<p>看一下<strong>processPropertySource</strong>方法做了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">processPropertySource</span><span class="params">(String beanName,</span></span><br><span class="line"><span class="params">		ConfigurableListableBeanFactory beanFactory)</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (processedBeanNames.contains(beanName)) &#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">BeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> beanFactory.getBeanDefinition(beanName);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Build multiple instance if possible</span></span><br><span class="line">	List&lt;NacosPropertySource&gt; nacosPropertySources = buildNacosPropertySources(</span><br><span class="line">			beanName, beanDefinition);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Add Orderly</span></span><br><span class="line">	<span class="keyword">for</span> (NacosPropertySource nacosPropertySource : nacosPropertySources) &#123;</span><br><span class="line">		addNacosPropertySource(nacosPropertySource);</span><br><span class="line">		<span class="type">Properties</span> <span class="variable">properties</span> <span class="operator">=</span> configServiceBeanBuilder</span><br><span class="line">				.resolveProperties(nacosPropertySource.getAttributesMetadata());</span><br><span class="line">		addListenerIfAutoRefreshed(nacosPropertySource, properties, environment);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	processedBeanNames.add(beanName);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> List&lt;NacosPropertySource&gt; <span class="title function_">buildNacosPropertySources</span><span class="params">(String beanName,</span></span><br><span class="line"><span class="params">		BeanDefinition beanDefinition)</span> &#123;</span><br><span class="line">	<span class="keyword">for</span> (AbstractNacosPropertySourceBuilder builder : nacosPropertySourceBuilders) &#123;</span><br><span class="line">		<span class="keyword">if</span> (builder.supports(beanDefinition)) &#123;</span><br><span class="line">			<span class="keyword">return</span> builder.build(beanName, beanDefinition);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>processPropertySource</strong>已经做了一些幂等性的保证，这个方法就是构建NacosPropertySource的地方。而这里<strong>buildNacosPropertySources</strong>的逻辑很简单，就是获取Bean上的<strong>NacosPropertySources</strong>注解来创建NacosPropertySource。当然<strong>AbstractNacosPropertySourceBuilder</strong>其实有两种实现，AnnotationNacosPropertySourceBuilder和XmlNacosPropertySourceBuilder，因为这里没有使用XML配置，所以实际上只能从注解中获取。而discover.bootstrap.properties的配置在此时构建成一个<strong>NacosPropertySource</strong>，并命名为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discover.bootstrap.properties|discover|||localhost:<span class="number">8848</span>|||||UTF-<span class="number">8</span>||</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;以上是两个同配置的<strong>NacosPropertySource</strong>加载过程，只是因为名称稍微有点差异且加载的顺序原因，导致@NacosValue再也无法获得最新的值，那么如何解决这个问题？不知道这个是不是算bug，不过我们解决的思路很简单，只要调换一下两个<strong>NacosPropertySource</strong>在<strong>MutablePropertySources</strong>中的顺序即可，而<strong>NacosPropertySource</strong>也支持这样的操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NacosPropertySource(dataId = &quot;discover.bootstrap.properties&quot;, groupId = &quot;discover&quot;, autoRefreshed = true, first = true)</span></span><br></pre></td></tr></table></figure>
+<p>添加一个first &#x3D; true的参数，可以将该配置移到前面。最后，贴一段**AbstractApplicationContext#refresh()**的代码作为结尾：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException &#123;</span><br><span class="line">		<span class="keyword">synchronized</span> (<span class="built_in">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">			<span class="comment">// Prepare this context for refreshing.</span></span><br><span class="line">			prepareRefresh();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">			<span class="type">ConfigurableListableBeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> obtainFreshBeanFactory();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">			prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">				postProcessBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">				invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">				registerBeanPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Initialize message source for this context.</span></span><br><span class="line">				initMessageSource();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Initialize event multicaster for this context.</span></span><br><span class="line">				initApplicationEventMulticaster();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">				onRefresh();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Check for listener beans and register them.</span></span><br><span class="line">				registerListeners();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">				finishBeanFactoryInitialization(beanFactory);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Last step: publish corresponding event.</span></span><br><span class="line">				finishRefresh();</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">				<span class="keyword">if</span> (logger.isWarnEnabled()) &#123;</span><br><span class="line">					logger.warn(<span class="string">&quot;Exception encountered during context initialization - &quot;</span> +</span><br><span class="line">							<span class="string">&quot;cancelling refresh attempt: &quot;</span> + ex);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Destroy already created singletons to avoid dangling resources.</span></span><br><span class="line">				destroyBeans();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Reset &#x27;active&#x27; flag.</span></span><br><span class="line">				cancelRefresh(ex);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Propagate exception to caller.</span></span><br><span class="line">				<span class="keyword">throw</span> ex;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">finally</span> &#123;</span><br><span class="line">				<span class="comment">// Reset common introspection caches in Spring&#x27;s core, since we</span></span><br><span class="line">				<span class="comment">// might not ever need metadata for singleton beans anymore...</span></span><br><span class="line">				resetCommonCaches();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nacos/" rel="tag"># nacos</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/29/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5/" rel="prev" title="记一次nacos刷新失败排查">
+                  <i class="fa fa-angle-left"></i> 记一次nacos刷新失败排查
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/05/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E7%AC%94%E8%AE%B0/" rel="next" title="领域驱动设计（DDD）笔记">
+                  领域驱动设计（DDD）笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

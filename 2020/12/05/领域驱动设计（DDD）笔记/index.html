@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;前段时间一直在看领域驱动设计相关的文章，但是一直没有整理一些领域驱动的概念，导致一段时间过去就有点遗忘了，于是决定把一些领域驱动的概念先记录下来，便于下次翻阅。顺便再推荐推荐两本领域驱动相关比较推崇的书：《领域驱动设计软件核心复杂性应对之道》和《实现领域驱动设计》。前者是大名鼎鼎领域驱动设计之父Eric Evans的著作，这是一本2004年初版的书，至今已超过15年。不过相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="领域驱动设计（DDD）笔记">
+<meta property="og:url" content="http://example.com/2020/12/05/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;前段时间一直在看领域驱动设计相关的文章，但是一直没有整理一些领域驱动的概念，导致一段时间过去就有点遗忘了，于是决定把一些领域驱动的概念先记录下来，便于下次翻阅。顺便再推荐推荐两本领域驱动相关比较推崇的书：《领域驱动设计软件核心复杂性应对之道》和《实现领域驱动设计》。前者是大名鼎鼎领域驱动设计之父Eric Evans的著作，这是一本2004年初版的书，至今已超过15年。不过相">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-12-05T03:22:33.000Z">
+<meta property="article:modified_time" content="2021-01-16T08:05:04.463Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="DDD">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/12/05/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2020/12/05/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E7%AC%94%E8%AE%B0/","path":"2020/12/05/领域驱动设计（DDD）笔记/","title":"领域驱动设计（DDD）笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>领域驱动设计（DDD）笔记 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AFDDD"><span class="nav-number">1.</span> <span class="nav-text">为什么是DDD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%98%E7%95%A5%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">战略设计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F"><span class="nav-number">2.0.1.</span> <span class="nav-text">领域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%90%E5%9F%9F"><span class="nav-number">2.0.2.</span> <span class="nav-text">子域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%9F%9F"><span class="nav-number">2.0.3.</span> <span class="nav-text">核心域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%94%AF%E6%92%91%E5%9F%9F"><span class="nav-number">2.0.4.</span> <span class="nav-text">支撑域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%AD%90%E5%9F%9F"><span class="nav-number">2.0.5.</span> <span class="nav-text">通用子域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%90%E7%95%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">2.0.6.</span> <span class="nav-text">限界上下文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%98%E6%9C%AF%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">战术设计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E5%92%8C%E5%80%BC%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.0.1.</span> <span class="nav-text">实体和值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%92%8C%E8%81%9A%E5%90%88%E6%A0%B9"><span class="nav-number">3.0.2.</span> <span class="nav-text">聚合和聚合根</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%BA%93"><span class="nav-number">3.0.3.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E4%BA%8B%E4%BB%B6"><span class="nav-number">3.0.4.</span> <span class="nav-text">领域事件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DDD%E5%88%86%E5%B1%82"><span class="nav-number">3.0.5.</span> <span class="nav-text">DDD分层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84-%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">架构&amp;模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CQRS"><span class="nav-number">4.0.1.</span> <span class="nav-text">CQRS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%BA%AF%E6%BA%90%EF%BC%88Event-Sourcing%EF%BC%89"><span class="nav-number">4.0.2.</span> <span class="nav-text">事件溯源（Event Sourcing）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%AD%E8%BE%B9%E5%BD%A2%E6%9E%B6%E6%9E%84%EF%BC%88Hexagonal-Architecture%EF%BC%89"><span class="nav-number">4.0.3.</span> <span class="nav-text">六边形架构（Hexagonal Architecture）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84%EF%BC%88The-Clean-Architecture%EF%BC%89"><span class="nav-number">4.0.4.</span> <span class="nav-text">整洁架构（The Clean Architecture）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/05/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="领域驱动设计（DDD）笔记 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          领域驱动设计（DDD）笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-12-05 11:22:33" itemprop="dateCreated datePublished" datetime="2020-12-05T11:22:33+08:00">2020-12-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2021-01-16 16:05:04" itemprop="dateModified" datetime="2021-01-16T16:05:04+08:00">2021-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DDD/" itemprop="url" rel="index"><span itemprop="name">DDD</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;前段时间一直在看领域驱动设计相关的文章，但是一直没有整理一些领域驱动的概念，导致一段时间过去就有点遗忘了，于是决定把一些领域驱动的概念先记录下来，便于下次翻阅。顺便再推荐推荐两本领域驱动相关比较推崇的书：《领域驱动设计软件核心复杂性应对之道》和《实现领域驱动设计》。前者是大名鼎鼎领域驱动设计之父Eric Evans的著作，这是一本2004年初版的书，至今已超过15年。不过相比于前者，我更喜欢《实现领域驱动设计》，因为感觉这本书的对一些术语的提炼以及整个章节叙述由广而深，显然更易于理解。当我初看完《领域驱动设计》这本书的时候其实是一头雾水，直到后面再看《实现领域驱动设计》时，才感觉懂了点门道。</p>
+<span id="more"></span>
+<h3 id="为什么是DDD"><a href="#为什么是DDD" class="headerlink" title="为什么是DDD"></a>为什么是DDD</h3><p>&emsp;&emsp;首先DDD不是一门什么新的技术或者思想，相比而言，DDD已经发展了十几年，但是DDD不仅没有被淘汰，反而越来越多地被提起。随着设备和技术不断推陈出新，软件架构模式也从单体到集中式、分布式、微服务的方向不断演进，随着微服务技术的发展和兴起，DDD的设计和领域建模的方式，开始大放异彩。需要明确，DDD不是架构，而是一种架构设计方法论，它通过边界划分将复杂业务领域简单化，帮我们设计出清晰的领域和应用边界，可以很容易地实现架构演进。</p>
+<h3 id="战略设计"><a href="#战略设计" class="headerlink" title="战略设计"></a>战略设计</h3><p>&emsp;&emsp;战略设计颇有点高屋建瓴的味道，需要有广阔的视野，从宏观的角度对整个业务进行分析，建立业务模型，划分领域边界，构建出通用语言的限界上下文。它可以帮助我们定义不同团队之间的组织关系，清楚地区分不同系统和业务的关注点，这样可以保护每个业务层面的服务。更进一步，这将指导我们来拆分和实现上面所说的微服务。</p>
+<blockquote>
+<p>DDD的战略设计有点抽象，也有很大难度，因为这不是一门单纯的技术，更多的是每个人对业务的理解，当然也有一些技术手段辅助，比如可以通过事件风暴划分限界上下文。</p>
+</blockquote>
+<h5 id="领域"><a href="#领域" class="headerlink" title="领域"></a>领域</h5><p>领域按照维基百科的解释来说，是指某一专业或事物方面范围的涵盖。简单来说，当你在开发一款电商应用的时候，你所面对的就是电商这个领域。DDD使用领域来划定业务的边界，当然有时候一个复杂的业务又可以进行拆分，所以领域又可以按照一定的规则进行拆分，比如下面将要解释的核心域、子域、通用子域和支撑域，他们都是领域，但是同时又有不同的含义。因为DDD的领域模型不是建立一个单一、全功能式的模型，正好相反，在DDD中，一个领域被分为若干个子域，领域模型在限界上下文中完成开发。</p>
+<h5 id="子域"><a href="#子域" class="headerlink" title="子域"></a>子域</h5><p>上面说领域是可以拆分的，几乎所有软件的领域都包含多个子域，而子域可以根据软件的业务系统功能进行拆分，比如典型的电商业务涉及订单、商品、库存和营销等子域。在领域细化为不同的子域，同时子域又根据自身业务的重要程度和功能属性划分为三种：核心域、通用子域和支撑域。</p>
+<h5 id="核心域"><a href="#核心域" class="headerlink" title="核心域"></a>核心域</h5><p>核心域是一款软件的竞争力所在，是业务成功的主要促成因素。核心域的重要程度不言而喻，在DDD开发中，将重点关注核心域（从企业的战略角度分析）。</p>
+<h5 id="支撑域"><a href="#支撑域" class="headerlink" title="支撑域"></a>支撑域</h5><p>支撑域是相较于核心域而言的，它们通常专注于业务的某一个方面，但却不是业务的核心。</p>
+<h5 id="通用子域"><a href="#通用子域" class="headerlink" title="通用子域"></a>通用子域</h5><p>如果一个子域被用于多个业务系统，那么这个子域就是通用子域。当然并不是说支撑域和通用子域不重要，它们同样重要，这是相对于核心域而言重要程度没这么高。</p>
+<h5 id="限界上下文"><a href="#限界上下文" class="headerlink" title="限界上下文"></a>限界上下文</h5><p>限界上下文主要用来封装通用语言和领域对象。它是一个显示的边界，领域模型便在于这个边界之内。为什么需要创建这样的一个边界？因为在很多情况下，不同的模型中存在名字相同或相近的对象，但是它们的意思却不同。当模型被一个显示的边界所包围，其中每个概念的含义就可以确定了。在微服务拆分中，理论上限界上下文就是微服务拆分的边界依据。</p>
+<h3 id="战术设计"><a href="#战术设计" class="headerlink" title="战术设计"></a>战术设计</h3><p>&emsp;&emsp;战术设计主要是对战略设计的具体实践，战术设计依赖于上面说的战略设计，通过具体的技术将领域模型映射到代码中，它本身关注的更多是技术层方面的实施。</p>
+<h5 id="实体和值对象"><a href="#实体和值对象" class="headerlink" title="实体和值对象"></a>实体和值对象</h5><p>实体和值对象都是领域的特定对象，可以说他们是领域模型的基本组成单元。实体和值对象的区别是实体拥有唯一标识，有状态，拥有自己的什么周期；值对象没有唯一标识，而且不可变。举个简单的例子，订单是一个实体，它包含订单ID、订单状态、订单的发货地址省市县等，订单的发货地址这时候就是一个值对象。</p>
+<h5 id="聚合和聚合根"><a href="#聚合和聚合根" class="headerlink" title="聚合和聚合根"></a>聚合和聚合根</h5><p>实体和值对象，以及实体之间相互协作，形成复杂、错乱的关联关系，在执行业务操作的时候，面对如此多的领域对象，很难保证一致性。而使用聚合来组织这些领域对象，能够保证在它们协同工作的时候，保证数据的一致性。可以这么理解，聚合由一些实体和值对象组合而成，是数据修改和持久化的基本单位。那么聚合根是如何保证数据一致性的？答案是聚合根，如果说实体或者值对象是一个个体，聚合就是组织，而聚合根是组织的负责人。再尝试访问或者操作聚合的时候，需要先访问聚合根，然后由聚合根路由到内部实体，聚合外部对象不能不通过聚合根而直接访问聚合。既然所有操作都需要经过聚合根，那么任何一致性的保证也就简单多了。</p>
+<h5 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h5><p>资源库表示一个安全的存储区域，通常提供存储和移除的功能，并且保证取出的物品和存入的物品保持相同的状态。我们将聚合实例放在资源库中，通过资源库持久化领域对象到数据库中。其实初看资源库和传统DAO层功能有些类似，但是它们是不同的：DAO面向数据库，提供CRUD功能；资源库面向对象集合，更贴近领域模型，只有聚合根才能操作。顺便再贴一个stackoverflow上关于DAO和Repository的探讨，方便后续翻阅：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8550124/what-is-the-difference-between-dao-and-repository-patterns">What is the difference between DAO and Repository patterns?</a>。</p>
+<h5 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h5><p>领域事件是领域专家所关心的发生在领域中的一些事件。可能你在不知道DDD情况下，已经在运用领域事件了，比如当订单创建成功后，会发布一个订单创建成功的事件。领域事件的作用主要是：</p>
+<ul>
+<li>聚合间的一致性</li>
+<li>限界上下文集成</li>
+<li>事件溯源</li>
+<li>批处理</li>
+</ul>
+<h5 id="DDD分层"><a href="#DDD分层" class="headerlink" title="DDD分层"></a>DDD分层</h5><p>在Web开发中经典的三层架构：展现层（view）、业务层（service）、数据访问层（dao），在此基础上，领域驱动提出了四层架构：<strong>用户接口层（interface）、应用层（application）、领域层（domain）、基础设施层（infrastructure）</strong>，下面简单说下：</p>
+<ul>
+<li><strong>用户接口层</strong> 负责向用户显示信息和解释用户指令，这里用户的范围是很广的，可以是界面、外部调用、脚本执行等。</li>
+<li><strong>应用层</strong> 很薄的一层，理论上不应该有业务规则或逻辑，主要面向用例、流程、组合服务、事务、发送或订阅领域事件等相关的操作。</li>
+<li><strong>领域层</strong> 实现企业核心业务逻辑，前面提及的实体、值对象、聚合根等归属于领域层。</li>
+<li><strong>基础设施层</strong> 为其它各层提供通用的技术和基础服务，包括第三方工具、驱动、消息中间件、网关、文件、缓存以及数据库等。</li>
+</ul>
+<p>经典的分层架构一般都是上层依赖下层，但是按照依赖倒置原则来说：</p>
+<blockquote>
+<p><strong>高层模块不应该依赖于底层模块，两者都应该依赖于抽象</strong><br><strong>抽象不应该依赖于细节，细节应该依赖于抽象</strong></p>
+</blockquote>
+<p>按照这个定义，低层服务（基础层）应该依赖于高层组件（用户接口层、应用层、领域层）提供的接口。比如可以在领域层封装仓储接口，然后在基础层实现，这样领域层就不依赖具体的基础层模块，而是基础层依赖领域层，这样就避免仓储模块发生大改动会对核心领域层有大的影响。</p>
+<h3 id="架构-模式"><a href="#架构-模式" class="headerlink" title="架构&amp;模式"></a>架构&amp;模式</h3><h5 id="CQRS"><a href="#CQRS" class="headerlink" title="CQRS"></a>CQRS</h5><p><strong>Command Query Responsibility Segregation</strong>——即命令查询分离。命令是会引起数据发生变化的操作，比如增删改这些操作；而查询不会对数据产生影响。CQRS的核心就是分离这两种操作，这里说的分离不仅仅是接口上的分离，更多的数据模型的分离。这和读写分离又有点不同，读写分离强调的是物理数据库的分离，CQRS强调的是command与query操作数据模型上的分离，比如command更注重范式、领域模型，而query则注重性能、可以允许更多冗余。</p>
+<h5 id="事件溯源（Event-Sourcing）"><a href="#事件溯源（Event-Sourcing）" class="headerlink" title="事件溯源（Event Sourcing）"></a>事件溯源（Event Sourcing）</h5><p>Event Sourcing又叫事件溯源，事件作为系统的一等公民。简单地来说，它会将所有业务行为以 <strong>append-only</strong> 的形式存储起来，可以用于构建领域对象状态、保证事务数据一致性、支持完整的审计流程等。</p>
+<h5 id="六边形架构（Hexagonal-Architecture）"><a href="#六边形架构（Hexagonal-Architecture）" class="headerlink" title="六边形架构（Hexagonal Architecture）"></a>六边形架构（Hexagonal Architecture）</h5><p>六边形架构又称<strong>端口和适配器模式</strong>，这个名字听上去更加契合，这里端口没有特定的含义，比如我们可以想象成HTTP，而适配器则是对应端口的处理方式，如Web请求中对应的Controller，六边形架构的核心理念是将输入和输出放在最外层，内层是核心业务层。这种理念其实和领域驱动设计非常接近，领域驱动设计中也有用依赖倒置的方式来解耦技术和业务系统的关联。利用六边形架构，可以让我们将应用程序的核心逻辑与外部的关注点隔离开来，可以轻松地变更数据传输方式、切换数据源或者接入多驱动测试。</p>
+<h5 id="整洁架构（The-Clean-Architecture）"><a href="#整洁架构（The-Clean-Architecture）" class="headerlink" title="整洁架构（The Clean Architecture）"></a>整洁架构（The Clean Architecture）</h5><p>整洁架构感觉和六边形架构一脉相承，更多地是提炼了其他架构的一些特征精髓：</p>
+<ul>
+<li><strong>框架分离</strong> 业务不受框架的限制</li>
+<li><strong>可测试性</strong> 业务逻辑独立测试，不依赖于UI、数据库、Web服务等其他外部条件</li>
+<li><strong>独立于UI</strong> UI层的替换和修改不会修改其他系统模块</li>
+<li><strong>独立于DB</strong> 数据库存储的独立、可替换性</li>
+<li><strong>与外部结构分离</strong> 系统业务逻辑不需要知道任何外部结构</li>
+</ul>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ol>
+<li>《实现领域驱动设计》</li>
+<li><a target="_blank" rel="noopener" href="https://blog.jaggerwang.net/clean-architecture-in-practice/">干净架构最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/twang281314/frontEnd/blob/master/weekly/resources/software_architecture.md">Software Architecture Design</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.infoq.cn/article/pjekymkzhmkafgi6ycri">Netflix的六边形架构实践</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DDD/" rel="tag"># DDD</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89/" rel="prev" title="记一次nacos刷新失败排查（二）">
+                  <i class="fa fa-angle-left"></i> 记一次nacos刷新失败排查（二）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/11/Kafka%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%80%EF%BC%89Producer/" rel="next" title="Kafka之旅（一）Producer">
+                  Kafka之旅（一）Producer <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

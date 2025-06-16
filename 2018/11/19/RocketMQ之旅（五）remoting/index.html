@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在Rocke">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ之旅（五）remoting">
+<meta property="og:url" content="http://example.com/2018/11/19/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%BA%94%EF%BC%89remoting/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在Rocke">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fxc4e88hgtj20r20eyju3.jpg">
+<meta property="article:published_time" content="2018-11-19T09:02:22.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:00.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="RocketMQ之旅">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg">
+
+
+<link rel="canonical" href="http://example.com/2018/11/19/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%BA%94%EF%BC%89remoting/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2018/11/19/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%BA%94%EF%BC%89remoting/","path":"2018/11/19/RocketMQ之旅（五）remoting/","title":"RocketMQ之旅（五）remoting"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RocketMQ之旅（五）remoting | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#NettyRemotingServer"><span class="nav-number">1.</span> <span class="nav-text">NettyRemotingServer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">启动服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">注册处理器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.3.</span> <span class="nav-text">关闭服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NettyRemotingClient"><span class="nav-number">2.</span> <span class="nav-text">NettyRemotingClient</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/11/19/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%BA%94%EF%BC%89remoting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RocketMQ之旅（五）remoting | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RocketMQ之旅（五）remoting
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-11-19 17:02:22" itemprop="dateCreated datePublished" datetime="2018-11-19T17:02:22+08:00">2018-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:00" itemprop="dateModified" datetime="2019-10-25T00:22:00+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/RocketMQ%E4%B9%8B%E6%97%85/" itemprop="url" rel="index"><span itemprop="name">RocketMQ之旅</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;之前不论是分析namesrv模块还是client模块，都意外地碰到了remoting模块的代码，remoting是RocketMQ公用的网络处理模块，使用netty框架编写，所以我觉得有必要先来看一下remoting模块的代码，正好可以将之前跳过去的网络传输部分补齐，也可以为之后的代码分析做好铺垫。或者你如果想要用netty来做点什么，正好可以来借鉴一下，看一看在RocketMQ中，这个成熟的开源框架是如何来使用Netty的。remoting模块主要分成两个部分，服务端和客户端，从应用上来说，服务端是<strong>NettyRemotingServer</strong>，客户端是<strong>NettyRemotingClient</strong>，只要从这两个类上着手就可以了。</p>
+<h4 id="NettyRemotingServer"><a href="#NettyRemotingServer" class="headerlink" title="NettyRemotingServer"></a>NettyRemotingServer</h4><p>&emsp;&emsp;NettyRemotingServer在RocketMQ中主要用在两个地方，BrokerController和NamesrvController，先来看一下类图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fxbb18isgtj20ri0go0vk.jpg"></p>
+<span id="more"></span>
+<p>NettyRemotingServer的父类关系非常简单易懂，其中RemotingServer封装了服务端调用的API，NettyRemotingAbstract封装了Netty对于网络请求的处理，同时他也是NettyRemotingClient的父类。NettyRemotingServer的使用主要分为三个步骤：</p>
+<ol>
+<li><strong>start()</strong> 启动服务</li>
+<li><strong>registerDefaultProcessor()</strong> 注册处理器</li>
+<li><strong>shutdown()</strong> 关闭服务</li>
+</ol>
+<h5 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h5><p>&emsp;&emsp;先看一下**start()**做了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.defaultEventExecutorGroup = <span class="keyword">new</span> <span class="title class_">DefaultEventExecutorGroup</span>(</span><br><span class="line">        nettyServerConfig.getServerWorkerThreads(),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ThreadFactory</span>() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> <span class="type">AtomicInteger</span> <span class="variable">threadIndex</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Thread <span class="title function_">newThread</span><span class="params">(Runnable r)</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(r, <span class="string">&quot;NettyServerCodecThread_&quot;</span> + <span class="built_in">this</span>.threadIndex.incrementAndGet());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="type">ServerBootstrap</span> <span class="variable">childHandler</span> <span class="operator">=</span></span><br><span class="line">        <span class="built_in">this</span>.serverBootstrap.group(<span class="built_in">this</span>.eventLoopGroupBoss, <span class="built_in">this</span>.eventLoopGroupSelector)</span><br><span class="line">            .channel(useEpoll() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)</span><br><span class="line">            .option(ChannelOption.SO_BACKLOG, <span class="number">1024</span>)</span><br><span class="line">            .option(ChannelOption.SO_REUSEADDR, <span class="literal">true</span>)</span><br><span class="line">            .option(ChannelOption.SO_KEEPALIVE, <span class="literal">false</span>)</span><br><span class="line">            .childOption(ChannelOption.TCP_NODELAY, <span class="literal">true</span>)</span><br><span class="line">            .childOption(ChannelOption.SO_SNDBUF, nettyServerConfig.getServerSocketSndBufSize())</span><br><span class="line">            .childOption(ChannelOption.SO_RCVBUF, nettyServerConfig.getServerSocketRcvBufSize())</span><br><span class="line">            .localAddress(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(<span class="built_in">this</span>.nettyServerConfig.getListenPort()))</span><br><span class="line">            .childHandler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                    ch.pipeline()</span><br><span class="line">                        .addLast(defaultEventExecutorGroup, HANDSHAKE_HANDLER_NAME,</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">HandshakeHandler</span>(TlsSystemConfig.tlsMode))</span><br><span class="line">                        .addLast(defaultEventExecutorGroup,</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">NettyEncoder</span>(),</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">NettyDecoder</span>(),</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">IdleStateHandler</span>(<span class="number">0</span>, <span class="number">0</span>, nettyServerConfig.getServerChannelMaxIdleTimeSeconds()),</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">NettyConnectManageHandler</span>(),</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">NettyServerHandler</span>()</span><br><span class="line">                        );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nettyServerConfig.isServerPooledByteBufAllocatorEnable()) &#123;</span><br><span class="line">        childHandler.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">ChannelFuture</span> <span class="variable">sync</span> <span class="operator">=</span> <span class="built_in">this</span>.serverBootstrap.bind().sync();</span><br><span class="line">        <span class="type">InetSocketAddress</span> <span class="variable">addr</span> <span class="operator">=</span> (InetSocketAddress) sync.channel().localAddress();</span><br><span class="line">        <span class="built_in">this</span>.port = addr.getPort();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e1) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;this.serverBootstrap.bind().sync() InterruptedException&quot;</span>, e1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.channelEventListener != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="built_in">this</span>.nettyEventExecutor.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.timer.scheduleAtFixedRate(<span class="keyword">new</span> <span class="title class_">TimerTask</span>() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                NettyRemotingServer.<span class="built_in">this</span>.scanResponseTable();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">                log.error(<span class="string">&quot;scanResponseTable exception&quot;</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">1000</span> * <span class="number">3</span>, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>初始化netty，配置参数：</p>
+<ul>
+<li>ChannelOption.SO_BACKLOG 服务器请求线程满了，用于临时存放已完成三次握手的请求队列的最大长度。</li>
+<li>ChannelOption.SO_REUSEADDR 允许重复使用本地地址和端口</li>
+<li>ChannelOption.SO_KEEPALIVE TCP长连接，这里为false</li>
+<li>ChannelOption.TCP_NODELAY true禁用nagle算法</li>
+<li>ChannelOption.SO_SNDBUF TCP发送缓冲区的容量上限</li>
+<li>ChannelOption.SO_RCVBUF TCP接受缓冲区的容量上限</li>
+</ul>
+</li>
+<li><p>设置ChannelHandler：</p>
+<ul>
+<li>HandshakeHandler 用于tls连接</li>
+<li>NettyEncoder、NettyDecoder 编解码</li>
+<li>IdleStateHandler 心跳</li>
+<li>NettyConnectManageHandler 管理连接</li>
+<li>NettyServerHandler 消息接收处理</li>
+</ul>
+</li>
+<li><p>如果开启serverPooledByteBufAllocatorEnable，设置工作组使用内存池化。</p>
+</li>
+<li><p>scanResponseTable() 每秒扫描responseTable，移除过期请求，执行未过期请求的回调。</p>
+</li>
+</ol>
+<p>在<strong>NettyConnectManageHandler</strong>中，RocketMQ将一些连接事件比如通道激活、失活、连接空闲、出错，包装成NettyEvent，然后放入<strong>NettyEventExecutor</strong>，<strong>NettyEventExecutor</strong>继承于<strong>ServiceThread</strong>，是一个线程服务，所有的NettyEvent事件将会放入<strong>NettyEventExecutor</strong>中的一个阻塞队列LinkedBlockingQueue中，然后有一个专门的线程统一处理，看一下<strong>NettyEventExecutor</strong>的**run()**：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">    log.info(<span class="built_in">this</span>.getServiceName() + <span class="string">&quot; service started&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ChannelEventListener</span> <span class="variable">listener</span> <span class="operator">=</span> NettyRemotingAbstract.<span class="built_in">this</span>.getChannelEventListener();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!<span class="built_in">this</span>.isStopped()) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">NettyEvent</span> <span class="variable">event</span> <span class="operator">=</span> <span class="built_in">this</span>.eventQueue.poll(<span class="number">3000</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">            <span class="keyword">if</span> (event != <span class="literal">null</span> &amp;&amp; listener != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">switch</span> (event.getType()) &#123;</span><br><span class="line">                    <span class="keyword">case</span> IDLE:</span><br><span class="line">                        listener.onChannelIdle(event.getRemoteAddr(), event.getChannel());</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> CLOSE:</span><br><span class="line">                        listener.onChannelClose(event.getRemoteAddr(), event.getChannel());</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> CONNECT:</span><br><span class="line">                        listener.onChannelConnect(event.getRemoteAddr(), event.getChannel());</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> EXCEPTION:</span><br><span class="line">                        listener.onChannelException(event.getRemoteAddr(), event.getChannel());</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">default</span>:</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.warn(<span class="built_in">this</span>.getServiceName() + <span class="string">&quot; service has exception. &quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    log.info(<span class="built_in">this</span>.getServiceName() + <span class="string">&quot; service end&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="注册处理器"><a href="#注册处理器" class="headerlink" title="注册处理器"></a>注册处理器</h5><p>&emsp;&emsp;<strong>NettyRemotingServer</strong>中有两个注册processor的方法：**registerProcessor()<strong>和</strong>registerDefaultProcessor()<strong>。其中</strong>registerDefaultProcessor()<strong>注册了默认的处理器，当</strong>registerProcessor()<strong>注册的处理器没有匹配的时候，会使用默认的处理器执行。看一下</strong>registerProcessor()**：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerProcessor</span><span class="params">(<span class="type">int</span> requestCode, NettyRequestProcessor processor, ExecutorService executor)</span> &#123;</span><br><span class="line">    <span class="type">ExecutorService</span> <span class="variable">executorThis</span> <span class="operator">=</span> executor;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == executor) &#123;</span><br><span class="line">        executorThis = <span class="built_in">this</span>.publicExecutor;</span><br><span class="line">    &#125;</span><br><span class="line">    Pair&lt;NettyRequestProcessor, ExecutorService&gt; pair = <span class="keyword">new</span> <span class="title class_">Pair</span>&lt;NettyRequestProcessor, ExecutorService&gt;(processor, executorThis);</span><br><span class="line">    <span class="built_in">this</span>.processorTable.put(requestCode, pair);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将NettyRequestProcessor加入到processorTable（HashMap&lt;Integer&#x2F;* request code *&#x2F;, Pair&lt;NettyRequestProcessor, ExecutorService&gt;&gt;）中。那么这个processorTable中的NettyRequestProcessor会在什么时候调用？上文<strong>NettyRemotingServer</strong>的<strong>start()<strong>注册了一个</strong>NettyServerHandler</strong>，是一个统一的消息接收处理，代码非常简单，核心处理在<strong>NettyRemotingAbstract</strong>中的<strong>processMessageReceived()</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processMessageReceived</span><span class="params">(ChannelHandlerContext ctx, RemotingCommand msg)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">cmd</span> <span class="operator">=</span> msg;</span><br><span class="line">    <span class="keyword">if</span> (cmd != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (cmd.getType()) &#123;</span><br><span class="line">            <span class="keyword">case</span> REQUEST_COMMAND:</span><br><span class="line">                processRequestCommand(ctx, cmd);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> RESPONSE_COMMAND:</span><br><span class="line">                processResponseCommand(ctx, cmd);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看下处理请求的方法**processRequestCommand()**：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processRequestCommand</span><span class="params">(<span class="keyword">final</span> ChannelHandlerContext ctx, <span class="keyword">final</span> RemotingCommand cmd)</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Pair&lt;NettyRequestProcessor, ExecutorService&gt; matched = <span class="built_in">this</span>.processorTable.get(cmd.getCode());</span><br><span class="line">    <span class="keyword">final</span> Pair&lt;NettyRequestProcessor, ExecutorService&gt; pair = <span class="literal">null</span> == matched ? <span class="built_in">this</span>.defaultRequestProcessor : matched;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">opaque</span> <span class="operator">=</span> cmd.getOpaque();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pair != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">Runnable</span> <span class="variable">run</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="type">RPCHook</span> <span class="variable">rpcHook</span> <span class="operator">=</span> NettyRemotingAbstract.<span class="built_in">this</span>.getRPCHook();</span><br><span class="line">                    <span class="keyword">if</span> (rpcHook != <span class="literal">null</span>) &#123;</span><br><span class="line">                        rpcHook.doBeforeRequest(RemotingHelper.parseChannelRemoteAddr(ctx.channel()), cmd);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">response</span> <span class="operator">=</span> pair.getObject1().processRequest(ctx, cmd);</span><br><span class="line">                    <span class="keyword">if</span> (rpcHook != <span class="literal">null</span>) &#123;</span><br><span class="line">                        rpcHook.doAfterResponse(RemotingHelper.parseChannelRemoteAddr(ctx.channel()), cmd, response);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (!cmd.isOnewayRPC()) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (response != <span class="literal">null</span>) &#123;</span><br><span class="line">                            response.setOpaque(opaque);</span><br><span class="line">                            response.markResponseType();</span><br><span class="line">                            <span class="keyword">try</span> &#123;</span><br><span class="line">                                ctx.writeAndFlush(response);</span><br><span class="line">                            &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">                                log.error(<span class="string">&quot;process request over, but response failed&quot;</span>, e);</span><br><span class="line">                                log.error(cmd.toString());</span><br><span class="line">                                log.error(response.toString());</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">                    log.error(<span class="string">&quot;process request exception&quot;</span>, e);</span><br><span class="line">                    log.error(cmd.toString());</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (!cmd.isOnewayRPC()) &#123;</span><br><span class="line">                        <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">response</span> <span class="operator">=</span> RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR,</span><br><span class="line">                            RemotingHelper.exceptionSimpleDesc(e));</span><br><span class="line">                        response.setOpaque(opaque);</span><br><span class="line">                        ctx.writeAndFlush(response);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pair.getObject1().rejectRequest()) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">response</span> <span class="operator">=</span> RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,</span><br><span class="line">                <span class="string">&quot;[REJECTREQUEST]system busy, start flow control for a while&quot;</span>);</span><br><span class="line">            response.setOpaque(opaque);</span><br><span class="line">            ctx.writeAndFlush(response);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="type">RequestTask</span> <span class="variable">requestTask</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RequestTask</span>(run, ctx.channel(), cmd);</span><br><span class="line">            pair.getObject2().submit(requestTask);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RejectedExecutionException e) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((System.currentTimeMillis() % <span class="number">10000</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">                log.warn(RemotingHelper.parseChannelRemoteAddr(ctx.channel())</span><br><span class="line">                    + <span class="string">&quot;, too many requests and system thread pool busy, RejectedExecutionException &quot;</span></span><br><span class="line">                    + pair.getObject2().toString()</span><br><span class="line">                    + <span class="string">&quot; request code: &quot;</span> + cmd.getCode());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!cmd.isOnewayRPC()) &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">response</span> <span class="operator">=</span> RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,</span><br><span class="line">                    <span class="string">&quot;[OVERLOAD]system busy, start flow control for a while&quot;</span>);</span><br><span class="line">                response.setOpaque(opaque);</span><br><span class="line">                ctx.writeAndFlush(response);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">error</span> <span class="operator">=</span> <span class="string">&quot; request type &quot;</span> + cmd.getCode() + <span class="string">&quot; not supported&quot;</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">RemotingCommand</span> <span class="variable">response</span> <span class="operator">=</span></span><br><span class="line">            RemotingCommand.createResponseCommand(RemotingSysResponseCode.REQUEST_CODE_NOT_SUPPORTED, error);</span><br><span class="line">        response.setOpaque(opaque);</span><br><span class="line">        ctx.writeAndFlush(response);</span><br><span class="line">        log.error(RemotingHelper.parseChannelRemoteAddr(ctx.channel()) + error);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>processorTable</strong>就是上面<strong>NettyRequestProcessor</strong>处理器的集合，根据RemotingCommand的code来获取不同的NettyRequestProcessor，并在各自的ExecutorService种执行处理逻辑。</p>
+<h5 id="关闭服务"><a href="#关闭服务" class="headerlink" title="关闭服务"></a>关闭服务</h5><p>&emsp;&emsp;关闭服务的方法很简单，主要是关闭netty处理的线程池和一些独立的服务：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">shutdown</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.timer != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.timer.cancel();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.eventLoopGroupBoss.shutdownGracefully();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.eventLoopGroupSelector.shutdownGracefully();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.nettyEventExecutor != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.nettyEventExecutor.shutdown();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.defaultEventExecutorGroup != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.defaultEventExecutorGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;NettyRemotingServer shutdown exception, &quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.publicExecutor != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.publicExecutor.shutdown();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;NettyRemotingServer shutdown exception, &quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="NettyRemotingClient"><a href="#NettyRemotingClient" class="headerlink" title="NettyRemotingClient"></a>NettyRemotingClient</h4><p>&emsp;&emsp;<strong>NettyRemotingClient</strong>主要应用在consumer模块，贴一下类关系图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5gy1fxc4e88hgtj20r20eyju3.jpg"><br>看类关系图就知道，<strong>NettyRemotingClient</strong>和<strong>NettyRemotingServer</strong>有共同的父类，他们之间共用了大部分的代码，事实上，<strong>NettyRemotingClient</strong>的使用也和<strong>NettyRemotingServer</strong>保持一致，包括启动、注册Processor处理器、关闭，两者的代码要么大致相同，要么共用了父类的大部分逻辑，所以不再赘述。如果对netty的使用不甚熟悉，建议可以读下remoting的代码，简单明了，一个教科书式的例子。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RocketMQ%E4%B9%8B%E6%97%85/" rel="tag"># RocketMQ之旅</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/11/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%B8%80%EF%BC%89%E6%8E%92%E5%BA%8F/" rel="prev" title="算法国（一）排序">
+                  <i class="fa fa-angle-left"></i> 算法国（一）排序
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/17/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E5%85%AD%EF%BC%89broker%E5%90%AF%E5%8A%A8/" rel="next" title="RocketMQ之旅（六）broker启动">
+                  RocketMQ之旅（六）broker启动 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

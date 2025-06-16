@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="一个问题&emsp;&emsp;在策划印记读书（小程序）这款小产品的时候，考虑到一些问题，比如如何去设计一个针对文章列表的分页缓存系统。在这过程中也总结了一些业务的需求点：  后台发布文章，马上展示到新用户的首页，首页的文章按照发布的时间降序排列。 某个用户浏览首页的时候，不要出现重复的文章，过程中也不要丢失文章。 文章会有点赞、评论等操作，列表展示文章的点赞数和评论数。 从用户体验的角度讲，尽量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈高并发之分页缓存的设计">
+<meta property="og:url" content="http://example.com/2019/02/02/%E8%B0%88%E8%B0%88%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%88%86%E9%A1%B5%E7%BC%93%E5%AD%98%E7%9A%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="一个问题&emsp;&emsp;在策划印记读书（小程序）这款小产品的时候，考虑到一些问题，比如如何去设计一个针对文章列表的分页缓存系统。在这过程中也总结了一些业务的需求点：  后台发布文章，马上展示到新用户的首页，首页的文章按照发布的时间降序排列。 某个用户浏览首页的时候，不要出现重复的文章，过程中也不要丢失文章。 文章会有点赞、评论等操作，列表展示文章的点赞数和评论数。 从用户体验的角度讲，尽量">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-02-02T13:25:48.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:02.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="高并发">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/02/02/%E8%B0%88%E8%B0%88%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%88%86%E9%A1%B5%E7%BC%93%E5%AD%98%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/02/02/%E8%B0%88%E8%B0%88%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%88%86%E9%A1%B5%E7%BC%93%E5%AD%98%E7%9A%84%E8%AE%BE%E8%AE%A1/","path":"2019/02/02/谈谈高并发之分页缓存的设计/","title":"谈谈高并发之分页缓存的设计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>谈谈高并发之分页缓存的设计 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一个问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BC%93%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">客户端缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%93%E5%AD%98"><span class="nav-number">3.</span> <span class="nav-text">服务器缓存</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/02/02/%E8%B0%88%E8%B0%88%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%88%86%E9%A1%B5%E7%BC%93%E5%AD%98%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="谈谈高并发之分页缓存的设计 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          谈谈高并发之分页缓存的设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-02-02 21:25:48" itemprop="dateCreated datePublished" datetime="2019-02-02T21:25:48+08:00">2019-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:02" itemprop="dateModified" datetime="2019-10-25T00:22:02+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">高并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="一个问题"><a href="#一个问题" class="headerlink" title="一个问题"></a>一个问题</h3><p>&emsp;&emsp;在策划印记读书（小程序）这款小产品的时候，考虑到一些问题，比如如何去设计一个针对文章列表的分页缓存系统。在这过程中也总结了一些业务的需求点：</p>
+<ol>
+<li>后台发布文章，马上展示到新用户的首页，首页的文章按照发布的时间降序排列。</li>
+<li>某个用户浏览首页的时候，不要出现重复的文章，过程中也不要丢失文章。</li>
+<li>文章会有点赞、评论等操作，列表展示文章的点赞数和评论数。</li>
+<li>从用户体验的角度讲，尽量缩短首屏的加载时间。</li>
+</ol>
+<span id="more"></span>
+
+<h3 id="客户端缓存"><a href="#客户端缓存" class="headerlink" title="客户端缓存"></a>客户端缓存</h3><p>&emsp;&emsp;从第4点的用户体验上来说，最先考虑的是客户端缓存。比如客户端加载了一页数据，可以把它缓存到本地，当用户退出再次进入页面的时候，先加载本地的缓存数据，然后再去请求服务端的新数据。这样的设计有几个要点：</p>
+<ol>
+<li>必须记下缓存中最新的文章，基于此（比如最新文章的主键）来请求服务器增量更新数据。</li>
+<li>当上拉加载的时候，为了避免服务器返回重复的数据，需要记下缓存中最旧的文章，基于此加载列表之前的数据。</li>
+<li>基于以上两点，必须保证本地文章列表的连贯性，即下拉刷新返回的文章，必须和本地缓存是连贯的，中间不能出现断层，不然会出现文章丢失的情况。</li>
+</ol>
+<p>当然这里的缓存也不能是无限制缓存，不然首屏加载了缓存中大量的数据，在小程序上可能出现卡顿的现象。最好还是只缓存最新的一页数据，这样也可以降低后续分页的复杂性。</p>
+<h3 id="服务器缓存"><a href="#服务器缓存" class="headerlink" title="服务器缓存"></a>服务器缓存</h3><p>&emsp;&emsp;考虑一个最简单的数据库分页，取page和size，在分页的过程中假设新增了一条数据，会出现什么情况？这种场景无可避免地会让用户刷到重复的文章，比如A文章本来是在第一页的最后一项，用户请求第一页拉取了A，正要请求第二页数据，这时候更新了一篇文章B，这条临时插入的数据无疑让A文章再次出现在用户的第二页中。不过这个问题在考虑客户端缓存设计中的第二点，其实已经解决了。<br>&emsp;&emsp;当后台发布文章的时候，同步将文章加入到缓存中。用户对文章的点赞评论操作，同样也会更新缓存中的数据。基于这两个要素，设计列表缓存的时候，可以考虑将列表数据进行拆分。即将列表数据分拆分成两个篮子，其中一个篮子装列表主键专门用于分页，一个篮子装具体的列表item项。假设使用redis作为缓存层，可以使用zset来存储列表主键，zset的score可以使用文章主键或者创建时间戳来作为排序依据。每次客户端请求数据的时候，都会携带page、size和当前数据项的标记，服务器先从列表主键缓存中查找一页数据，然后可以依据查找到的主键从文章缓存中索引到具体的文章。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag"># 高并发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/02/01/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%83%EF%BC%89broker%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF/" rel="prev" title="RocketMQ之旅（七）broker处理消息">
+                  <i class="fa fa-angle-left"></i> RocketMQ之旅（七）broker处理消息
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/02/02/%E8%B0%88%E8%B0%88Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" rel="next" title="谈谈Java垃圾收集算法">
+                  谈谈Java垃圾收集算法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;接上面从mybatis到mybatis-spring-boot-starter，主要是通过解决上文留下的几个问题，探讨在mybatis-spring-boot-starter中MyBatis如何与Spring（Spring Boot）进行互动。上文中写了一个Demo使用MyBatis原生的方式来测试从数据库中获取数据，本文稍微修改了一下，使用Spring Boot集成的方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从mybatis到mybatis-spring-boot-starter（二）">
+<meta property="og:url" content="http://example.com/2020/12/27/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;接上面从mybatis到mybatis-spring-boot-starter，主要是通过解决上文留下的几个问题，探讨在mybatis-spring-boot-starter中MyBatis如何与Spring（Spring Boot）进行互动。上文中写了一个Demo使用MyBatis原生的方式来测试从数据库中获取数据，本文稍微修改了一下，使用Spring Boot集成的方式">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-12-27T11:48:34.000Z">
+<meta property="article:modified_time" content="2020-12-27T11:48:34.064Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/12/27/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2020/12/27/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter%EF%BC%88%E4%BA%8C%EF%BC%89/","path":"2020/12/27/从mybatis到mybatis-spring-boot-starter（二）/","title":"从mybatis到mybatis-spring-boot-starter（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从mybatis到mybatis-spring-boot-starter（二） | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mapper%E6%B3%A8%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">Mapper注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SqlSession%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">SqlSession管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E5%88%87%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">多数据源切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/27/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从mybatis到mybatis-spring-boot-starter（二） | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从mybatis到mybatis-spring-boot-starter（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-12-27 19:48:34" itemprop="dateCreated datePublished" datetime="2020-12-27T19:48:34+08:00">2020-12-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mybatis/" itemprop="url" rel="index"><span itemprop="name">mybatis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;接上面<a href="/2020/12/22/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter">从mybatis到mybatis-spring-boot-starter</a>，主要是通过解决上文留下的几个问题，探讨在mybatis-spring-boot-starter中MyBatis如何与Spring（Spring Boot）进行互动。上文中写了一个Demo使用MyBatis原生的方式来测试从数据库中获取数据，本文稍微修改了一下，使用Spring Boot集成的方式来获取数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheNamespace</span></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BlogMapper</span> &#123;</span><br><span class="line">    <span class="meta">@Select(&quot;SELECT * FROM blog WHERE id = #&#123;id&#125;&quot;)</span></span><br><span class="line">    Blog <span class="title function_">selectBlog</span><span class="params">(<span class="type">int</span> id)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BlogService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlogMapper mapper;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BlogService</span><span class="params">(BlogMapper mapper)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.mapper = mapper;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">Blog</span> <span class="variable">b</span> <span class="operator">=</span> mapper.selectBlog(<span class="number">1</span>);</span><br><span class="line">        System.out.println(b.getArticle());</span><br><span class="line">        System.out.println(b.getContent());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有一些数据库的参数配置spring.datasource.xxx等忽略，就从这个例子开始。</p>
+<span id="more"></span>
+<h3 id="Mapper注入"><a href="#Mapper注入" class="headerlink" title="Mapper注入"></a>Mapper注入</h3><p>&emsp;&emsp;首先如果要注入Spring Bean，先必须保证该Bean会被Spring扫描到，这里可以看到<strong>BlogMapper</strong>上面比前文多了一个注解**@Mapper<strong>，这个Mapper注解（当然还有一些其他常用注解如MapperScan）就是Spring能扫描到关键。对</strong>Spring Boot Starter<strong>有了解的人应该知道，分析一个xxx-spring-boot-starter项目的时候，应该先看他的</strong>spring.factories**文件，这是整个项目扫描、自动装配的入口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">org.mybatis.spring.boot.autoconfigure.MybatisLanguageDriverAutoConfiguration,\</span><br><span class="line">org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration</span><br></pre></td></tr></table></figure>
+<p>这里有两个入口，MybatisLanguageDriverAutoConfiguration像是xml相关的模板解析，重点关注<strong>MybatisAutoConfiguration</strong>，下面贴几个<strong>MybatisAutoConfiguration</strong>的方法，会省略部分代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="keyword">public</span> SqlSessionFactory <span class="title function_">sqlSessionFactory</span><span class="params">(DataSource dataSource)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// ...省略里面的代码...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="keyword">public</span> SqlSessionTemplate <span class="title function_">sqlSessionTemplate</span><span class="params">(SqlSessionFactory sqlSessionFactory)</span> &#123;</span><br><span class="line">    <span class="comment">// ...省略里面的代码...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">AutoConfiguredMapperScannerRegistrar</span> <span class="keyword">implements</span> <span class="title class_">BeanFactoryAware</span>, ImportBeanDefinitionRegistrar &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> BeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!AutoConfigurationPackages.has(<span class="built_in">this</span>.beanFactory)) &#123;</span><br><span class="line">      logger.debug(<span class="string">&quot;Could not determine auto-configuration package, automatic mapper scanning disabled.&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    logger.debug(<span class="string">&quot;Searching for mappers annotated with @Mapper&quot;</span>);</span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; packages = AutoConfigurationPackages.get(<span class="built_in">this</span>.beanFactory);</span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">      packages.forEach(pkg -&gt; logger.debug(<span class="string">&quot;Using auto-configuration base package &#x27;&#123;&#125;&#x27;&quot;</span>, pkg));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">BeanDefinitionBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);</span><br><span class="line">    builder.addPropertyValue(<span class="string">&quot;processPropertyPlaceHolders&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">    builder.addPropertyValue(<span class="string">&quot;annotationClass&quot;</span>, Mapper.class);</span><br><span class="line">    builder.addPropertyValue(<span class="string">&quot;basePackage&quot;</span>, StringUtils.collectionToCommaDelimitedString(packages));</span><br><span class="line">    <span class="type">BeanWrapper</span> <span class="variable">beanWrapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanWrapperImpl</span>(MapperScannerConfigurer.class);</span><br><span class="line">    Stream.of(beanWrapper.getPropertyDescriptors())</span><br><span class="line">        <span class="comment">// Need to mybatis-spring 2.0.2+</span></span><br><span class="line">        .filter(x -&gt; x.getName().equals(<span class="string">&quot;lazyInitialization&quot;</span>)).findAny()</span><br><span class="line">        .ifPresent(x -&gt; builder.addPropertyValue(<span class="string">&quot;lazyInitialization&quot;</span>, <span class="string">&quot;$&#123;mybatis.lazy-initialization:false&#125;&quot;</span>));</span><br><span class="line">    registry.registerBeanDefinition(MapperScannerConfigurer.class.getName(), builder.getBeanDefinition());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setBeanFactory</span><span class="params">(BeanFactory beanFactory)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.beanFactory = beanFactory;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>使用配置的<strong>DataSource</strong>实例化<strong>SqlSessionFactory</strong></li>
+<li>实例化<strong>SqlSessionTemplate</strong>，注意<strong>SqlSessionTemplate</strong>继承于SqlSession</li>
+<li><strong>AutoConfiguredMapperScannerRegistrar</strong>这个类的加载是有条件的，比如使用@MapperScan或者@MapperScans注解扫描，<strong>AutoConfiguredMapperScannerRegistrar</strong>将不会执行，否则执行<strong>AutoConfiguredMapperScannerRegistrar#registerBeanDefinitions</strong>逻辑。</li>
+<li>这里注册了<strong>MapperScannerConfigurer</strong>到Spring中，并且初始化一些<strong>MapperScannerConfigurer</strong>的参数，比如basePackage、annotationClass，这两个参数影响了后续扫描的动作。</li>
+</ol>
+<p><strong>ImportBeanDefinitionRegistrar</strong>在<a href="/2020/11/29/%E8%AE%B0%E4%B8%80%E6%AC%A1nacos%E5%88%B7%E6%96%B0%E5%A4%B1%E8%B4%A5%E6%8E%92%E6%9F%A5%EF%BC%88%E4%BA%8C%EF%BC%89">记一次nacos刷新失败排查（二）</a>中也介绍过，实现该接口的类拥有注册Bean的能力。这里注册了<strong>MapperScannerConfigurer</strong>，<strong>MapperScannerConfigurer</strong>继承于<strong>BeanDefinitionRegistryPostProcessor</strong>，<strong>BeanDefinitionRegistryPostProcessor</strong>是Spring的一个后置处理器，继承于它可以获取Bean的相关定义，直接看实现方法<strong>MapperScannerConfigurer#postProcessBeanDefinitionRegistry</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postProcessBeanDefinitionRegistry</span><span class="params">(BeanDefinitionRegistry registry)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.processPropertyPlaceHolders) &#123;</span><br><span class="line">    processPropertyPlaceHolders();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">ClassPathMapperScanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathMapperScanner</span>(registry);</span><br><span class="line">  scanner.setAddToConfig(<span class="built_in">this</span>.addToConfig);</span><br><span class="line">  scanner.setAnnotationClass(<span class="built_in">this</span>.annotationClass);</span><br><span class="line">  scanner.setMarkerInterface(<span class="built_in">this</span>.markerInterface);</span><br><span class="line">  scanner.setSqlSessionFactory(<span class="built_in">this</span>.sqlSessionFactory);</span><br><span class="line">  scanner.setSqlSessionTemplate(<span class="built_in">this</span>.sqlSessionTemplate);</span><br><span class="line">  scanner.setSqlSessionFactoryBeanName(<span class="built_in">this</span>.sqlSessionFactoryBeanName);</span><br><span class="line">  scanner.setSqlSessionTemplateBeanName(<span class="built_in">this</span>.sqlSessionTemplateBeanName);</span><br><span class="line">  scanner.setResourceLoader(<span class="built_in">this</span>.applicationContext);</span><br><span class="line">  scanner.setBeanNameGenerator(<span class="built_in">this</span>.nameGenerator);</span><br><span class="line">  scanner.setMapperFactoryBeanClass(<span class="built_in">this</span>.mapperFactoryBeanClass);</span><br><span class="line">  <span class="keyword">if</span> (StringUtils.hasText(lazyInitialization)) &#123;</span><br><span class="line">    scanner.setLazyInitialization(Boolean.valueOf(lazyInitialization));</span><br><span class="line">  &#125;</span><br><span class="line">  scanner.registerFilters();</span><br><span class="line">  scanner.scan(</span><br><span class="line">      StringUtils.tokenizeToStringArray(<span class="built_in">this</span>.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>processPropertyPlaceHolders</strong>初始化一些带占位符的property。</li>
+<li>实例化<strong>ClassPathMapperScanner</strong>，<strong>ClassPathMapperScanner</strong>继承于<strong>ClassPathBeanDefinitionScanner</strong>，<strong>ClassPathBeanDefinitionScanner</strong>在<a href="/2019/04/03/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E6%B3%A8%E8%A7%A3%E6%89%AB%E6%8F%8F">谈谈Spring的IoC之注解扫描</a>中出现过，相当于Spring Bean扫描器。</li>
+<li><strong>ClassPathMapperScanner#setAnnotationClass</strong>将<strong>Mapper.class</strong>设置进去，然后调用<strong>ClassPathMapperScanner#registerFilters</strong>扫描指定basePackages下带<strong>Mapper</strong>注解的类，即上面示例中的<strong>BlogMapper</strong>。</li>
+</ol>
+<p>以上是扫描<strong>Mapper</strong>的逻辑，那么如何实例化<strong>Mapper</strong>？继续看<strong>ClassPathMapperScanner#doScan</strong>扫描逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Set&lt;BeanDefinitionHolder&gt; <span class="title function_">doScan</span><span class="params">(String... basePackages)</span> &#123;</span><br><span class="line">  Set&lt;BeanDefinitionHolder&gt; beanDefinitions = <span class="built_in">super</span>.doScan(basePackages);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (beanDefinitions.isEmpty()) &#123;</span><br><span class="line">    LOGGER.warn(() -&gt; <span class="string">&quot;No MyBatis mapper was found in &#x27;&quot;</span> + Arrays.toString(basePackages)</span><br><span class="line">        + <span class="string">&quot;&#x27; package. Please check your configuration.&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    processBeanDefinitions(beanDefinitions);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> beanDefinitions;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>扫描到<strong>Mapper</strong>后使用<strong>ClassPathMapperScanner#processBeanDefinitions</strong>处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">processBeanDefinitions</span><span class="params">(Set&lt;BeanDefinitionHolder&gt; beanDefinitions)</span> &#123;</span><br><span class="line">  GenericBeanDefinition definition;</span><br><span class="line">  <span class="keyword">for</span> (BeanDefinitionHolder holder : beanDefinitions) &#123;</span><br><span class="line">    definition = (GenericBeanDefinition) holder.getBeanDefinition();</span><br><span class="line">    <span class="type">String</span> <span class="variable">beanClassName</span> <span class="operator">=</span> definition.getBeanClassName();</span><br><span class="line">    LOGGER.debug(() -&gt; <span class="string">&quot;Creating MapperFactoryBean with name &#x27;&quot;</span> + holder.getBeanName() + <span class="string">&quot;&#x27; and &#x27;&quot;</span> + beanClassName</span><br><span class="line">        + <span class="string">&quot;&#x27; mapperInterface&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// the mapper interface is the original class of the bean</span></span><br><span class="line">    <span class="comment">// but, the actual class of the bean is MapperFactoryBean</span></span><br><span class="line">    definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName); <span class="comment">// issue #59</span></span><br><span class="line">    definition.setBeanClass(<span class="built_in">this</span>.mapperFactoryBeanClass);</span><br><span class="line"></span><br><span class="line">    definition.getPropertyValues().add(<span class="string">&quot;addToConfig&quot;</span>, <span class="built_in">this</span>.addToConfig);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...删除了下面一部分代码...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重新设置了<strong>MapperFactoryBean</strong>作为<strong>beanClass</strong>。<strong>MapperFactoryBean</strong>继承于<strong>FactoryBean</strong>，<strong>FactoryBean</strong>是一个工厂Bean，使用它可以自定义整个Bean的创建（拥有动态创建Bean的能力）。看一下<strong>MapperFactoryBean#getObject</strong>如何获取Bean：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> T <span class="title function_">getObject</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">  <span class="keyword">return</span> getSqlSession().getMapper(<span class="built_in">this</span>.mapperInterface);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里getSqlSession()返回<strong>SqlSessionTemplate</strong>，mapperInterface为Mapper注解的真实Class，即调用<strong>SqlSessionTemplate</strong>获取Mapper，上面说过<strong>SqlSessionTemplate</strong>继承于<strong>SqlSession</strong>，这个获取Mapper的动作不就是和<a href="/2020/12/22/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter">从mybatis到mybatis-spring-boot-starter</a>示例中手动获取BlogMapper一样的么？以上通过<strong>MapperFactoryBean</strong>获取了Mapper注解的实例，但是还差一步，<strong>Configuration</strong>是如何感知这个Mapper？还是得从<strong>MapperFactoryBean</strong>上说起，<strong>MapperFactoryBean</strong>的继承关系如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">InitializingBean</span><br><span class="line">        |</span><br><span class="line">   DaoSupport</span><br><span class="line">        |</span><br><span class="line">SqlSessionDaoSupport   FactoryBean</span><br><span class="line">             |             |</span><br><span class="line">            MapperFactoryBean</span><br></pre></td></tr></table></figure>
+<p><strong>DaoSupport</strong>提供一个模板方法，在<strong>InitializingBean#afterPropertiesSet</strong>后调用<strong>DaoSupport#checkDaoConfig</strong>，<strong>MapperFactoryBean#checkDaoConfig</strong>覆写逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">checkDaoConfig</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="built_in">super</span>.checkDaoConfig();</span><br><span class="line"></span><br><span class="line">  notNull(<span class="built_in">this</span>.mapperInterface, <span class="string">&quot;Property &#x27;mapperInterface&#x27; is required&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="type">Configuration</span> <span class="variable">configuration</span> <span class="operator">=</span> getSqlSession().getConfiguration();</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.addToConfig &amp;&amp; !configuration.hasMapper(<span class="built_in">this</span>.mapperInterface)) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      configuration.addMapper(<span class="built_in">this</span>.mapperInterface);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      logger.error(<span class="string">&quot;Error while adding the mapper &#x27;&quot;</span> + <span class="built_in">this</span>.mapperInterface + <span class="string">&quot;&#x27; to configuration.&quot;</span>, e);</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(e);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      ErrorContext.instance().reset();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将mapperInterface添加到<strong>Configuration</strong>中就是这么简单。</p>
+<h3 id="SqlSession管理"><a href="#SqlSession管理" class="headerlink" title="SqlSession管理"></a>SqlSession管理</h3><p>&emsp;&emsp;从上面可以看出对于<strong>SqlSession</strong>的管理，其实是来自于<strong>SqlSessionTemplate</strong>对于<strong>SqlSession</strong>的管理，<strong>SqlSessionTemplate</strong>其实是一个代理，内部又维护了一个<strong>SqlSession</strong>，所有增删改查其实都是由内部的<strong>SqlSession</strong>执行，看一下<strong>SqlSessionTemplate</strong>的构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">SqlSessionTemplate</span><span class="params">(SqlSessionFactory sqlSessionFactory, ExecutorType executorType,</span></span><br><span class="line"><span class="params">    PersistenceExceptionTranslator exceptionTranslator)</span> &#123;</span><br><span class="line"></span><br><span class="line">  notNull(sqlSessionFactory, <span class="string">&quot;Property &#x27;sqlSessionFactory&#x27; is required&quot;</span>);</span><br><span class="line">  notNull(executorType, <span class="string">&quot;Property &#x27;executorType&#x27; is required&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">this</span>.sqlSessionFactory = sqlSessionFactory;</span><br><span class="line">  <span class="built_in">this</span>.executorType = executorType;</span><br><span class="line">  <span class="built_in">this</span>.exceptionTranslator = exceptionTranslator;</span><br><span class="line">  <span class="built_in">this</span>.sqlSessionProxy = (SqlSession) newProxyInstance(SqlSessionFactory.class.getClassLoader(),</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; SqlSession.class &#125;, <span class="keyword">new</span> <span class="title class_">SqlSessionInterceptor</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>被代理的sqlSessionProxy其实也是一个代理，是Java动态代理创建的代理，真实的方法调用可以看<strong>SqlSessionInterceptor</strong>的逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">SqlSessionInterceptor</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="type">SqlSession</span> <span class="variable">sqlSession</span> <span class="operator">=</span> getSqlSession(SqlSessionTemplate.<span class="built_in">this</span>.sqlSessionFactory,</span><br><span class="line">        SqlSessionTemplate.<span class="built_in">this</span>.executorType, SqlSessionTemplate.<span class="built_in">this</span>.exceptionTranslator);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> method.invoke(sqlSession, args);</span><br><span class="line">      <span class="keyword">if</span> (!isSqlSessionTransactional(sqlSession, SqlSessionTemplate.<span class="built_in">this</span>.sqlSessionFactory)) &#123;</span><br><span class="line">        <span class="comment">// force commit even on non-dirty sessions because some databases require</span></span><br><span class="line">        <span class="comment">// a commit/rollback before calling close()</span></span><br><span class="line">        sqlSession.commit(<span class="literal">true</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">      <span class="type">Throwable</span> <span class="variable">unwrapped</span> <span class="operator">=</span> unwrapThrowable(t);</span><br><span class="line">      <span class="keyword">if</span> (SqlSessionTemplate.<span class="built_in">this</span>.exceptionTranslator != <span class="literal">null</span> &amp;&amp; unwrapped <span class="keyword">instanceof</span> PersistenceException) &#123;</span><br><span class="line">        <span class="comment">// release the connection to avoid a deadlock if the translator is no loaded. See issue #22</span></span><br><span class="line">        closeSqlSession(sqlSession, SqlSessionTemplate.<span class="built_in">this</span>.sqlSessionFactory);</span><br><span class="line">        sqlSession = <span class="literal">null</span>;</span><br><span class="line">        <span class="type">Throwable</span> <span class="variable">translated</span> <span class="operator">=</span> SqlSessionTemplate.<span class="built_in">this</span>.exceptionTranslator</span><br><span class="line">            .translateExceptionIfPossible((PersistenceException) unwrapped);</span><br><span class="line">        <span class="keyword">if</span> (translated != <span class="literal">null</span>) &#123;</span><br><span class="line">          unwrapped = translated;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">throw</span> unwrapped;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (sqlSession != <span class="literal">null</span>) &#123;</span><br><span class="line">        closeSqlSession(sqlSession, SqlSessionTemplate.<span class="built_in">this</span>.sqlSessionFactory);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>单从这段代码上看，可以看到在调用<strong>SqlSessionTemplate</strong>的增删改查时，会获取一个<strong>DefaultSqlSession</strong>，执行完操作后会尝试关闭这个SqlSession。当然，事实上没有这么简单，如果开启了事务，这里<strong>SqlSessionUtils#getSqlSession</strong>会尝试先从当前线程的<strong>ThreadLocal</strong>获取一个<strong>DefaultSqlSession</strong>，如果没有再使用<strong>SqlSessionFactory</strong>创建。而在开启事务的场景下<strong>SqlSessionInterceptor#closeSqlSession</strong>并不会直接关闭这个<strong>SqlSession</strong>，而是在<strong>SqlSessionUtils.SqlSessionSynchronization#afterCompletion</strong>中关闭。<strong>SqlSessionUtils.TransactionSynchronization</strong>实际上是<strong>org.springframework.transaction.support.TransactionSynchronization</strong>的子类，通过实现<strong>TransactionSynchronization</strong>的一些方法可以监听到Spring事务的比如挂起、提交前后等过程。注册<strong>SqlSessionUtils.TransactionSynchronization</strong>的过程在<strong>SqlSessionUtils#registerSessionHolder</strong>可以查看</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">registerSessionHolder</span><span class="params">(SqlSessionFactory sessionFactory, ExecutorType executorType,</span></span><br><span class="line"><span class="params">    PersistenceExceptionTranslator exceptionTranslator, SqlSession session)</span> &#123;</span><br><span class="line">  SqlSessionHolder holder;</span><br><span class="line">  <span class="keyword">if</span> (TransactionSynchronizationManager.isSynchronizationActive()) &#123;</span><br><span class="line">    <span class="type">Environment</span> <span class="variable">environment</span> <span class="operator">=</span> sessionFactory.getConfiguration().getEnvironment();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (environment.getTransactionFactory() <span class="keyword">instanceof</span> SpringManagedTransactionFactory) &#123;</span><br><span class="line">      LOGGER.debug(() -&gt; <span class="string">&quot;Registering transaction synchronization for SqlSession [&quot;</span> + session + <span class="string">&quot;]&quot;</span>);</span><br><span class="line"></span><br><span class="line">      holder = <span class="keyword">new</span> <span class="title class_">SqlSessionHolder</span>(session, executorType, exceptionTranslator);</span><br><span class="line">      TransactionSynchronizationManager.bindResource(sessionFactory, holder);</span><br><span class="line">      TransactionSynchronizationManager</span><br><span class="line">          .registerSynchronization(<span class="keyword">new</span> <span class="title class_">SqlSessionSynchronization</span>(holder, sessionFactory));</span><br><span class="line">      holder.setSynchronizedWithTransaction(<span class="literal">true</span>);</span><br><span class="line">      holder.requested();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (TransactionSynchronizationManager.getResource(environment.getDataSource()) == <span class="literal">null</span>) &#123;</span><br><span class="line">        LOGGER.debug(() -&gt; <span class="string">&quot;SqlSession [&quot;</span> + session</span><br><span class="line">            + <span class="string">&quot;] was not registered for synchronization because DataSource is not transactional&quot;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TransientDataAccessResourceException</span>(</span><br><span class="line">            <span class="string">&quot;SqlSessionFactory must be using a SpringManagedTransactionFactory in order to use Spring transaction synchronization&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    LOGGER.debug(() -&gt; <span class="string">&quot;SqlSession [&quot;</span> + session</span><br><span class="line">        + <span class="string">&quot;] was not registered for synchronization because synchronization is not active&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<strong>TransactionSynchronizationManager#registerSynchronization</strong>实现注册，其实也是注册到线程本地的ThreadLocal中。下面简单总结一下SqlSession生命周期的几个要点：</p>
+<ol>
+<li>非事务场景下，每次数据库操作（增删改查）都会新建一个SqlSession，完成操作后立即关闭SqlSession。</li>
+<li>在同一个事务中所有操作共用一个SqlSession，由<strong>TransactionSynchronizationManager</strong>管理。</li>
+</ol>
+<h3 id="多数据源切换"><a href="#多数据源切换" class="headerlink" title="多数据源切换"></a>多数据源切换</h3><p>&emsp;&emsp;多数据源切换有多种方式，一种是通过创建多个数据源，并且给每个数据源创建不同的<strong>SqlSessionFactory</strong>和<strong>SqlSessionTemplate</strong>，并绑定到不同的Mapper上，具体Demo可以参照<a target="_blank" rel="noopener" href="http://blog.didispace.com/spring-boot-learning-21-3-9/">Spring Boot 2.x基础教程：MyBatis的多数据源配置</a>。还有一种方式是使用<strong>AbstractRoutingDataSource</strong>实现动态路由的多数据源切换（多用于读写分离），不过这种方式其实和MyBatis已经没有什么关系了，是Spring提供的一些功能，不仅仅针对MyBatis。两种方式各有优劣，适用的场景也不大一样，不过相比起来，我更想借机分析一下<strong>AbstractRoutingDataSource</strong>的原理，这种方式在我之前的项目中也已经使用过。<br>&emsp;&emsp;首先<strong>AbstractRoutingDataSource</strong>是一个抽象类（abstract class），实现于<strong>javax.sql.DataSource</strong>，相当于<strong>DataSource</strong>的代理，通过实现<strong>AbstractRoutingDataSource#determineCurrentLookupKey</strong>可以实现动态切换数据源的功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> Object <span class="title function_">determineCurrentLookupKey</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>关于<strong>AbstractRoutingDataSource</strong>实现动态数据源切换的例子网上有很多，直接摘抄一个简单的片段来说明一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DynamicDataSource</span> <span class="keyword">extends</span> <span class="title class_">AbstractRoutingDataSource</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span>  DynamicDataSource <span class="title function_">build</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DynamicDataSource</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">determineCurrentLookupKey</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> DynamicDataSourceContextHolder.getDataSourceType();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataSourceConfiguration</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;spring.datasource.druid.master&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> DataSource <span class="title function_">masterDataSource</span><span class="params">(DataSourceProperties dataSourceProperties)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dataSourceProperties.setDataSource(DruidDataSourceBuilder.create().build());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnProperty( prefix = &quot;spring.datasource.druid.slave&quot;, name = &quot;enable&quot;, havingValue = &quot;true&quot;)</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;spring.datasource.druid.slave&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> DataSource <span class="title function_">slaveDataSource</span><span class="params">(DataSourceProperties dataSourceProperties)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dataSourceProperties.setDataSource(DruidDataSourceBuilder.create().build());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean(name = &quot;dynamicDataSource&quot;)</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="keyword">public</span> DynamicDataSource <span class="title function_">dynamicDataSource</span><span class="params">(DataSource masterDataSource, DataSource slaveDataSource)</span> &#123;</span><br><span class="line">        Map&lt;Object, Object&gt; targetDataSources = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="type">DynamicDataSource</span> <span class="variable">dynamicDataSource</span> <span class="operator">=</span> DynamicDataSource.build();</span><br><span class="line">        targetDataSources.put(DataSourcesType.MASTER.name(), masterDataSource);</span><br><span class="line">        targetDataSources.put(DataSourcesType.SLAVE.name(), slaveDataSource);</span><br><span class="line">        <span class="comment">//默认数据源配置 DefaultTargetDataSource</span></span><br><span class="line">        dynamicDataSource.setDefaultTargetDataSource(masterDataSource);</span><br><span class="line">        <span class="comment">//额外数据源配置 TargetDataSources</span></span><br><span class="line">        dynamicDataSource.setTargetDataSources(targetDataSources);</span><br><span class="line">        dynamicDataSource.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> dynamicDataSource;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DynamicDataSourceContextHolder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; contextHolder = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">setDataSourceType</span><span class="params">(String dataSourceType)</span> &#123;</span><br><span class="line">        contextHolder.set(dataSourceType);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">getDataSourceType</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> contextHolder.get();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">removeDataSourceType</span><span class="params">()</span> &#123;</span><br><span class="line">        contextHolder.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  <span class="title class_">DataSourcesType</span> &#123;</span><br><span class="line">    MASTER,</span><br><span class="line">    SLAVE</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上通过<strong>DynamicDataSourceContextHolder#setDataSourceType</strong>来切换数据源，继承于<strong>AbstractRoutingDataSource</strong>的<strong>DynamicDataSource</strong>通过<strong>DynamicDataSourceContextHolder</strong>的ThreadLocal来获取当前数据源的key，在上面的例子中将我们将<strong>DynamicDataSource</strong>设置为<strong>Primary DataSource</strong>，其实是一种代理的思路，<strong>DynamicDataSource</strong>代理了上面的slaveDataSource和masterDataSource，当获取jdbc的Connection时使用<strong>AbstractRoutingDataSource#getConnection</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Connection <span class="title function_">getConnection</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">	<span class="keyword">return</span> determineTargetDataSource().getConnection();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Connection <span class="title function_">getConnection</span><span class="params">(String username, String password)</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">	<span class="keyword">return</span> determineTargetDataSource().getConnection(username, password);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>AbstractRoutingDataSource#determineTargetDataSource</strong>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> DataSource <span class="title function_">determineTargetDataSource</span><span class="params">()</span> &#123;</span><br><span class="line">	Assert.notNull(<span class="built_in">this</span>.resolvedDataSources, <span class="string">&quot;DataSource router not initialized&quot;</span>);</span><br><span class="line">	<span class="type">Object</span> <span class="variable">lookupKey</span> <span class="operator">=</span> determineCurrentLookupKey();</span><br><span class="line">	<span class="type">DataSource</span> <span class="variable">dataSource</span> <span class="operator">=</span> <span class="built_in">this</span>.resolvedDataSources.get(lookupKey);</span><br><span class="line">	<span class="keyword">if</span> (dataSource == <span class="literal">null</span> &amp;&amp; (<span class="built_in">this</span>.lenientFallback || lookupKey == <span class="literal">null</span>)) &#123;</span><br><span class="line">		dataSource = <span class="built_in">this</span>.resolvedDefaultDataSource;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (dataSource == <span class="literal">null</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Cannot determine target DataSource for lookup key [&quot;</span> + lookupKey + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<strong>AbstractRoutingDataSource#determineCurrentLookupKey</strong>获取到的key来决定当前的真实数据源，比如本例中到底是slaveDataSource还是masterDataSource。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;以上通过分析在Spring中如何注入MyBatis Mapper以及管理SqlSession来了解mybatis-spring-boot-starter的一些细节，再结合Spring常用的多数据源管理方式<strong>AbstractRoutingDataSource</strong>，让我对MyBatis以及JDBC的操作更加熟稔于心。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/22/%E4%BB%8Emybatis%E5%88%B0mybatis-spring-boot-starter/" rel="prev" title="从mybatis到mybatis-spring-boot-starter">
+                  <i class="fa fa-angle-left"></i> 从mybatis到mybatis-spring-boot-starter
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/17/DDD%E5%AE%9E%E8%B7%B5%E7%AC%94%E8%AE%B0/" rel="next" title="DDD实践笔记">
+                  DDD实践笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

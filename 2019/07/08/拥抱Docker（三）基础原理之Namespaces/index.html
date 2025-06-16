@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;在学习了使用DockerFile制作一个简单的镜像并运行，我觉得接下去有必要了解一下Docker背后的运行原理，本着知其然而知其所以然，这样对后续学习或者使用Docker部署应用都有一定裨益。我们已经知道Docker是一个使用了虚拟化技术的容器，同虚拟机一样有着资源隔离和分配的优点，但是因为本身架构的不同，比虚拟机更加高效和便捷。既然如此，那么Docker是如何实现的？一切">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱Docker（三）基础原理之Namespaces">
+<meta property="og:url" content="http://example.com/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;在学习了使用DockerFile制作一个简单的镜像并运行，我觉得接下去有必要了解一下Docker背后的运行原理，本着知其然而知其所以然，这样对后续学习或者使用Docker部署应用都有一定裨益。我们已经知道Docker是一个使用了虚拟化技术的容器，同虚拟机一样有着资源隔离和分配的优点，但是因为本身架构的不同，比虚拟机更加高效和便捷。既然如此，那么Docker是如何实现的？一切">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-07-08T05:39:05.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:02.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces/","path":"2019/07/08/拥抱Docker（三）基础原理之Namespaces/","title":"拥抱Docker（三）基础原理之Namespaces"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>拥抱Docker（三）基础原理之Namespaces | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Namespaces%EF%BC%88%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Namespaces（命名空间）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#PID-Namespace"><span class="nav-number">1.1.</span> <span class="nav-text">PID Namespace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Mount-Namespace"><span class="nav-number">1.2.</span> <span class="nav-text">Mount Namespace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IPC-Namespace"><span class="nav-number">1.3.</span> <span class="nav-text">IPC Namespace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UTS-Namespace"><span class="nav-number">1.4.</span> <span class="nav-text">UTS Namespace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#User-Namespace"><span class="nav-number">1.5.</span> <span class="nav-text">User Namespace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Network-Namespace"><span class="nav-number">1.6.</span> <span class="nav-text">Network Namespace</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="拥抱Docker（三）基础原理之Namespaces | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          拥抱Docker（三）基础原理之Namespaces
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-07-08 13:39:05" itemprop="dateCreated datePublished" datetime="2019-07-08T13:39:05+08:00">2019-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:02" itemprop="dateModified" datetime="2019-10-25T00:22:02+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;在学习了使用DockerFile制作一个简单的镜像并运行，我觉得接下去有必要了解一下Docker背后的运行原理，本着知其然而知其所以然，这样对后续学习或者使用Docker部署应用都有一定裨益。我们已经知道Docker是一个使用了虚拟化技术的容器，同虚拟机一样有着资源隔离和分配的优点，但是因为本身架构的不同，比虚拟机更加高效和便捷。既然如此，那么Docker是如何实现的？一切都还要从Linux的虚拟化技术说起。</p>
+<span id="more"></span>
+
+<h4 id="Namespaces（命名空间）"><a href="#Namespaces（命名空间）" class="headerlink" title="Namespaces（命名空间）"></a>Namespaces（命名空间）</h4><p>&emsp;&emsp;Namespaces是Linux Kernel的一个功能，它可以隔离一系列的系统资源，比如PID（进程）、Network（网络）、User ID(用户)、Mount（挂载）等等。Linux一共有六种类型的Namespaces：</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">参数</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">PID</td>
+<td align="center">CLONE_NEWPID</td>
+<td align="center">进程ID（Linux 2.6.24）</td>
+</tr>
+<tr>
+<td align="center">Mount</td>
+<td align="center">CLONE_NEWNS</td>
+<td align="center">磁盘挂载（Linux 2.4.19）</td>
+</tr>
+<tr>
+<td align="center">Network</td>
+<td align="center">CLONE_NEWNET</td>
+<td align="center">网络（Linux 2.4.19）</td>
+</tr>
+<tr>
+<td align="center">IPC</td>
+<td align="center">CLONE_NEWIPC</td>
+<td align="center">进程间通信，System V IPC和POSIX message queues（Linux 2.6.19）</td>
+</tr>
+<tr>
+<td align="center">UTS</td>
+<td align="center">CLONE_NEWUTS</td>
+<td align="center">hostname和domainname（Linux 2.6.19）</td>
+</tr>
+<tr>
+<td align="center">User</td>
+<td align="center">CLONE_NEWUSER</td>
+<td align="center">用户组ID（Linux 3.8）</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;上面这六种Namespaces主要由以下三种函数调用方式：</p>
+<ol>
+<li>clone() 创建新进程。</li>
+<li>unshare() 将进程移出某个Namespaces。</li>
+<li>setns() 将进程加入到某个Namespaces。</li>
+</ol>
+<h5 id="PID-Namespace"><a href="#PID-Namespace" class="headerlink" title="PID Namespace"></a>PID Namespace</h5><p>&emsp;&emsp;PID Namespace用于隔离进程ID，同一个进程在不同的PID Namespace中有不同的进程ID，比如在Dokcer的容器中，通常可以看到运行中的那个进程的PID为1，PID为1的进程在Linux中认为是init进程，是第一个用户进程。以<a href="/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F">拥抱Docker（二）Dockerfile制作镜像</a>中制作的nginx镜像为例，进入容器查看nginx进程PID：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">28c635fa7ed8        nginx:baidu         <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   5 minutes ago       Up 5 minutes        0.0.0.0:80-&gt;80/tcp   romantic_bassi</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker <span class="built_in">exec</span> -it 28c635fa7ed8 /bin/sh</span><br><span class="line">/ <span class="comment"># ps -ef</span></span><br><span class="line">PID   USER     TIME  COMMAND</span><br><span class="line">    1 root      0:00 nginx: master process nginx -g daemon off;</span><br><span class="line">    6 nginx     0:00 nginx: worker process</span><br><span class="line">    7 nginx     0:00 nginx: worker process</span><br><span class="line">   20 root      0:00 /bin/sh</span><br><span class="line">   26 root      0:00 ps -ef</span><br></pre></td></tr></table></figure>
+<p>可以看到nginx的master process的PID为1，但是这与我们在容器外面看到的nginx PID不同：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker top 53d612113e3a</span><br><span class="line">PID                 USER                TIME                COMMAND</span><br><span class="line">2576                root                0:00                nginx: master process nginx -g daemon off;</span><br><span class="line">2616                rpc                 0:00                nginx: worker process</span><br><span class="line">2617                rpc                 0:00                nginx: worker process</span><br></pre></td></tr></table></figure>
+<p>这证明容器中的PID Namespace和外面是不同的，那么Docker是如何更改这个PID Namespace？我尝试用Go写了一个小例子：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ns.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意这个例子必须要在Linux环境运行（以下以及后面的程序都是在Centos上运行）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go</span><br><span class="line">sh-4.2# <span class="built_in">echo</span> $$</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<p>使用echo打印了main函数运行的进程，它的PID为1，注意这里不能用之前的ps命令去查看，因为ps命令会使用&#x2F;proc中的内容，而&#x2F;proc在这个程序中还没有进行隔离，等会在Mount Namespace会说到。打开另外一个命令窗口（实际因为未隔离&#x2F;proc在原窗口查看也行），运行ps命令，可以看到：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# ps -ef|grep ns</span><br><span class="line">root     27265  1921  0 19:17 pts/0    00:00:00 go run ns.go</span><br><span class="line">root     27284 27265  0 19:17 pts/0    00:00:00 /tmp/go-build269986868/b001/exe/ns</span><br></pre></td></tr></table></figure>
+<p>这个main函数在宿主机上运行的PID是27284。</p>
+<h5 id="Mount-Namespace"><a href="#Mount-Namespace" class="headerlink" title="Mount Namespace"></a>Mount Namespace</h5><p>&emsp;&emsp;先说一下什么叫Mount（挂载），在Linux中只有一个根目录，凡是根目录以外的文件想要被系统访问，就必须关联到这个根目录下的某个目录，这种关联动作就称之为“挂载”，而这个目录称之为“挂载点”。挂载的实质是为访问添加入口，挂载点目录在挂载之后有几个特性需要注意：</p>
+<ol>
+<li>该目录下原有的文件会被隐藏。</li>
+<li>该目录不可被其他进程使用。</li>
+</ol>
+<p>&emsp;&emsp;Mount Namespace可以使不同的进程看到不一样的文件挂载视图，下面我们就使用宿主机的&#x2F;proc进行挂载。修改一下ns.go文件，新增<strong>CLONE_NEWNS</strong>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ns.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行ns.go：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">sh-4.2# <span class="built_in">ls</span> /proc</span><br><span class="line">1    17     2149  226  27901  337  41	548   768   8039  buddyinfo  diskstats	  iomem      kpagecount  mounts        self	      timer_list</span><br><span class="line">10   18     216   235  27902  361  484	558   776   8048  bus	     dma	  ioports    kpageflags  mtrr	       slabinfo       timer_stats</span><br><span class="line">117  18823  2191  25   28     367  5	559   7788  8066  cgroups    driver	  irq	     loadavg	 net	       softirqs       <span class="built_in">tty</span></span><br><span class="line">12   18834  2206  256  2862   37   503	576   785   8069  cmdline    execdomains  kallsyms   locks	 pagetypeinfo  <span class="built_in">stat</span>	      <span class="built_in">uptime</span></span><br><span class="line">13   19     2207  26   29     38   505	60    8     8074  consoles   fb		  kcore      mdstat	 partitions    swaps	      version</span><br><span class="line">14   2	    222   261  3      383  508	6695  802   8081  cpuinfo    filesystems  keys	     meminfo	 sched_debug   sys	      vmallocinfo</span><br><span class="line">15   2133   223   262  3037   39   510	7     803   9	  crypto     fs		  key-users  misc	 schedstat     sysrq-trigger  vmstat</span><br><span class="line">16   214    224   27   3038   40   513	7238  8038  acpi  devices    interrupts   kmsg	     modules	 scsi	       sysvipc	      zoneinfo</span><br></pre></td></tr></table></figure>
+<p>可以看到&#x2F;proc下有一堆文件，然后我们在sh中使用mount指令将proc系统挂载到&#x2F;proc中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sh-4.2# mount -t proc proc /proc</span><br><span class="line">sh-4.2# <span class="built_in">ls</span> /proc</span><br><span class="line">1	   cgroups   devices	  fb	       ioports	 key-users   locks    mounts	    sched_debug  softirqs	sysvipc      version</span><br><span class="line">4	   cmdline   diskstats	  filesystems  irq	 kmsg	     mdstat   mtrr	    schedstat	 <span class="built_in">stat</span>		timer_list   vmallocinfo</span><br><span class="line">acpi	   consoles  dma	  fs	       kallsyms  kpagecount  meminfo  net	    scsi	 swaps		timer_stats  vmstat</span><br><span class="line">buddyinfo  cpuinfo   driver	  interrupts   kcore	 kpageflags  misc     pagetypeinfo  self	 sys		<span class="built_in">tty</span>	     zoneinfo</span><br><span class="line">bus	   crypto    execdomains  iomem        keys	 loadavg     modules  partitions    slabinfo	 sysrq-trigger	<span class="built_in">uptime</span></span><br></pre></td></tr></table></figure>
+<p>可以看到现在&#x2F;proc少了很多文件，或者可以使用之前的ps命令查看，会发现系统少了很多进程：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sh-4.2# ps -ef</span><br><span class="line">UID        PID  PPID  C STIME TTY          TIME CMD</span><br><span class="line">root         1     0  0 19:49 pts/0    00:00:00 sh</span><br><span class="line">root         6     1  0 19:55 pts/0    00:00:00 ps -ef</span><br></pre></td></tr></table></figure>
+<p>当我们使用exit退出这个sh的时候，再查看&#x2F;proc的时候会报错：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sh-4.2# <span class="built_in">exit</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">[root@VM_0_12_centos go-workspace]# <span class="built_in">ls</span> /proc</span><br><span class="line"><span class="built_in">ls</span>: 无法读取符号链接/proc/self: 没有那个文件或目录</span><br></pre></td></tr></table></figure>
+<p>或者使用ps命令查看系统进程：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# ps -ef</span><br><span class="line">Error, <span class="keyword">do</span> this: mount -t proc proc /proc</span><br></pre></td></tr></table></figure>
+<p>按照提示再次输入mount指令，一切又恢复正常了：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# mount -t proc proc /proc</span><br><span class="line">[root@VM_0_12_centos go-workspace]# <span class="built_in">ls</span> /proc</span><br><span class="line">1    17     2149  226  27901  337  41   548  7788  8679  buddyinfo  diskstats    iomem      kpagecount  mounts        self           timer_list</span><br><span class="line">10   18     216   235  27902  361  484  558  785   9     bus        dma          ioports    kpageflags  mtrr          slabinfo       timer_stats</span><br><span class="line">117  18823  2191  25   28     367  5    559  8     9349  cgroups    driver       irq        loadavg     net           softirqs       <span class="built_in">tty</span></span><br><span class="line">12   18834  2206  256  2862   37   503  576  802   9580  cmdline    execdomains  kallsyms   locks       pagetypeinfo  <span class="built_in">stat</span>           <span class="built_in">uptime</span></span><br><span class="line">13   19     2207  26   29     38   505  60   803   9582  consoles   fb           kcore      mdstat      partitions    swaps          version</span><br><span class="line">14   2      222   261  3      383  508  7    8394  9583  cpuinfo    filesystems  keys       meminfo     sched_debug   sys            vmallocinfo</span><br><span class="line">15   2133   223   262  3037   39   510  768  8676  9976  crypto     fs           key-users  misc        schedstat     sysrq-trigger  vmstat</span><br><span class="line">16   214    224   27   3038   40   513  776  8678  acpi  devices    interrupts   kmsg       modules     scsi          sysvipc        zoneinfo</span><br></pre></td></tr></table></figure>
+<h5 id="IPC-Namespace"><a href="#IPC-Namespace" class="headerlink" title="IPC Namespace"></a>IPC Namespace</h5><p>&emsp;&emsp;IPC Namespace用于隔离System V IPC对象和POSIX message queues，System V IPC对象包含共享内存、信号量和消息队列，关于System V IPC和POSIX message queues的区别可以参照<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/4582968/system-v-ipc-vs-posix-ipc">《system-v-ipc-vs-posix-ipc》</a>。微调一下之前的代码，加入syscall.CLONE_NEWIPC：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWNS | syscall.CLONE_NEWIPC,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照下面的方式运行ns.go，可以看到：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">sh-4.2# ipcs -s</span><br><span class="line"></span><br><span class="line">--------- 信号量数组 -----------</span><br><span class="line">键        semid      拥有者  权限     nsems </span><br></pre></td></tr></table></figure>
+<p>现在我们创建一个message queue，并分别在宿主机和ns.go运行的shell环境中查看：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先在ns.go中创建一个message queue</span></span><br><span class="line">sh-4.2# ipcmk -Q</span><br><span class="line">消息队列 <span class="built_in">id</span>：0</span><br><span class="line">sh-4.2# ipcs -q</span><br><span class="line"></span><br><span class="line">--------- 消息队列 -----------</span><br><span class="line">键        msqid      拥有者  权限     已用字节数 消息      </span><br><span class="line">0x03ff4597 0          root       644        0            0           </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在宿主机的shell中却查看不到这个mq，由此可见消息被隔离了：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos ~]# ipcs -q</span><br><span class="line"></span><br><span class="line">--------- 消息队列 -----------</span><br><span class="line">键        msqid      拥有者  权限     已用字节数 消息 </span><br></pre></td></tr></table></figure>
+
+<h5 id="UTS-Namespace"><a href="#UTS-Namespace" class="headerlink" title="UTS Namespace"></a>UTS Namespace</h5><p>&emsp;&emsp;UTS Namespace主要用于完成对hostname和NIS domain name的隔离，修改一下上面的ns.go文件：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWNS | syscall.CLONE_NEWIPC | syscall.CLONE_NEWUTS,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行ns.go设置hostname：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">sh-4.2# hostname</span><br><span class="line">VM_0_12_centos</span><br><span class="line">sh-4.2# hostname -b matrix</span><br><span class="line">sh-4.2# hostname</span><br><span class="line">matrix</span><br></pre></td></tr></table></figure>
+<p>再查看宿主机的hostname：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos ~]# hostname</span><br><span class="line">VM_0_12_centos</span><br></pre></td></tr></table></figure>
+<p>可以看到宿主机上的hostname没有改变。</p>
+<h5 id="User-Namespace"><a href="#User-Namespace" class="headerlink" title="User Namespace"></a>User Namespace</h5><p>&emsp;&emsp;User Namespace用于隔离用户组的ID，一个进程的用户组ID在不同的User Namespace是不同的，比如某个进程在一个User Namespace是拥有root权限，但是在另外一个User Namespace却没有这个超级权限。为了演示Docker如何修改User Namespace，稍微修改一下上面的代码，在SysProcAttr中增加一个CLONE_NEWUSER参数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWUSER,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">fork/exec /usr/bin/sh: invalid argument</span><br></pre></td></tr></table></figure>
+<p>这里报invalid argument的错误，User namespace是Linux内核3.8版本之后支持的，由于并不成熟，在很多Linux机器上并未开启，比如我这台Centos。可以输入以下指令开启：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos ~]# grubby --args=<span class="string">&quot;user_namespace.enable=1&quot;</span> --update-kernel=<span class="string">&quot;<span class="subst">$(grubby --default-kernel)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>然后重启系统，重新运行上面的指令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">sh-4.2$ <span class="built_in">id</span></span><br><span class="line">uid=65534 gid=65534 组=65534</span><br></pre></td></tr></table></figure>
+<p>输入“id”指令，可以看到用户组为65534，而在另外一个窗口以root身份运行“id”指令可以看到：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# <span class="built_in">id</span></span><br><span class="line">uid=0(root) gid=0(root) 组=0(root)</span><br></pre></td></tr></table></figure>
+<h5 id="Network-Namespace"><a href="#Network-Namespace" class="headerlink" title="Network Namespace"></a>Network Namespace</h5><p>&emsp;&emsp;Network Namespace用于隔离网络设备相关，有了Network Namespace，每个容器就可以拥有自己独立的虚拟网络，比如有自己的IP、端口等。修改ns.go文件，加入syscall.CLONE_NEWNET：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span></span><br><span class="line">    <span class="string">&quot;syscall&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;sh&quot;</span>)</span><br><span class="line">    cmd.SysProcAttr = &amp;syscall.SysProcAttr&#123;</span><br><span class="line">        Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWNS | syscall.CLONE_NEWIPC | syscall.CLONE_NEWUTS | syscall.CLONE_NEWNET,</span><br><span class="line">    &#125;</span><br><span class="line">    cmd.Stdin = os.Stdin</span><br><span class="line">    cmd.Stdout = os.Stdout</span><br><span class="line">    cmd.Stderr = os.Stderr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err := cmd.Run(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">        fmt.Print(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行ns.go，查看网络：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run ns.go </span><br><span class="line">sh-4.2# ifconfig</span><br><span class="line">sh-4.2# </span><br></pre></td></tr></table></figure>
+<p>可以看到什么都没有输出，再看一下宿主机上的网络：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# ifconfig</span><br><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet xx.xx.xx.xx  netmask 255.255.240.0  broadcast xx.xx.xx.xx</span><br><span class="line">        ether xx:xx:xx:xx:xx:xx  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 3317648  bytes 273841657 (261.1 MiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 3349385  bytes 450207961 (429.3 MiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 1018  bytes 159607 (155.8 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 1018  bytes 159607 (155.8 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/06/28/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" rel="prev" title="谈谈Spring的IoC之循环依赖">
+                  <i class="fa fa-angle-left"></i> 谈谈Spring的IoC之循环依赖
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/" rel="next" title="Kubernetes学习笔记（一）一个例子展开">
+                  Kubernetes学习笔记（一）一个例子展开 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

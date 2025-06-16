@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="功能&emsp;&emsp;在拥抱Docker（三）基础原理之Namespaces中讲述了构建Linux容器的虚拟技术Namespaces，它可以帮助进程隔离出自己独立的空间。但是容器内的进程不应该随心所欲地获取系统资源（cpu、内存、磁盘、网络等），所以需要有一种控制手段来限制或者隔离这些资源，这就是Linux CGroups做的事。Linux CGroups全称Linux Control Gr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱Docker（四）基础原理之CGroups">
+<meta property="og:url" content="http://example.com/2019/07/15/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E5%9B%9B%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BCGroups/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="功能&emsp;&emsp;在拥抱Docker（三）基础原理之Namespaces中讲述了构建Linux容器的虚拟技术Namespaces，它可以帮助进程隔离出自己独立的空间。但是容器内的进程不应该随心所欲地获取系统资源（cpu、内存、磁盘、网络等），所以需要有一种控制手段来限制或者隔离这些资源，这就是Linux CGroups做的事。Linux CGroups全称Linux Control Gr">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5ly1g4yb8ngszlj20ye0nq75v.jpg">
+<meta property="article:published_time" content="2019-07-15T00:58:41.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:00.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5ly1g4yb8ngszlj20ye0nq75v.jpg">
+
+
+<link rel="canonical" href="http://example.com/2019/07/15/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E5%9B%9B%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BCGroups/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/07/15/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E5%9B%9B%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BCGroups/","path":"2019/07/15/拥抱Docker（四）基础原理之CGroups/","title":"拥抱Docker（四）基础原理之CGroups"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>拥抱Docker（四）基础原理之CGroups | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%99%90%E5%88%B6cpu%E7%9A%84%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">一个限制cpu的示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/15/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E5%9B%9B%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BCGroups/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="拥抱Docker（四）基础原理之CGroups | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          拥抱Docker（四）基础原理之CGroups
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-07-15 08:58:41" itemprop="dateCreated datePublished" datetime="2019-07-15T08:58:41+08:00">2019-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:00" itemprop="dateModified" datetime="2019-10-25T00:22:00+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><p>&emsp;&emsp;在<a href="/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces">拥抱Docker（三）基础原理之Namespaces</a>中讲述了构建Linux容器的虚拟技术Namespaces，它可以帮助进程隔离出自己独立的空间。但是容器内的进程不应该随心所欲地获取系统资源（cpu、内存、磁盘、网络等），所以需要有一种控制手段来限制或者隔离这些资源，这就是Linux CGroups做的事。Linux CGroups全称Linux Control Groups，由全称可以看出，他是一种分组的机制，一个cgroup包含一组控制，可以在这个cgroup上增加各种参数配置来管理一组资源控制的模块，包含以下的功能：</p>
+<ol>
+<li>限制进程组的资源使用量（Resource limiting）。比如可以为进程组设定内存使用量，一旦进程组超出这个量，就会触发内存溢出的错误。</li>
+<li>进程组的优先控制（Prioritization）。有些进程组可以给予更高的cpu利用率，或者是磁盘的I&#x2F;O吞吐。</li>
+<li>统计进程组使用的资源数量（Accounting）。比如可以用于一些计费功能。</li>
+<li>进程组控制（Control）。可以执行挂起进程、恢复执行进程的行为。</li>
+</ol>
+<span id="more"></span>
+
+<h4 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h4><p>&emsp;&emsp;整个CGroups系统包含以下组件：</p>
+<ul>
+<li>任务（task）。在CGroups中任务就是系统的一个进程。</li>
+<li>控制组（control group）。CGroups中的资源控制都以cgroup为单位实现。cgroup表示按某种资源控制标准划分而成的任务组，包含一个或多个子系统。一个任务（task）可以加入某个cgroup，也可以从某个cgroup迁移到另外一个cgroup。</li>
+<li>层级树（hierarchy）。由一系列cgroup以一个树状结构排列而成，每个hierarchy通过绑定对应的subsystem进行资源调度。hierarchy中的cgroup节点可以包含零或多个子节点，子节点继承父节点的属性。整个系统可以有多个hierarchy。</li>
+<li>子系统（subsystem）。CGroups的资源控制模块，一个子系统就是一个资源控制器，比如cpu子系统可以控制cpu时间分配。子系统必须附加（attach）到一个层级上才能起作用，一个子系统附加到某个层级以后，这个层级上的所有控制组都受到这个子系统的控制。子系统包含如下几项：<ul>
+<li>blkio 设置对块设备（比如硬盘、USB等）输入&#x2F;输出的访问限制。</li>
+<li>cpu 对cpu资源的调度策略的控制。</li>
+<li>cpuacct 统计进程对cpu的使用情况。</li>
+<li>cpuset 分​​​配独​​​立​​​cpu（在​​​多​​核系​​​统​​​上）和​​​内​​​存​​​节​​​点​​​。​​​</li>
+<li>devices 控制进程能够访问某些设备。</li>
+<li>freezer 可以挂起或者恢复cgroup中的进程。</li>
+<li>memory 可以限制进程的memory资源使用量。</li>
+<li>net_cls 标记cgroup中进程的网络数据包，然后可以使用tc模块（traffic control）对数据包进行限流、监控等。</li>
+<li>net_prio 设计网络流量的优先级。</li>
+<li>ns 使不同cgroup下面的进程使用不同的namespace。</li>
+</ul>
+</li>
+</ul>
+<p>各组件之间的关系如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1g4yb8ngszlj20ye0nq75v.jpg"></p>
+<p>上图每一个层级都是一颗树的结构，树的每一个节点是一个cgroup（cpu_cgroup、memory_cgroup…）。层级A（Hierarchy A）attach了cpu子系统（subsystem）和cpuacct子系统，当前层级中的cgroup就可以对cpu资源进行限制，并且可以统计cpu的使用情况。层级B（Hierarchy B）attach了memory子系统，当前层级中的cgroup就可以对memory资源进行限制。上面cpu、memory通过Task关联，这样该Task组既有cpu的限制又有Memory的限制。</p>
+<h4 id="一个限制cpu的示例"><a href="#一个限制cpu的示例" class="headerlink" title="一个限制cpu的示例"></a>一个限制cpu的示例</h4><p>&emsp;&emsp;Linux已经把CGroups做成了一个file system，可以通过mount去实现一个例子。现在我想实现一个cpu限制的例子，可以先看一下cpu子系统有没有被挂载：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos ~]# mount|grep cpu</span><br><span class="line">cgroup on /sys/fs/cgroup/cpu,cpuacct <span class="built_in">type</span> cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)</span><br><span class="line">cgroup on /sys/fs/cgroup/cpuset <span class="built_in">type</span> cgroup (rw,nosuid,nodev,noexec,relatime,cpset)</span><br></pre></td></tr></table></figure>
+<p>centos下系统已经mount了cpu子系统，现在只需要在**&#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;cpu**这个目录下创建子目录就可以了</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos ~]# <span class="built_in">cd</span> /sys/fs/cgroup/cpu</span><br><span class="line">[root@VM_0_12_centos cpu]# <span class="built_in">ls</span></span><br><span class="line">cgroup.clone_children  cpuacct.usage         cpu.rt_runtime_us  system.slice</span><br><span class="line">cgroup.event_control   cpuacct.usage_percpu  cpu.shares         tasks</span><br><span class="line">cgroup.procs           cpu.cfs_period_us     cpu.stat           user.slice</span><br><span class="line">cgroup.sane_behavior   cpu.cfs_quota_us      notify_on_release</span><br><span class="line">cpuacct.stat           cpu.rt_period_us      release_agent</span><br><span class="line">[root@VM_0_12_centos cpu]# <span class="built_in">mkdir</span> cgroup-test</span><br><span class="line">[root@VM_0_12_centos cpu]# <span class="built_in">cd</span> cgroup-test/</span><br><span class="line">[root@VM_0_12_centos cgroup-test]# <span class="built_in">ls</span></span><br><span class="line">cgroup.clone_children  cpuacct.usage_percpu  cpu.shares</span><br><span class="line">cgroup.event_control   cpu.cfs_period_us     cpu.stat</span><br><span class="line">cgroup.procs           cpu.cfs_quota_us      notify_on_release</span><br><span class="line">cpuacct.stat           cpu.rt_period_us      tasks</span><br><span class="line">cpuacct.usage          cpu.rt_runtime_us</span><br></pre></td></tr></table></figure>
+<p>只要我们在**&#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;cpu**目录下创建文件夹，这个文件夹成为它的子cgroup，它们会自动继承父cgroup的属性。下面我们限制只能使用1个cpu的20%的时间：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos cgroup-test]# <span class="built_in">sudo</span> sh -c <span class="string">&quot;echo 50000 &gt; cpu.cfs_period_us&quot;</span></span><br><span class="line">[root@VM_0_12_centos cgroup-test]# <span class="built_in">sudo</span> sh -c <span class="string">&quot;echo 10000 &gt; cpu.cfs_quota_us&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>cfs_period_us</strong>配置时间周期长度，<strong>cfs_quota_us</strong>配置当前cgroup在设置的时间周期长度内所能使用的cpu时间数。这两个文件配合起来可以设置cpu的使用上限。两个文件的单位都是微秒（us），<strong>cfs_period_us</strong>的取值范围为1毫秒（ms）到1秒（s），<strong>cfs_quota_us</strong>的取值大于1ms即可，如果cfs_quota_us的值为-1（默认值），表示不受cpu时间的限制。这里设置每50ms能使用10ms的cpu时间，即使用一个cpu核心的20%。接下来我们写一个死循环的程序，使cpu最大程度地负载：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dead.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行这个程序，打开另外一个窗口查看cpu使用情况：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos go-workspace]# go run dead.go</span><br><span class="line">[root@VM_0_12_centos ~]# top</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %cpu %MEM     TIME+ COMMAND     </span><br><span class="line">13541 root      20   0  101844   4576    308 R 98.3  0.2   0:46.59 dead </span><br></pre></td></tr></table></figure>
+<p>可以看到这个进程的cpu负载很高，接下来将这个dead.go的进程13541写入cgroup.procs中，这样这个进程的cpu使用将会得到限制：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_12_centos cgroup-test]#<span class="built_in">sudo</span> sh -c <span class="string">&quot;echo 13541 &gt; cgroup.procs&quot;</span></span><br><span class="line">[root@VM_0_12_centos ~]# top</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %cpu %MEM     TIME+ COMMAND     </span><br><span class="line">13541 root      20   0  101844   4576    308 R 20.0  0.2   2:54.10 dead </span><br></pre></td></tr></table></figure>
+<p>可以看到这里cpu一直在20%，再也没有上涨了。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&emsp;&emsp;以上只是简单介绍了CGroups的概念和功能，还举了一个cpu限制的例子来说明，但是并没有深入CGroups的实现原理和使用要点，如果想要进一步了解CGroups，可以借鉴下面的文章。</p>
+<h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><blockquote>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cgroups">《cgroups》</a><br><a target="_blank" rel="noopener" href="https://files-cdn.cnblogs.com/files/lisperl/cgroups%E4%BB%8B%E7%BB%8D.pdf">《Linux Cgroups 详解》</a><br><a target="_blank" rel="noopener" href="https://tiewei.github.io/devops/howto-use-cgroup/">《how to use cgroup》</a><br><a target="_blank" rel="noopener" href="https://coolshell.cn/articles/17049.html">《DOCKER基础技术：LINUX CGROUP》</a><br><a target="_blank" rel="noopener" href="https://www.infoq.cn/article/docker-kernel-knowledge-cgroups-resource-isolation">《Docker 背后的内核知识——cgroups 资源限制》</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/" rel="prev" title="Kubernetes学习笔记（一）一个例子展开">
+                  <i class="fa fa-angle-left"></i> Kubernetes学习笔记（一）一个例子展开
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/07/20/%E8%B0%88%E8%B0%88%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" rel="next" title="谈谈分布式缓存一致性">
+                  谈谈分布式缓存一致性 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

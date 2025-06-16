@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="&emsp;&emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拥抱Docker（一）常用命令">
+<meta property="og:url" content="http://example.com/2019/05/27/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%80%EF%BC%89%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="&emsp;&emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g3erlk4ez1j20xk0eon4e.jpg">
+<meta property="article:published_time" content="2019-05-27T11:09:04.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:00.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5gy1g3erlk4ez1j20xk0eon4e.jpg">
+
+
+<link rel="canonical" href="http://example.com/2019/05/27/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%80%EF%BC%89%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/05/27/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%80%EF%BC%89%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/","path":"2019/05/27/拥抱Docker（一）常用命令/","title":"拥抱Docker（一）常用命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>拥抱Docker（一）常用命令 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%BB%93%E5%BA%93%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">查找仓库镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%BB%93%E5%BA%93%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text">获取仓库镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%AC%E5%9C%B0%E9%95%9C%E5%83%8F"><span class="nav-number">1.3.</span> <span class="nav-text">查看本地镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%9C%AC%E5%9C%B0%E9%95%9C%E5%83%8F"><span class="nav-number">1.4.</span> <span class="nav-text">删除本地镜像</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E3%80%81%E8%BF%90%E8%A1%8C"><span class="nav-number">2.1.</span> <span class="nav-text">创建、运行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">2.2.</span> <span class="nav-text">查看</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2%E3%80%81%E5%90%AF%E5%8A%A8%E5%92%8C%E9%87%8D%E5%90%AF%E5%AE%B9%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">停止、启动和重启容器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">2.4.</span> <span class="nav-text">执行命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">2.5.</span> <span class="nav-text">删除</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/05/27/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%80%EF%BC%89%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="拥抱Docker（一）常用命令 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          拥抱Docker（一）常用命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-05-27 19:09:04" itemprop="dateCreated datePublished" datetime="2019-05-27T19:09:04+08:00">2019-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:00" itemprop="dateModified" datetime="2019-10-25T00:22:00+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>&emsp;&emsp;Docker是Docker.Inc开发的一款开源容器引擎，它在容器的基础上，将文件、网络、进程等一系列资源进行进一步封装和管理，通过对镜像的打包和封装，以及引入Docker Registry集中存储Docker镜像，从而简化了整个开发、测试和部署的环境和流程。</p>
+<span id="more"></span>
+<h4 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h4><h5 id="查找仓库镜像"><a href="#查找仓库镜像" class="headerlink" title="查找仓库镜像"></a>查找仓库镜像</h5><blockquote>
+<p><strong>docker search [镜像仓库]</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker search nginx</span><br><span class="line">NAME                              DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">nginx                             Official build of Nginx.                        <span class="number">11463</span>               [OK]</span><br><span class="line">jwilder/nginx-proxy               Automated Nginx reverse proxy <span class="keyword">for</span> docker con…   <span class="number">1602</span>                                    [OK]</span><br><span class="line">richarvey/nginx-php-fpm           Container running Nginx + PHP-FPM capable of…   <span class="number">715</span>                                     [OK]</span><br><span class="line">bitnami/nginx                     Bitnami nginx Docker Image                      <span class="number">66</span>                                      [OK]</span><br><span class="line">linuxserver/nginx                 An Nginx container, brought to you by LinuxS…   <span class="number">62</span></span><br><span class="line">tiangolo/nginx-rtmp               Docker image with Nginx using the nginx-rtmp…   <span class="number">45</span>                                      [OK]</span><br></pre></td></tr></table></figure>
+<p>上面search命令搜索所有镜像仓库中包含nginx的镜像，对应NAME格式用户名&#x2F;镜像仓库，一般官方仓库仅有仓库名，比如上面的第一个镜像仓库是官方nginx仓库。</p>
+<h5 id="获取仓库镜像"><a href="#获取仓库镜像" class="headerlink" title="获取仓库镜像"></a>获取仓库镜像</h5><blockquote>
+<p><strong>docker pull [仓库]:[tag]</strong></p>
+</blockquote>
+<p>可以拉取指定标签的镜像，如果没有tag，默认拉取最新(latest)的镜像：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker pull nginx</span><br><span class="line">Using <span class="keyword">default</span> tag: latest</span><br><span class="line">latest: Pulling from library/nginx</span><br><span class="line">743f2d6c1f65: Pull complete</span><br><span class="line">6bfc4ec4420a: Pull complete</span><br><span class="line">688a776db95f: Pull complete</span><br><span class="line">Digest: sha256:23b4dcdf0d34d4a129755fc6f52e1c6e23bb34ea011b315d87e193033bcd1b68</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> nginx:latest</span><br></pre></td></tr></table></figure>
+
+<h5 id="查看本地镜像"><a href="#查看本地镜像" class="headerlink" title="查看本地镜像"></a>查看本地镜像</h5><blockquote>
+<p><strong>docker images</strong></p>
+</blockquote>
+<p>可以看到刚刚下载的nginx镜像：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REPOSITORY                                 TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">nginx                                      latest              53f3fd8007f7        <span class="number">2</span> weeks ago         109MB</span><br></pre></td></tr></table></figure>
+
+<h5 id="删除本地镜像"><a href="#删除本地镜像" class="headerlink" title="删除本地镜像"></a>删除本地镜像</h5><blockquote>
+<p><strong>docker rmi [镜像]</strong></p>
+</blockquote>
+<p>可以来看下使用这个命令删除刚才拉取的镜像：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker rmi nginx</span><br><span class="line">Error response from daemon: conflict: unable to remove repository reference <span class="string">&quot;nginx&quot;</span> (must force) - container 567831b5df74 is using its referenced image 53f3fd8007f7</span><br></pre></td></tr></table></figure>
+
+<p>报了一个错误，因为我之前运行过这个镜像，不过上面说可以强制删除，我们加一个-f参数再来试一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker rmi -f nginx</span><br><span class="line">Untagged: nginx:latest</span><br><span class="line">Untagged: nginx<span class="meta">@sha256</span>:23b4dcdf0d34d4a129755fc6f52e1c6e23bb34ea011b315d87e193033bcd1b68</span><br><span class="line">Deleted: sha256:53f3fd8007f76bd23bf663ad5f5009c8941f63828ae458cef584b5f85dc0a7bf</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker images</span><br><span class="line">REPOSITORY                                 TAG                 IMAGE ID            CREATED             SIZE</span><br></pre></td></tr></table></figure>
+<p>成功删除了这个镜像。</p>
+<h4 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h4><h5 id="创建、运行"><a href="#创建、运行" class="headerlink" title="创建、运行"></a>创建、运行</h5><p>容器创建并运行的命令比较复杂，这里只简单地讨论：</p>
+<blockquote>
+<p><strong>docker run [参数] [镜像]</strong></p>
+</blockquote>
+<p>重新下载删除的nginx镜像，执行以下命令运行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker pull nginx</span><br><span class="line">Using <span class="keyword">default</span> tag: latest</span><br><span class="line">latest: Pulling from library/nginx</span><br><span class="line">743f2d6c1f65: Already exists</span><br><span class="line">6bfc4ec4420a: Already exists</span><br><span class="line">688a776db95f: Already exists</span><br><span class="line">Digest: sha256:23b4dcdf0d34d4a129755fc6f52e1c6e23bb34ea011b315d87e193033bcd1b68</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> nginx:latest</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker run -p <span class="number">80</span>:<span class="number">80</span> -d nginx</span><br><span class="line">7c878efcb65984952caeb83f6c81b69b6ebcc9228a15df7eec9ab25076819535</span><br></pre></td></tr></table></figure>
+<p>现在nginx已经成功运行了，在浏览器上输入localhost查看：</p>
+<p><img src="http://ww1.sinaimg.cn/large/639cfad5gy1g3erlk4ez1j20xk0eon4e.jpg"></p>
+<p>这里列举几个常用的的参数简单说明：</p>
+<ul>
+<li>-p: 指定端口映射，宿主机端口:容器端口</li>
+<li>-d: 以后台的形式运行容器</li>
+<li>-t: 给容器分配一个伪终端，通常与-i配合使用</li>
+<li>-i: 以交互的形式运行，与-t配合使用</li>
+</ul>
+<h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><p>列出所有运行中的容器：</p>
+<blockquote>
+<p><strong>docker ps [参数]</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7c878efcb659        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">19</span> hours ago        Up <span class="number">19</span> hours         <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">80</span>-&gt;<span class="number">80</span>/tcp   festive_keller</span><br></pre></td></tr></table></figure>
+
+<p>列举几个常用的参数：</p>
+<ul>
+<li>-a: 显示所有的容器，包括未运行的</li>
+<li>–format :指定返回的模板</li>
+</ul>
+<p>查看容器详情：</p>
+<blockquote>
+<p><strong>docker inspect[容器]</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7c878efcb659        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">26</span> hours ago        Up <span class="number">2</span> seconds        <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">80</span>-&gt;<span class="number">80</span>/tcp   festive_keller</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker inspect 7c878efcb659</span><br><span class="line"><span class="comment">// 内容太多只保留了一部分</span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;Id&quot;</span>: <span class="string">&quot;7c878efcb65984952caeb83f6c81b69b6ebcc9228a15df7eec9ab25076819535&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Created&quot;</span>: <span class="string">&quot;2019-05-26T07:43:48.0239342Z&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Path&quot;</span>: <span class="string">&quot;nginx&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Args&quot;</span>: [</span><br><span class="line">            <span class="string">&quot;-g&quot;</span>,</span><br><span class="line">            <span class="string">&quot;daemon off;&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;State&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;Status&quot;</span>: <span class="string">&quot;running&quot;</span>,</span><br><span class="line">            <span class="string">&quot;Running&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="string">&quot;Paused&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">&quot;Restarting&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">&quot;OOMKilled&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">&quot;Dead&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="string">&quot;Pid&quot;</span>: <span class="number">11786</span>,</span><br><span class="line">            <span class="string">&quot;ExitCode&quot;</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="string">&quot;Error&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">            <span class="string">&quot;StartedAt&quot;</span>: <span class="string">&quot;2019-05-27T09:19:11.6796098Z&quot;</span>,</span><br><span class="line">            <span class="string">&quot;FinishedAt&quot;</span>: <span class="string">&quot;2019-05-27T09:15:42.5193429Z&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="停止、启动和重启容器"><a href="#停止、启动和重启容器" class="headerlink" title="停止、启动和重启容器"></a>停止、启动和重启容器</h5><blockquote>
+<p><strong>docker stop [容器]</strong><br><strong>docker start [容器]</strong><br><strong>docker restart [容器]</strong></p>
+</blockquote>
+<p>看一下容器停止：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7c878efcb659        nginx               &quot;nginx -g &#x27;daemon of…&quot;   26 hours ago        Up 23 seconds       0.0.0.0:80-&gt;80/tcp   festive_keller</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker stop 7c878efcb659</span><br><span class="line">7c878efcb659</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br></pre></td></tr></table></figure>
+
+<h5 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h5><blockquote>
+<p>docker exec [参数] [容器] [命令]</p>
+</blockquote>
+<p>比如我想进入nginx容器看一下文件列表：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES</span><br><span class="line">e1be7b04269f        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">17</span> seconds ago      <span class="title function_">Exited</span> <span class="params">(<span class="number">0</span>)</span> <span class="number">4</span> seconds ago                       laughing_davinci</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker exec -it e1be7b04269f  /bin/bash</span><br><span class="line">Error response from daemon: Container e1be7b04269f17ae32c8a14c9a3f2f62f8cc58fa6be4887a05a8762c109f20cd is not running</span><br></pre></td></tr></table></figure>
+<p>报错了，exec只能进入运行中的容器执行命令，所以先启动nginx：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">e1be7b04269f        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">5</span> minutes ago       Up <span class="number">3</span> minutes        <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">80</span>-&gt;<span class="number">80</span>/tcp   laughing_davinci</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker exec -it e1be7b04269f /bin/bash</span><br><span class="line">root<span class="meta">@e1be7b04269f</span>:/# ls</span><br><span class="line">bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  <span class="keyword">var</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><blockquote>
+<p>docker rm [参数] [容器]</p>
+</blockquote>
+<p>尝试删除运行中的nginx容器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7c878efcb659        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">26</span> hours ago        Up <span class="number">3</span> minutes        <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">80</span>-&gt;<span class="number">80</span>/tcp   festive_keller</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker rm 7c878efcb659</span><br><span class="line">Error response from daemon: You cannot remove a running container 7c878efcb65984952caeb83f6c81b69b6ebcc9228a15df7eec9ab25076819535. Stop the container before attempting removal or force remove</span><br></pre></td></tr></table></figure>
+<p>报错了，不能删除正在运行的容器，先停止容器或者添加-f参数强制删除：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES</span><br><span class="line">7c878efcb659        nginx               <span class="string">&quot;nginx -g &#x27;daemon of…&quot;</span>   <span class="number">26</span> hours ago        Up <span class="number">5</span> minutes        <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">80</span>-&gt;<span class="number">80</span>/tcp   festive_keller</span><br><span class="line">luyundeMacBook-Pro:~ luyun$ docker rm -f 7c878efcb659</span><br><span class="line">7c878efcb659</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/04/%E8%B0%88%E8%B0%88Spring%E7%9A%84IoC%E4%B9%8B%E5%AE%9E%E4%BE%8B%E5%8C%96/" rel="prev" title="谈谈Spring的IoC之实例化">
+                  <i class="fa fa-angle-left"></i> 谈谈Spring的IoC之实例化
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/04/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%BA%8C%EF%BC%89Dockerfile%E5%88%B6%E4%BD%9C%E9%95%9C%E5%83%8F/" rel="next" title="拥抱Docker（二）Dockerfile制作镜像">
+                  拥抱Docker（二）Dockerfile制作镜像 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

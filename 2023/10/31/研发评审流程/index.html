@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="目标本方案旨在规范技术评审流程、提高评审效率，帮助研发人员在评审环节提前发现方案中存在的风险，避免后期返工。整个评审流程一般会包含如下角色：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="研发评审流程">
+<meta property="og:url" content="http://example.com/2023/10/31/%E7%A0%94%E5%8F%91%E8%AF%84%E5%AE%A1%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="目标本方案旨在规范技术评审流程、提高评审效率，帮助研发人员在评审环节提前发现方案中存在的风险，避免后期返工。整个评审流程一般会包含如下角色：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-10-31T13:12:30.000Z">
+<meta property="article:modified_time" content="2023-10-31T13:15:42.149Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="研发流程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/10/31/%E7%A0%94%E5%8F%91%E8%AF%84%E5%AE%A1%E6%B5%81%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2023/10/31/%E7%A0%94%E5%8F%91%E8%AF%84%E5%AE%A1%E6%B5%81%E7%A8%8B/","path":"2023/10/31/研发评审流程/","title":"研发评审流程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>研发评审流程 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%AF%84%E5%AE%A1"><span class="nav-number">2.0.1.</span> <span class="nav-text">需求评审</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1%E8%80%85"><span class="nav-number">2.0.2.</span> <span class="nav-text">方案设计者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%84%E5%AE%A1%E8%80%85"><span class="nav-number">2.0.3.</span> <span class="nav-text">评审者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E7%BB%87%E8%80%85"><span class="nav-number">2.0.4.</span> <span class="nav-text">组织者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AE%AE%E5%BC%80%E5%A7%8B"><span class="nav-number">3.</span> <span class="nav-text">会议开始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BC%94%E8%AE%B2%E8%80%85"><span class="nav-number">3.0.1.</span> <span class="nav-text">演讲者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%B3%E7%AD%96%E8%80%85"><span class="nav-number">3.0.2.</span> <span class="nav-text">决策者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E7%BB%87%E8%80%85-1"><span class="nav-number">3.0.3.</span> <span class="nav-text">组织者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%84%E5%AE%A1%E8%80%85-1"><span class="nav-number">3.0.4.</span> <span class="nav-text">评审者</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AE%AE%E7%BB%93%E6%9D%9F"><span class="nav-number">4.</span> <span class="nav-text">会议结束</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/31/%E7%A0%94%E5%8F%91%E8%AF%84%E5%AE%A1%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="研发评审流程 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          研发评审流程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-10-31 21:12:30 / Modified: 21:15:42" itemprop="dateCreated datePublished" datetime="2023-10-31T21:12:30+08:00">2023-10-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A0%94%E5%8F%91%E6%B5%81%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">研发流程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>本方案旨在规范技术评审流程、提高评审效率，帮助研发人员在评审环节提前发现方案中存在的风险，避免后期返工。整个评审流程一般会包含如下角色：</p>
+<span id="more"></span>
+<ul>
+<li>**组织者 **会议发起人，也是会议的主要管理人员。</li>
+<li>**方案设计者&#x2F;演讲者 **制定技术方案，并在技术评审会上演讲本方案。</li>
+<li>**决策者 **方案的最终决策方，根据方案的优劣进行拍板。</li>
+<li>**评审者 **参与方案评审的所有人。</li>
+</ul>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>一般要求方案设计者在需求评审阶段就开始做好准备，在需求评审完后正式制定技术方案。下面是对每个阶段&#x2F;角色的具体要求。</p>
+<h4 id="需求评审"><a href="#需求评审" class="headerlink" title="需求评审"></a>需求评审</h4><p>为了确保研发对需求有一定认知，在需求评审之前，需求评审组织者务必确保：</p>
+<ul>
+<li><strong>已预先分配好研发任务和模块</strong>。确保参与评审的研发同学在需求评审之前已做好准备，对自己负责的模块和需求有一定了解。</li>
+<li><strong>具备一定技术可行性</strong>。在需求评审会上一般不讨论技术可行性，技术可行性一般由研发leader在方案初稿的时候进行评审。</li>
+</ul>
+<h4 id="方案设计者"><a href="#方案设计者" class="headerlink" title="方案设计者"></a>方案设计者</h4><p>在正式技术评审之前，请相关研发方案设计者参照 <strong>技术评审方案设计模板</strong> 准备好技术方案文档。在编撰技术方案文档时，务必注意以下几点：</p>
+<ul>
+<li><strong>方案设计时阐明问题。</strong>问题是简单的立项原因，假如问题不成立，则设计无意义。</li>
+<li><strong>提前沟通。</strong>如果对某需求有疑义或者对需求理解不明，请提前和产品沟通并协商一致，避免在技术评审会上讨论产品需求的技术可实现性。</li>
+<li><strong>做好需求描述。</strong>讲述具体方案前先做好需求描述，保证参与者理解需求避免无效评审。</li>
+<li><strong>技术方案对照产品原型进行设计。</strong>对于功能简单的需求，可以在文档上进行简略说明，但尽量不要遗漏（之前发现在设计阶段遗漏了一些看似简单的图表功能，因为得不到评审而常常设计粗糙继而发生隐患）。</li>
+<li><strong>对于不确定的、有难点的功能，先私下讨论并确定方案。</strong>对于不确定的方案，提前梳理清楚几个方案之前的优劣势，便于会上一起做决策。如果涉及多人合作，务必保证上下游已经沟通一致，如数据字段、通信方式、接口协议等等。</li>
+<li><strong>第三方框架选型深入分析。</strong>引入新的组件前需要有充分的调研，避免后期踩坑返工。</li>
+<li><strong>可落地。</strong>技术方案不能偏离实际，代价尽量小。</li>
+<li><strong>扩展性。</strong>方案要有前瞻性，避免短期内又要重构。</li>
+<li><strong>多部门协作。</strong>提前沟通和考量，确定好资源，如有必要可以拉过来一起参与评审。</li>
+</ul>
+<h4 id="评审者"><a href="#评审者" class="headerlink" title="评审者"></a>评审者</h4><p>参与技术方案评审方在入会之前，务必做好如下准备：</p>
+<ul>
+<li><strong>通读并了解技术方案</strong>。简单的方案可以快速过一遍，复杂的技术方案需要提前了解和思考，否则很难了解方案的初衷以及提出有建设性的意见。评审者可参照评审清单预先组织好问题。</li>
+</ul>
+<h4 id="组织者"><a href="#组织者" class="headerlink" title="组织者"></a>组织者</h4><p>技术评审组织者发出评审通知（约定好本次评审的内容、会议时间、会议地点、参与人员等），制定好会议纪要，务必注意以下几点：</p>
+<ul>
+<li><strong>明确评审内容和目标。</strong>避免谈论无关的内容，偏离会议主题。</li>
+<li><strong>严格限定会议时间。</strong>以及分配给每个技术方案的评审时间、提问时间。会议时间建议控制在2小时以内，</li>
+<li><strong>制定评审流程。</strong>严格遵从评审流程，避免会议会无序。</li>
+<li><strong>提前发送技术方案文档。</strong>在评审前几天，督促评审相关研发人员在会议日程附上相关技术方案文档，并通知其他参与会议的人员以便提前了解。</li>
+<li><strong>控制参与人数。</strong>评审涉及人员数量控制在最小值，所有会议参与人员先作好准备（通过每次评审会议观察并删减与会人员）。</li>
+</ul>
+<p>组织者参照如下会议纪要开展会议流程：</p>
+<ol>
+<li><strong>技术评审组织者（或者其他相关人员）大致讲解本次评审会的背景、内容、目标（时间X分钟）。</strong></li>
+<li><strong>研发同学讲述方案（按照A、B、C、D的顺序进行，每一位研发讲述时间在X分钟）；参与者进行提问（时间X分钟）。</strong></li>
+<li><strong>对会议上有争议或者有缺陷的功能方案，进行review、讨论和总结（时间X分钟）。请在会议之前指定本次会议的记录人员。</strong></li>
+</ol>
+<h2 id="会议开始"><a href="#会议开始" class="headerlink" title="会议开始"></a>会议开始</h2><p>会议开始，一般由会议组织者先阐述本次会议的主题，例如本次研发任务的总目标。下面是对各角色&#x2F;流程在会议中的要求。</p>
+<h4 id="演讲者"><a href="#演讲者" class="headerlink" title="演讲者"></a>演讲者</h4><p>演讲者一般为方案设计者，在评审会上演讲方案时需要注意：</p>
+<ul>
+<li><strong>把握重点，不要面面俱到。</strong>评审时对简单功能可以快速略过。对问题可以发表见解，但不要试图解决所有问题。评审会不是解决问题的会议，问题的解决方案留待会后。</li>
+<li><strong>着重说明哪些不确定的点。</strong>在研发方案中对于不明确的点，需要着重说明。</li>
+<li><strong>讲好模块设计的思路。</strong>思路是整个方案的核心，涉及到后面的扩展性。</li>
+<li><strong>提醒相关方引起注意</strong>。如果模块有相关（上下游）依赖，可以在讲解该模块方案时，先提醒对方引起关注。</li>
+<li><strong>收集并记录会议中的问题。</strong>记录有争议、不合理的方案以及无法解答的问题，会后寻找解决方案，以便会后同步或者下次开会讨论。</li>
+</ul>
+<h4 id="决策者"><a href="#决策者" class="headerlink" title="决策者"></a>决策者</h4><p>评审会上通常会有一个方案决策者，在方案出现分歧、无法确定的时候，需要决策者适时给出最终的意见和决策：</p>
+<ul>
+<li><strong>做好最终决策，不要没结论。</strong>决策者协助方案设计者人员给出结论，或者给出准确的时间点再进行讨论。</li>
+</ul>
+<h4 id="组织者-1"><a href="#组织者-1" class="headerlink" title="组织者"></a>组织者</h4><p>会议中检查是否遵从了以下会议评审的原则：</p>
+<ul>
+<li><strong>遵守会议纪要的流程，控制时间。</strong>各会议经常有一个主要缺点：放任自流。评审会议必须保证不要离题和按照计划走，会议组织者要有维持会议程序的责任，有人在转移话题的时候适当提醒。</li>
+<li><strong>限制争论和辩驳。</strong>如果小范围意见不一致（<strong>如3人以下</strong>）或者长时间讨论不一致（<strong>如5分钟内</strong>），先记录，归类为开放问题或留待会后讨论。</li>
+</ul>
+<h4 id="评审者-1"><a href="#评审者-1" class="headerlink" title="评审者"></a>评审者</h4><p>评审员可以根据所评审的方案集思广益，列出不合理、可能缺失、有风险的地方。对于一个技术方案的<strong>评审清单</strong>，可以包含如下要素：</p>
+<ul>
+<li><strong>技术方案是否遗漏或者偏离了某个需求和功能点。</strong></li>
+<li><strong>提供更好的设计思路。</strong></li>
+<li><strong>关注性能。</strong></li>
+<li><strong>特殊、异常、被遗漏的场景。</strong></li>
+<li><strong>架构合理性。</strong></li>
+<li><strong>产品概念的功能分解是否清晰地描述（比如是否有流程图）。</strong></li>
+<li><strong>技术方案可能存在的风险。</strong></li>
+<li><strong>数据一致性。</strong></li>
+<li><strong>是否符合业内或者产品规范和标准。</strong></li>
+<li><strong>第三方框架、选型是否进行过深入分析，是否存在已知缺陷。</strong></li>
+<li><strong>对复杂性进行评估。</strong>一般情况下，复杂性体现在以下方面：1）调用链过长 2）程序策略复杂无法落地 3）跨库、跨存储 4）使用了缓存 6）使用了异步。</li>
+<li><strong>安全漏洞。</strong></li>
+</ul>
+<h2 id="会议结束"><a href="#会议结束" class="headerlink" title="会议结束"></a>会议结束</h2><p>在会议结束时，所有人确认以下问题：</p>
+<ul>
+<li><strong>是否达成共识。</strong>记录未达成共识的点</li>
+<li><strong>是否存在风险。</strong>记录风险点</li>
+<li><strong>是否有结论。</strong>做好最终决策，对于实在无法得出结论的方案，必须定好时间规划并在时间点做出最终的结论。</li>
+</ul>
+<p>以上三个问题得到明确后本轮会议结束。组织者统一收集会议中的问题，并同步给所有参与评审的人员。相关研发人员根据会议上收集的问题寻找解决方案，并对方案进行重构（如有需要）。另外相关研发人员也可以在方案重构后重新组织会议（尽量缩小会议范围），注意后续的评审会议也必须遵从此评审流程。在确定好最终技术方案后（达成一致），请务必将该方案文档更新到团队的文档空间。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A0%94%E5%8F%91%E6%B5%81%E7%A8%8B/" rel="tag"># 研发流程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/31/%E4%BB%8E%E9%9B%B6%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" rel="prev" title="从零写单元测试">
+                  <i class="fa fa-angle-left"></i> 从零写单元测试
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

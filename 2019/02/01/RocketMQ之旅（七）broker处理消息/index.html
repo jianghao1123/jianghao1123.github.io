@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="消息接收&emsp;&emsp;在BrokerController的**registerProcessor()**中，注册了很多网络处理器： 12345678910111213141516171819public void registerProcessor() &#123;    &#x2F;**        * SendMessageProcessor        *&#x2F;    SendMessage">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketMQ之旅（七）broker处理消息">
+<meta property="og:url" content="http://example.com/2019/02/01/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%83%EF%BC%89broker%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="消息接收&emsp;&emsp;在BrokerController的**registerProcessor()**中，注册了很多网络处理器： 12345678910111213141516171819public void registerProcessor() &#123;    &#x2F;**        * SendMessageProcessor        *&#x2F;    SendMessage">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-02-01T13:00:12.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:02.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="RocketMQ之旅">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/02/01/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%83%EF%BC%89broker%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/02/01/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%83%EF%BC%89broker%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF/","path":"2019/02/01/RocketMQ之旅（七）broker处理消息/","title":"RocketMQ之旅（七）broker处理消息"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RocketMQ之旅（七）broker处理消息 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E6%8E%A5%E6%94%B6"><span class="nav-number">1.</span> <span class="nav-text">消息接收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">消息消费</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/02/01/RocketMQ%E4%B9%8B%E6%97%85%EF%BC%88%E4%B8%83%EF%BC%89broker%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RocketMQ之旅（七）broker处理消息 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RocketMQ之旅（七）broker处理消息
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-02-01 21:00:12" itemprop="dateCreated datePublished" datetime="2019-02-01T21:00:12+08:00">2019-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:02" itemprop="dateModified" datetime="2019-10-25T00:22:02+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/RocketMQ%E4%B9%8B%E6%97%85/" itemprop="url" rel="index"><span itemprop="name">RocketMQ之旅</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="消息接收"><a href="#消息接收" class="headerlink" title="消息接收"></a>消息接收</h4><p>&emsp;&emsp;在<strong>BrokerController</strong>的**registerProcessor()**中，注册了很多网络处理器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerProcessor</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * SendMessageProcessor</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    <span class="type">SendMessageProcessor</span> <span class="variable">sendProcessor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SendMessageProcessor</span>(<span class="built_in">this</span>);</span><br><span class="line">    sendProcessor.registerSendMessageHook(sendMessageHookList);</span><br><span class="line">    sendProcessor.registerConsumeMessageHook(consumeMessageHookList);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.remotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.remotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.remotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_MESSAGE_V2, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.fastRemotingServer.registerProcessor(RequestCode.SEND_BATCH_MESSAGE, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="built_in">this</span>.fastRemotingServer.registerProcessor(RequestCode.CONSUMER_SEND_MSG_BACK, sendProcessor, <span class="built_in">this</span>.sendMessageExecutor);</span><br><span class="line">    <span class="comment">// ...省略部分的注册逻辑...</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<strong>SendMessageProcessor</strong>主要负责接收Producer发过来的消息，继承于NettyRequestProcessor，每个继承于NettyRequestProcessor的子类都需要实现**processRequest()**：</p>
+<span id="more"></span>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> RemotingCommand <span class="title function_">processRequest</span><span class="params">(ChannelHandlerContext ctx,</span></span><br><span class="line"><span class="params">                                        RemotingCommand request)</span> <span class="keyword">throws</span> RemotingCommandException &#123;</span><br><span class="line">    SendMessageContext mqtraceContext;</span><br><span class="line">    <span class="keyword">switch</span> (request.getCode()) &#123;</span><br><span class="line">        <span class="keyword">case</span> RequestCode.CONSUMER_SEND_MSG_BACK:</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>.consumerSendMsgBack(ctx, request);</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="type">SendMessageRequestHeader</span> <span class="variable">requestHeader</span> <span class="operator">=</span> parseRequestHeader(request);</span><br><span class="line">            <span class="keyword">if</span> (requestHeader == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mqtraceContext = buildMsgContext(ctx, requestHeader);</span><br><span class="line">            <span class="built_in">this</span>.executeSendMessageHookBefore(ctx, request, mqtraceContext);</span><br><span class="line"></span><br><span class="line">            RemotingCommand response;</span><br><span class="line">            <span class="keyword">if</span> (requestHeader.isBatch()) &#123;</span><br><span class="line">                response = <span class="built_in">this</span>.sendBatchMessage(ctx, request, mqtraceContext, requestHeader);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                response = <span class="built_in">this</span>.sendMessage(ctx, request, mqtraceContext, requestHeader);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">this</span>.executeSendMessageHookAfter(response, mqtraceContext);</span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>consumerSendMsgBack()</strong> 用于处理Consumer回传的消息，这一点在<strong>RocketMQ之旅（四）client之Consumer</strong>中也提到过。</li>
+<li>**sendMessage()<strong>和</strong>sendBatchMessage()**就是核心的消息接收方法，前者处理单个消息，后者处理批量消息。</li>
+</ol>
+<p>先来看下**consumerSendMsgBack()**对于重新发回来的消息做了什么处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> RemotingCommand <span class="title function_">consumerSendMsgBack</span><span class="params">(<span class="keyword">final</span> ChannelHandlerContext ctx, <span class="keyword">final</span> RemotingCommand request)</span></span><br><span class="line">    <span class="keyword">throws</span> RemotingCommandException &#123;</span><br><span class="line">    <span class="comment">// 代码篇幅的问题省略了RemotingCommand组装的代码...</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">newTopic</span> <span class="operator">=</span> MixAll.getRetryTopic(requestHeader.getGroup());</span><br><span class="line">    <span class="type">int</span> <span class="variable">queueIdInt</span> <span class="operator">=</span> Math.abs(<span class="built_in">this</span>.random.nextInt() % <span class="number">99999999</span>) % subscriptionGroupConfig.getRetryQueueNums();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">topicSysFlag</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (requestHeader.isUnitMode()) &#123;</span><br><span class="line">        topicSysFlag = TopicSysFlag.buildSysFlag(<span class="literal">false</span>, <span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">TopicConfig</span> <span class="variable">topicConfig</span> <span class="operator">=</span> <span class="built_in">this</span>.brokerController.getTopicConfigManager().createTopicInSendMessageBackMethod(</span><br><span class="line">        newTopic,</span><br><span class="line">        subscriptionGroupConfig.getRetryQueueNums(),</span><br><span class="line">        PermName.PERM_WRITE | PermName.PERM_READ, topicSysFlag);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == topicConfig) &#123;</span><br><span class="line">        response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">        response.setRemark(<span class="string">&quot;topic[&quot;</span> + newTopic + <span class="string">&quot;] not exist&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!PermName.isWriteable(topicConfig.getPerm())) &#123;</span><br><span class="line">        response.setCode(ResponseCode.NO_PERMISSION);</span><br><span class="line">        response.setRemark(String.format(<span class="string">&quot;the topic[%s] sending message is forbidden&quot;</span>, newTopic));</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">MessageExt</span> <span class="variable">msgExt</span> <span class="operator">=</span> <span class="built_in">this</span>.brokerController.getMessageStore().lookMessageByOffset(requestHeader.getOffset());</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == msgExt) &#123;</span><br><span class="line">        response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">        response.setRemark(<span class="string">&quot;look message by offset failed, &quot;</span> + requestHeader.getOffset());</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">String</span> <span class="variable">retryTopic</span> <span class="operator">=</span> msgExt.getProperty(MessageConst.PROPERTY_RETRY_TOPIC);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == retryTopic) &#123;</span><br><span class="line">        MessageAccessor.putProperty(msgExt, MessageConst.PROPERTY_RETRY_TOPIC, msgExt.getTopic());</span><br><span class="line">    &#125;</span><br><span class="line">    msgExt.setWaitStoreMsgOK(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">delayLevel</span> <span class="operator">=</span> requestHeader.getDelayLevel();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">maxReconsumeTimes</span> <span class="operator">=</span> subscriptionGroupConfig.getRetryMaxTimes();</span><br><span class="line">    <span class="keyword">if</span> (request.getVersion() &gt;= MQVersion.Version.V3_4_9.ordinal()) &#123;</span><br><span class="line">        maxReconsumeTimes = requestHeader.getMaxReconsumeTimes();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (msgExt.getReconsumeTimes() &gt;= maxReconsumeTimes</span><br><span class="line">        || delayLevel &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        newTopic = MixAll.getDLQTopic(requestHeader.getGroup());</span><br><span class="line">        queueIdInt = Math.abs(<span class="built_in">this</span>.random.nextInt() % <span class="number">99999999</span>) % DLQ_NUMS_PER_GROUP;</span><br><span class="line"></span><br><span class="line">        topicConfig = <span class="built_in">this</span>.brokerController.getTopicConfigManager().createTopicInSendMessageBackMethod(newTopic,</span><br><span class="line">            DLQ_NUMS_PER_GROUP,</span><br><span class="line">            PermName.PERM_WRITE, <span class="number">0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == topicConfig) &#123;</span><br><span class="line">            response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">            response.setRemark(<span class="string">&quot;topic[&quot;</span> + newTopic + <span class="string">&quot;] not exist&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">0</span> == delayLevel) &#123;</span><br><span class="line">            delayLevel = <span class="number">3</span> + msgExt.getReconsumeTimes();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        msgExt.setDelayTimeLevel(delayLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">MessageExtBrokerInner</span> <span class="variable">msgInner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MessageExtBrokerInner</span>();</span><br><span class="line">    msgInner.setTopic(newTopic);</span><br><span class="line">    msgInner.setBody(msgExt.getBody());</span><br><span class="line">    msgInner.setFlag(msgExt.getFlag());</span><br><span class="line">    MessageAccessor.setProperties(msgInner, msgExt.getProperties());</span><br><span class="line">    msgInner.setPropertiesString(MessageDecoder.messageProperties2String(msgExt.getProperties()));</span><br><span class="line">    msgInner.setTagsCode(MessageExtBrokerInner.tagsString2tagsCode(<span class="literal">null</span>, msgExt.getTags()));</span><br><span class="line"></span><br><span class="line">    msgInner.setQueueId(queueIdInt);</span><br><span class="line">    msgInner.setSysFlag(msgExt.getSysFlag());</span><br><span class="line">    msgInner.setBornTimestamp(msgExt.getBornTimestamp());</span><br><span class="line">    msgInner.setBornHost(msgExt.getBornHost());</span><br><span class="line">    msgInner.setStoreHost(<span class="built_in">this</span>.getStoreHost());</span><br><span class="line">    msgInner.setReconsumeTimes(msgExt.getReconsumeTimes() + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">originMsgId</span> <span class="operator">=</span> MessageAccessor.getOriginMessageId(msgExt);</span><br><span class="line">    MessageAccessor.setOriginMessageId(msgInner, UtilAll.isBlank(originMsgId) ? msgExt.getMsgId() : originMsgId);</span><br><span class="line"></span><br><span class="line">    <span class="type">PutMessageResult</span> <span class="variable">putMessageResult</span> <span class="operator">=</span> <span class="built_in">this</span>.brokerController.getMessageStore().putMessage(msgInner);</span><br><span class="line">    <span class="keyword">if</span> (putMessageResult != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (putMessageResult.getPutMessageStatus()) &#123;</span><br><span class="line">            <span class="keyword">case</span> PUT_OK:</span><br><span class="line">                <span class="type">String</span> <span class="variable">backTopic</span> <span class="operator">=</span> msgExt.getTopic();</span><br><span class="line">                <span class="type">String</span> <span class="variable">correctTopic</span> <span class="operator">=</span> msgExt.getProperty(MessageConst.PROPERTY_RETRY_TOPIC);</span><br><span class="line">                <span class="keyword">if</span> (correctTopic != <span class="literal">null</span>) &#123;</span><br><span class="line">                    backTopic = correctTopic;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">this</span>.brokerController.getBrokerStatsManager().incSendBackNums(requestHeader.getGroup(), backTopic);</span><br><span class="line"></span><br><span class="line">                response.setCode(ResponseCode.SUCCESS);</span><br><span class="line">                response.setRemark(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> response;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">        response.setRemark(putMessageResult.getPutMessageStatus().name());</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">    response.setRemark(<span class="string">&quot;putMessageResult is null&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到对于重试的消息，会以%RETRY%作为开头，以groupName作为结尾，重新命名他的topic。如果重试的次数达到默认16次以后，会将消息加入到DLQ死信队列中，该队列的topic以%DLQ%为开头，groupName为结尾。最后是组装MessageExtBrokerInner，使用messageStore持久化这条消息，这部分留待store模块再讨论。至于**sendMessage()<strong>或者</strong>sendBatchMessage()**，他们的基本逻辑也是类似的，所以这里不再继续深入。</p>
+<h4 id="消息消费"><a href="#消息消费" class="headerlink" title="消息消费"></a>消息消费</h4><p>&emsp;&emsp;消息消费的核心处理器是<strong>PullMessageProcessor</strong>。<strong>PullMessageProcessor</strong>同样继承于NettyRequestProcessor，其主要的内部核心的处理方法**processRequest()<strong>，这里由于</strong>processRequest()<strong>的代码实在太长了，就不贴所有的代码了。大致上整个</strong>processRequest()**分为：</p>
+<ol>
+<li>构建响应结果，读取消息头，检测消息的合法性、消息订阅者的合法性、broker的读写权限、topic的配置信息以及消息过滤器的构建等等。</li>
+<li>从MessageStore中获取消息。</li>
+</ol>
+<p>我们来关注下从MessageStore中获取消息以后的行为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> RemotingCommand <span class="title function_">processRequest</span><span class="params">(<span class="keyword">final</span> Channel channel, RemotingCommand request, <span class="type">boolean</span> brokerAllowSuspend)</span>&#123;</span><br><span class="line"><span class="comment">// 省略上面大部分代码...</span></span><br><span class="line"><span class="comment">// 这里主要展示从MessageStore获取到消息的后续行为</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">GetMessageResult</span> <span class="variable">getMessageResult</span> <span class="operator">=</span></span><br><span class="line">        <span class="built_in">this</span>.brokerController.getMessageStore().getMessage(requestHeader.getConsumerGroup(), requestHeader.getTopic(),</span><br><span class="line">            requestHeader.getQueueId(), requestHeader.getQueueOffset(), requestHeader.getMaxMsgNums(), messageFilter);</span><br><span class="line">    <span class="keyword">if</span> (getMessageResult != <span class="literal">null</span>) &#123;</span><br><span class="line">        response.setRemark(getMessageResult.getStatus().name());</span><br><span class="line">        responseHeader.setNextBeginOffset(getMessageResult.getNextBeginOffset());</span><br><span class="line">        responseHeader.setMinOffset(getMessageResult.getMinOffset());</span><br><span class="line">        responseHeader.setMaxOffset(getMessageResult.getMaxOffset());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (getMessageResult.isSuggestPullingFromSlave()) &#123;</span><br><span class="line">            responseHeader.setSuggestWhichBrokerId(subscriptionGroupConfig.getWhichBrokerWhenConsumeSlowly());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            responseHeader.setSuggestWhichBrokerId(MixAll.MASTER_ID);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (<span class="built_in">this</span>.brokerController.getMessageStoreConfig().getBrokerRole()) &#123;</span><br><span class="line">            <span class="keyword">case</span> ASYNC_MASTER:</span><br><span class="line">            <span class="keyword">case</span> SYNC_MASTER:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SLAVE:</span><br><span class="line">                <span class="keyword">if</span> (!<span class="built_in">this</span>.brokerController.getBrokerConfig().isSlaveReadEnable()) &#123;</span><br><span class="line">                    response.setCode(ResponseCode.PULL_RETRY_IMMEDIATELY);</span><br><span class="line">                    responseHeader.setSuggestWhichBrokerId(MixAll.MASTER_ID);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.brokerController.getBrokerConfig().isSlaveReadEnable()) &#123;</span><br><span class="line">            <span class="comment">// consume too slow ,redirect to another machine</span></span><br><span class="line">            <span class="keyword">if</span> (getMessageResult.isSuggestPullingFromSlave()) &#123;</span><br><span class="line">                responseHeader.setSuggestWhichBrokerId(subscriptionGroupConfig.getWhichBrokerWhenConsumeSlowly());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// consume ok</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                responseHeader.setSuggestWhichBrokerId(subscriptionGroupConfig.getBrokerId());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            responseHeader.setSuggestWhichBrokerId(MixAll.MASTER_ID);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (getMessageResult.getStatus()) &#123;</span><br><span class="line">            <span class="keyword">case</span> FOUND:</span><br><span class="line">                response.setCode(ResponseCode.SUCCESS);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MESSAGE_WAS_REMOVING:</span><br><span class="line">                response.setCode(ResponseCode.PULL_RETRY_IMMEDIATELY);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> NO_MATCHED_LOGIC_QUEUE:</span><br><span class="line">            <span class="keyword">case</span> NO_MESSAGE_IN_QUEUE:</span><br><span class="line">                <span class="keyword">if</span> (<span class="number">0</span> != requestHeader.getQueueOffset()) &#123;</span><br><span class="line">                    response.setCode(ResponseCode.PULL_OFFSET_MOVED);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// <span class="doctag">XXX:</span> warn and notify me</span></span><br><span class="line">                    log.info(<span class="string">&quot;the broker store no queue data, fix the request offset &#123;&#125; to &#123;&#125;, Topic: &#123;&#125; QueueId: &#123;&#125; Consumer Group: &#123;&#125;&quot;</span>,</span><br><span class="line">                        requestHeader.getQueueOffset(),</span><br><span class="line">                        getMessageResult.getNextBeginOffset(),</span><br><span class="line">                        requestHeader.getTopic(),</span><br><span class="line">                        requestHeader.getQueueId(),</span><br><span class="line">                        requestHeader.getConsumerGroup()</span><br><span class="line">                    );</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    response.setCode(ResponseCode.PULL_NOT_FOUND);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> NO_MATCHED_MESSAGE:</span><br><span class="line">                response.setCode(ResponseCode.PULL_RETRY_IMMEDIATELY);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> OFFSET_FOUND_NULL:</span><br><span class="line">                response.setCode(ResponseCode.PULL_NOT_FOUND);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> OFFSET_OVERFLOW_BADLY:</span><br><span class="line">                response.setCode(ResponseCode.PULL_OFFSET_MOVED);</span><br><span class="line">                <span class="comment">// <span class="doctag">XXX:</span> warn and notify me</span></span><br><span class="line">                log.info(<span class="string">&quot;the request offset: &#123;&#125; over flow badly, broker max offset: &#123;&#125;, consumer: &#123;&#125;&quot;</span>,</span><br><span class="line">                    requestHeader.getQueueOffset(), getMessageResult.getMaxOffset(), channel.remoteAddress());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> OFFSET_OVERFLOW_ONE:</span><br><span class="line">                response.setCode(ResponseCode.PULL_NOT_FOUND);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> OFFSET_TOO_SMALL:</span><br><span class="line">                response.setCode(ResponseCode.PULL_OFFSET_MOVED);</span><br><span class="line">                log.info(<span class="string">&quot;the request offset too small. group=&#123;&#125;, topic=&#123;&#125;, requestOffset=&#123;&#125;, brokerMinOffset=&#123;&#125;, clientIp=&#123;&#125;&quot;</span>,</span><br><span class="line">                    requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueOffset(),</span><br><span class="line">                    getMessageResult.getMinOffset(), channel.remoteAddress());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">assert</span> <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 先省略下面部分代码...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面部分只是截取了一个代码片段，根据MessageStore不同的返回结果构建不同的response响应参数：</p>
+<ol>
+<li>如果当前Broker为slave且不可读，会立即返回PULL_RETRY_IMMEDIATELY，并建议当前Consumer去master节点拉取信息。如果slave节点允许读消息，根据MessageStore返回的结果<strong>suggestPullingFromSlave</strong>，这个参数可以判断当前broker机器的可用内存是否大于剩余未拉取的消息大小，如果内存不足，broker会推荐你去别的机器上拉取消息。</li>
+<li>根据MessageStore返回的拉取结果的状态，去设置response的code。比如状态为<strong>FOUND</strong>，即设置response为<strong>SUCCESS</strong>。</li>
+</ol>
+<p>当然**processRequest()**不止于此，根据上面response的不同code，broker会统计一些状态，再来看下后面部分的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> RemotingCommand <span class="title function_">processRequest</span><span class="params">(<span class="keyword">final</span> Channel channel, RemotingCommand request, <span class="type">boolean</span> brokerAllowSuspend)</span>&#123;</span><br><span class="line">    <span class="comment">// 省略上面部分的代码...</span></span><br><span class="line">    <span class="keyword">if</span> (getMessageResult != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 省略 设置response code的的代码逻辑...</span></span><br><span class="line">        <span class="keyword">switch</span> (response.getCode()) &#123;</span><br><span class="line">            <span class="keyword">case</span> ResponseCode.SUCCESS:</span><br><span class="line"></span><br><span class="line">                <span class="built_in">this</span>.brokerController.getBrokerStatsManager().incGroupGetNums(requestHeader.getConsumerGroup(), requestHeader.getTopic(),</span><br><span class="line">                    getMessageResult.getMessageCount());</span><br><span class="line"></span><br><span class="line">                <span class="built_in">this</span>.brokerController.getBrokerStatsManager().incGroupGetSize(requestHeader.getConsumerGroup(), requestHeader.getTopic(),</span><br><span class="line">                    getMessageResult.getBufferTotalSize());</span><br><span class="line"></span><br><span class="line">                <span class="built_in">this</span>.brokerController.getBrokerStatsManager().incBrokerGetNums(getMessageResult.getMessageCount());</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">this</span>.brokerController.getBrokerConfig().isTransferMsgByHeap()) &#123;</span><br><span class="line">                    <span class="keyword">final</span> <span class="type">long</span> <span class="variable">beginTimeMills</span> <span class="operator">=</span> <span class="built_in">this</span>.brokerController.getMessageStore().now();</span><br><span class="line">                    <span class="keyword">final</span> <span class="type">byte</span>[] r = <span class="built_in">this</span>.readGetMessageResult(getMessageResult, requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId());</span><br><span class="line">                    <span class="built_in">this</span>.brokerController.getBrokerStatsManager().incGroupGetLatency(requestHeader.getConsumerGroup(),</span><br><span class="line">                        requestHeader.getTopic(), requestHeader.getQueueId(),</span><br><span class="line">                        (<span class="type">int</span>) (<span class="built_in">this</span>.brokerController.getMessageStore().now() - beginTimeMills));</span><br><span class="line">                    response.setBody(r);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="type">FileRegion</span> <span class="variable">fileRegion</span> <span class="operator">=</span></span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">ManyMessageTransfer</span>(response.encodeHeader(getMessageResult.getBufferTotalSize()), getMessageResult);</span><br><span class="line">                        channel.writeAndFlush(fileRegion).addListener(<span class="keyword">new</span> <span class="title class_">ChannelFutureListener</span>() &#123;</span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">operationComplete</span><span class="params">(ChannelFuture future)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                                getMessageResult.release();</span><br><span class="line">                                <span class="keyword">if</span> (!future.isSuccess()) &#123;</span><br><span class="line">                                    log.error(<span class="string">&quot;transfer many message by pagecache failed, &#123;&#125;&quot;</span>, channel.remoteAddress(), future.cause());</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">                        log.error(<span class="string">&quot;transfer many message by pagecache exception&quot;</span>, e);</span><br><span class="line">                        getMessageResult.release();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    response = <span class="literal">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> ResponseCode.PULL_NOT_FOUND:</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (brokerAllowSuspend &amp;&amp; hasSuspendFlag) &#123;</span><br><span class="line">                    <span class="type">long</span> <span class="variable">pollingTimeMills</span> <span class="operator">=</span> suspendTimeoutMillisLong;</span><br><span class="line">                    <span class="keyword">if</span> (!<span class="built_in">this</span>.brokerController.getBrokerConfig().isLongPollingEnable()) &#123;</span><br><span class="line">                        pollingTimeMills = <span class="built_in">this</span>.brokerController.getBrokerConfig().getShortPollingTimeMills();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="type">String</span> <span class="variable">topic</span> <span class="operator">=</span> requestHeader.getTopic();</span><br><span class="line">                    <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> requestHeader.getQueueOffset();</span><br><span class="line">                    <span class="type">int</span> <span class="variable">queueId</span> <span class="operator">=</span> requestHeader.getQueueId();</span><br><span class="line">                    <span class="type">PullRequest</span> <span class="variable">pullRequest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PullRequest</span>(request, channel, pollingTimeMills,</span><br><span class="line">                        <span class="built_in">this</span>.brokerController.getMessageStore().now(), offset, subscriptionData, messageFilter);</span><br><span class="line">                    <span class="built_in">this</span>.brokerController.getPullRequestHoldService().suspendPullRequest(topic, queueId, pullRequest);</span><br><span class="line">                    response = <span class="literal">null</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> ResponseCode.PULL_RETRY_IMMEDIATELY:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> ResponseCode.PULL_OFFSET_MOVED:</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">this</span>.brokerController.getMessageStoreConfig().getBrokerRole() != BrokerRole.SLAVE</span><br><span class="line">                    || <span class="built_in">this</span>.brokerController.getMessageStoreConfig().isOffsetCheckInSlave()) &#123;</span><br><span class="line">                    <span class="type">MessageQueue</span> <span class="variable">mq</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MessageQueue</span>();</span><br><span class="line">                    mq.setTopic(requestHeader.getTopic());</span><br><span class="line">                    mq.setQueueId(requestHeader.getQueueId());</span><br><span class="line">                    mq.setBrokerName(<span class="built_in">this</span>.brokerController.getBrokerConfig().getBrokerName());</span><br><span class="line"></span><br><span class="line">                    <span class="type">OffsetMovedEvent</span> <span class="variable">event</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OffsetMovedEvent</span>();</span><br><span class="line">                    event.setConsumerGroup(requestHeader.getConsumerGroup());</span><br><span class="line">                    event.setMessageQueue(mq);</span><br><span class="line">                    event.setOffsetRequest(requestHeader.getQueueOffset());</span><br><span class="line">                    event.setOffsetNew(getMessageResult.getNextBeginOffset());</span><br><span class="line">                    <span class="built_in">this</span>.generateOffsetMovedEvent(event);</span><br><span class="line">                    log.warn(</span><br><span class="line">                        <span class="string">&quot;PULL_OFFSET_MOVED:correction offset. topic=&#123;&#125;, groupId=&#123;&#125;, requestOffset=&#123;&#125;, newOffset=&#123;&#125;, suggestBrokerId=&#123;&#125;&quot;</span>,</span><br><span class="line">                        requestHeader.getTopic(), requestHeader.getConsumerGroup(), event.getOffsetRequest(), event.getOffsetNew(),</span><br><span class="line">                        responseHeader.getSuggestWhichBrokerId());</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    responseHeader.setSuggestWhichBrokerId(subscriptionGroupConfig.getBrokerId());</span><br><span class="line">                    response.setCode(ResponseCode.PULL_RETRY_IMMEDIATELY);</span><br><span class="line">                    log.warn(<span class="string">&quot;PULL_OFFSET_MOVED:none correction. topic=&#123;&#125;, groupId=&#123;&#125;, requestOffset=&#123;&#125;, suggestBrokerId=&#123;&#125;&quot;</span>,</span><br><span class="line">                        requestHeader.getTopic(), requestHeader.getConsumerGroup(), requestHeader.getQueueOffset(),</span><br><span class="line">                        responseHeader.getSuggestWhichBrokerId());</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">assert</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        response.setCode(ResponseCode.SYSTEM_ERROR);</span><br><span class="line">        response.setRemark(<span class="string">&quot;store getMessage return null&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">storeOffsetEnable</span> <span class="operator">=</span> brokerAllowSuspend;</span><br><span class="line">    storeOffsetEnable = storeOffsetEnable &amp;&amp; hasCommitOffsetFlag;</span><br><span class="line">    storeOffsetEnable = storeOffsetEnable</span><br><span class="line">        &amp;&amp; <span class="built_in">this</span>.brokerController.getMessageStoreConfig().getBrokerRole() != BrokerRole.SLAVE;</span><br><span class="line">    <span class="keyword">if</span> (storeOffsetEnable) &#123;</span><br><span class="line">        <span class="built_in">this</span>.brokerController.getConsumerOffsetManager().commitOffset(RemotingHelper.parseChannelRemoteAddr(channel),</span><br><span class="line">            requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), requestHeader.getCommitOffset());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>如果拉取成功，统计新增当前group获取的该topic的消息数、消息大小、以及broker获取的消息数等等。</li>
+<li>根据BrokerConfig的<strong>transferMsgByHeap</strong>判断，是否启用零拷贝技术传输数据，默认不启用。如果启用，这里还会将整个响应封装成FileRegion，直接发送。FileRegion是netty中零拷贝传输文件的接口。</li>
+<li>如果没有未消费的消息，且请求头中sysFlag对应FLAG_SUSPEND位为真，本次请求将会被挂起。如果BrokerConfig对应的<strong>longPollingEnable</strong>为真，即支持长轮询，本次请求被挂起的时间由请求自身附带的suspendTimeoutMillis参数决定，默认pull模式下为20s，push模式下为15s。如果不支持长轮询，pollingTimeMills为1s。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RocketMQ%E4%B9%8B%E6%97%85/" rel="tag"># RocketMQ之旅</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/17/%E7%AE%97%E6%B3%95%E5%9B%BD%EF%BC%88%E4%BA%8C%EF%BC%89%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D/" rel="prev" title="算法国（二）字符串匹配">
+                  <i class="fa fa-angle-left"></i> 算法国（二）字符串匹配
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/02/02/%E8%B0%88%E8%B0%88%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%88%86%E9%A1%B5%E7%BC%93%E5%AD%98%E7%9A%84%E8%AE%BE%E8%AE%A1/" rel="next" title="谈谈高并发之分页缓存的设计">
+                  谈谈高并发之分页缓存的设计 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

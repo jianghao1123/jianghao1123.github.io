@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="概述作为一个开发人员，很多人很少写单元测试，甚至不写单元测试，他们觉得写单元测试浪费时间，或者我总是通过调用接口的方式进行观察测试效率也很高啊，你写个单元测试有什么好处？下面主要是分析一下为什么我们要写单元测试，以及如何写单元测试。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零写单元测试">
+<meta property="og:url" content="http://example.com/2023/10/31/%E4%BB%8E%E9%9B%B6%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="概述作为一个开发人员，很多人很少写单元测试，甚至不写单元测试，他们觉得写单元测试浪费时间，或者我总是通过调用接口的方式进行观察测试效率也很高啊，你写个单元测试有什么好处？下面主要是分析一下为什么我们要写单元测试，以及如何写单元测试。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-10-31T13:03:59.000Z">
+<meta property="article:modified_time" content="2023-10-31T13:07:56.274Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="测试">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/10/31/%E4%BB%8E%E9%9B%B6%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2023/10/31/%E4%BB%8E%E9%9B%B6%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/","path":"2023/10/31/从零写单元测试/","title":"从零写单元测试"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从零写单元测试 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">为什么要写单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">3.</span> <span class="nav-text">代码覆盖率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">如何写单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">5.</span> <span class="nav-text">一个例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84-Anti-Patterns"><span class="nav-number">6.</span> <span class="nav-text">常见的 Anti-Patterns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E8%A7%84%E5%88%92"><span class="nav-number">7.</span> <span class="nav-text">阶段规划</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5-%E4%BC%9A%E5%86%99"><span class="nav-number">7.0.1.</span> <span class="nav-text">第一阶段 会写</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5-%E5%85%A8%E5%91%98%E5%86%99"><span class="nav-number">7.0.2.</span> <span class="nav-text">第二阶段 全员写</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5-%E8%87%AA%E5%8A%A8%E5%8C%96"><span class="nav-number">7.0.3.</span> <span class="nav-text">第三阶段 自动化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E9%98%B6%E6%AE%B5-%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">7.0.4.</span> <span class="nav-text">第四阶段 覆盖率</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/31/%E4%BB%8E%E9%9B%B6%E5%86%99%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从零写单元测试 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从零写单元测试
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-10-31 21:03:59 / Modified: 21:07:56" itemprop="dateCreated datePublished" datetime="2023-10-31T21:03:59+08:00">2023-10-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">测试</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>作为一个开发人员，很多人很少写单元测试，甚至不写单元测试，他们觉得写单元测试浪费时间，或者我总是通过调用接口的方式进行观察测试效率也很高啊，你写个单元测试有什么好处？下面主要是分析一下为什么我们要写单元测试，以及如何写单元测试。</p>
+<span id="more"></span>
+<h3 id="为什么要写单元测试"><a href="#为什么要写单元测试" class="headerlink" title="为什么要写单元测试"></a>为什么要写单元测试</h3><p>在说为什么的时候，先说一下写单元测试真的会浪费时间吗？写单元测试确实需要花费更多写代码的时间，但实际上在没有单元测试的时候，你依然要写代码、测试、debug、改代码、再测试……地狱循环，你的时间都花在哪里？真正写代码的时间很短，使用单元测试虽然可能占用了更多写代码的时间，但它可以帮你缩短其它时间。当然并不是所有代码都需要单元测试，如果你觉得代码简单、一眼可以看穿确实可以略过这个环节，但如果代码包含了更复杂的场景如缓存、多线程、冗长的流程处理、重构、新增或重大逻辑修改……使用单元测试可以有效地提高你的效率，减少bug的成本，如需了解更多可以参考<a target="_blank" rel="noopener" href="https://methodpoet.com/unit-testing-benefits/">《Unit Testing Benefits That Will Blow Your Mind》</a>。</p>
+<h3 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h3><p>在说怎么写单元测试之前，先来谈谈什么是单元测试（代码）覆盖率。按照维基百科解释：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%A2%BC%E8%A6%86%E8%93%8B%E7%8E%87"><strong>代码覆盖</strong></a><strong>（英语：Code coverage）是软件测试中的一种度量，描述程序中源代码被测试的比例和程度，所得比例称为代码覆盖率</strong>。实际上代码覆盖率还有更为复杂的准则：</p>
+<ul>
+<li>函数覆盖率（Function coverage）：程序中的每个函数（或副程序）都被调用了吗？</li>
+<li>语句覆盖率（Statement coverage）：程序中的每条语句都被执行了吗？</li>
+<li>边覆盖率（Edge coverage）：若用控制流图表示程序，控制流图中的每个边都被执行了吗？<ul>
+<li>分支覆盖率（Branch coverage）：每个控制结构中（例如if和case语句）的每个分支（也称为决策到决策路径）是否均被执行？例如，给定一个if语句，其true和false分支是否均被执行？（此为边覆盖率的子集）</li>
+</ul>
+</li>
+<li>条件覆盖率（Condition coverage）：也称为谓词覆盖率（predicate coverage），每一个布尔子表达式是否均被取过真值和假值？<blockquote>
+<p>以上均摘抄自维基百科。</p>
+</blockquote>
+</li>
+</ul>
+<p>如我写了如下一个类：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class Coverage &#123;</span><br><span class="line"><span class="code">    public int test(int i) &#123;</span></span><br><span class="line"><span class="code">        switch (i) &#123;</span></span><br><span class="line"><span class="code">            case 1:</span></span><br><span class="line"><span class="code">                System.out.println(&quot;1&quot;);</span></span><br><span class="line"><span class="code">                return i;</span></span><br><span class="line"><span class="code">            case 2:</span></span><br><span class="line"><span class="code">                System.out.println(&quot;2&quot;);</span></span><br><span class="line"><span class="code">                return ++i;</span></span><br><span class="line"><span class="code">            default:</span></span><br><span class="line"><span class="code">                System.out.println(&quot;default&quot;);</span></span><br><span class="line"><span class="code">                return i+2;</span></span><br><span class="line"><span class="code">        &#125;</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>并尝试为该类的方法写测试用例：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testCoverage()&#123;</span><br><span class="line"><span class="code">    Assert.assertEquals(1, coverage.test(1));</span></span><br><span class="line"><span class="code">    Assert.assertEquals(3, coverage.test(2));</span></span><br><span class="line"><span class="code">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>使用 IDEA 工具的“Run XXX with Coverage”分析得到测试类的代码覆盖率情况：</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Method</th>
+<th>Line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100%(1&#x2F;1)</td>
+<td>100%(1&#x2F;1)</td>
+<td>75%(6&#x2F;8)</td>
+</tr>
+</tbody></table>
+<p>因为这里没有考虑 default 分支，所以 line 的覆盖率只有75%。当然覆盖率100%并不是说这些代码都测好了，只能说明有覆盖到，实际上我们也不追求100%的覆盖率。</p>
+<h3 id="如何写单元测试"><a href="#如何写单元测试" class="headerlink" title="如何写单元测试"></a>如何写单元测试</h3><p>下面详细说说如何写一个单元测试，我先来说说我个人对单元测试的要求（非圭臬，只是基于我个人的总结）：</p>
+<ul>
+<li>不依赖任何其他第三方程序。一个常见的反例如：我写了一个单元测试，但是测试时需要起一个数据库实例，或者这样说，我们常用的 @SpringBootTest 在我看来不是单元测试。</li>
+<li>明确的校验，成功或者失败。每个用例要（尽可能）有明确的校验（assert）正确与否，不能只是在控制台打印出结果然后肉眼判断。</li>
+<li>快速、高效、自动化、可重复运行。尽量不要Sleep，所有用例是可以重复运行的。</li>
+<li>测试用例之前相互独立，无依赖关联。每个测试用例方法都可以独立运行。</li>
+<li>基于业务场景。基于业务场景、边界、流程去写测试用例，覆盖核心功能、复杂逻辑、易出错的地方。</li>
+<li>单元测试方法可读。要让别人理解测试用例是干嘛的，通用的方法是方法尽量可读或者加一些注释，如写一个方法：testOnlyOneAcquireLock_WhenMultiThreadCall 。</li>
+</ul>
+<p>下面再来说下针对一些通用的场景如何来写单元测试：</p>
+<ul>
+<li>算法、工具类。这种场景一般不会依赖其他比较重的组件，junit应该就能覆盖。</li>
+<li>函数有外部依赖。使用 mock 模拟外部依赖。如 Java 常用的 mock 框架 Mockito，使用doReturn(…).when(…).methodCall 来获得类似的效果。</li>
+<li>复杂的入参对象构建。通过真实的数据资源构造（如JSON加载配置文件），或者使用一些随机对象构造工具来构造对象，如 Java 中的 EasyRandom 。</li>
+<li>无返回值的函数测试。使用 mock 模拟，用 verify 来验证是否调用了某个方法，用 capture 验证调用其它方法的入参。</li>
+<li>多线程测试。使用一些并发工具如Java中的 CountDownLatch，最笨的方法如 Sleep。如果程序相对复杂，使用一些专门的多线程测试框架，如 <a target="_blank" rel="noopener" href="http://tempusfugitlibrary.org/">tempus-fugit</a>、<a target="_blank" rel="noopener" href="https://github.com/google/thread-weaver">Thread Weaver</a>、<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/projects/PL/multithreadedtc/overview.html">MultithreadedTC</a>、<a target="_blank" rel="noopener" href="https://github.com/openjdk/jcstress">jcstress</a>等。</li>
+</ul>
+<p>同时编写单元测试代码<strong>遵守 BCDE 原则</strong>，以保证被测试模块的交付质量：</p>
+<ul>
+<li><strong>B：Border，边界值测试，包括循环边界、特殊取值、特殊时间点、数据顺序等。</strong></li>
+<li><strong>C：Correct，正确的输入，并得到预期的结果。</strong></li>
+<li><strong>D：Design，与设计文档相结合，来编写单元测试。</strong></li>
+<li><strong>E：Error，强制错误信息输入（如：非法数据、异常流程、业务允许外等），并得到预期的结果。</strong></li>
+</ul>
+<h3 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h3><p>下面主要是通过一个 Mockito 示例讲解单元测试，如有一个很常见的登录场景，如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class UserService &#123;</span><br><span class="line"></span><br><span class="line"><span class="code">    private final UserRepository userRepository;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    public static final int ERROR_COUNT = 5;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    public UserService(UserRepository userRepository) &#123;</span></span><br><span class="line"><span class="code">        this.userRepository = userRepository;</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    public void login(LoginUserDTO loginUser) &#123;</span></span><br><span class="line"><span class="code">        User u = userRepository.getUserByName(loginUser.getUsername());</span></span><br><span class="line"><span class="code">        if (u == null) &#123;</span></span><br><span class="line"><span class="code">            throw new IllegalArgumentException(&quot;用户名或密码错误&quot;);</span></span><br><span class="line"><span class="code">        &#125; else if (u.checkLocked()) &#123;</span></span><br><span class="line"><span class="code">            throw new IllegalStateException(&quot;用户登录错误次数过多，已被禁用&quot;);</span></span><br><span class="line"><span class="code">        &#125; else if (!u.login(loginUser.getUsername(), loginUser.getPassword())) &#123;</span></span><br><span class="line"><span class="code">            if (u.getErrorCount() &gt;= ERROR_COUNT) &#123;</span></span><br><span class="line"><span class="code">                u.lock();</span></span><br><span class="line"><span class="code">            &#125;</span></span><br><span class="line"><span class="code">            userRepository.save(u);</span></span><br><span class="line"><span class="code">            throw new IllegalArgumentException(&quot;用户名或密码错误&quot;);</span></span><br><span class="line"><span class="code">        &#125;</span></span><br><span class="line"><span class="code">        userRepository.save(u);</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code">&#125;</span></span><br><span class="line"><span class="code"></span></span><br></pre></td></tr></table></figure>
+<p>上面是一个常见的用户登录例子，我根据需求进行整理，设计了如下测试用例（这个具体看需求和场景，这里只是示例）：</p>
+<ul>
+<li>用户登录因为密码错误失败后，会保存用户登录状态。</li>
+<li>用户登录失败次数不得超过 ERROR_COUNT 阈值，否则直接锁定。</li>
+<li>用户状态如果锁定，直接返回失败。</li>
+<li>用户登录成功，会更新用户状态。</li>
+</ul>
+<p>因为该方法是无参数返回的，所以我们使用 mock 模拟和校验，那么对应的单元测试用例如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">@RunWith(MockitoJUnitRunner.class)</span><br><span class="line">public class UserServiceTest &#123;</span><br><span class="line"><span class="code">    private UserService userService;</span></span><br><span class="line"><span class="code">    @Mock</span></span><br><span class="line"><span class="code">    private UserRepository userRepository;</span></span><br><span class="line"><span class="code">    @Mock</span></span><br><span class="line"><span class="code">    private User user;</span></span><br><span class="line"><span class="code">    @Before</span></span><br><span class="line"><span class="code">    public void setup()&#123;</span></span><br><span class="line"><span class="code">        userService = new UserService(userRepository);</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    /**</span></span><br><span class="line"><span class="code">     * 用户登录因为密码错误失败后，会保存用户登录状态。</span></span><br><span class="line"><span class="code">     */</span></span><br><span class="line"><span class="code">    @Test(expected = IllegalArgumentException.class)</span></span><br><span class="line"><span class="code">    public void testSaveUserState_WhenLoginFailWhenPasswordError()&#123;</span></span><br><span class="line"><span class="code">        Mockito.when(userRepository.getUserByName(Mockito.anyString())).thenReturn(user);</span></span><br><span class="line"><span class="code">        Mockito.when(user.login(Mockito.anyString(), Mockito.anyString())).thenReturn(false);</span></span><br><span class="line"><span class="code">        Mockito.when(user.checkLocked()).thenReturn(false);</span></span><br><span class="line"><span class="code">        userService.login(LoginUserDTO.builder().username(&quot;U&quot;).password(&quot;P&quot;).build());</span></span><br><span class="line"><span class="code">        Mockito.verify(userRepository).save(user);</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    /**</span></span><br><span class="line"><span class="code">     * 用户登录失败次数不得超过 ERROR_COUNT 阈值，否则直接锁定。</span></span><br><span class="line"><span class="code">     */</span></span><br><span class="line"><span class="code">    @Test(expected = IllegalArgumentException.class)</span></span><br><span class="line"><span class="code">    public void testUserLocked_WhenLoginFailAboveThreshold()&#123;</span></span><br><span class="line"><span class="code">        Mockito.when(userRepository.getUserByName(Mockito.anyString())).thenReturn(user);</span></span><br><span class="line"><span class="code">        Mockito.when(user.login(Mockito.anyString(), Mockito.anyString())).thenReturn(false);</span></span><br><span class="line"><span class="code">        Mockito.when(user.getErrorCount()).thenReturn(UserService.ERROR_COUNT);</span></span><br><span class="line"><span class="code">        userService.login(LoginUserDTO.builder().username(&quot;U&quot;).password(&quot;P&quot;).build());</span></span><br><span class="line"><span class="code">        Mockito.verify(user).lock();</span></span><br><span class="line"><span class="code">        Mockito.verify(userRepository).save(user);</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    /**</span></span><br><span class="line"><span class="code">     * 用户状态如果锁定，直接返回失败。</span></span><br><span class="line"><span class="code">     */</span></span><br><span class="line"><span class="code">    @Test(expected = IllegalStateException.class)</span></span><br><span class="line"><span class="code">    public void testLoginFail_WhenUserLocked()&#123;</span></span><br><span class="line"><span class="code">        Mockito.when(userRepository.getUserByName(Mockito.anyString())).thenReturn(user);</span></span><br><span class="line"><span class="code">        Mockito.when(user.checkLocked()).thenReturn(true);</span></span><br><span class="line"><span class="code">        userService.login(LoginUserDTO.builder().username(&quot;U&quot;).password(&quot;P&quot;).build());</span></span><br><span class="line"><span class="code">        Mockito.verify(user, Mockito.never()).login(Mockito.anyString(), Mockito.anyString());</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    /**</span></span><br><span class="line"><span class="code">     * 用户登录成功，会更新用户状态。</span></span><br><span class="line"><span class="code">     */</span></span><br><span class="line"><span class="code">    @Test</span></span><br><span class="line"><span class="code">    public void testSaveUserState_WhenLoginSuccess()&#123;</span></span><br><span class="line"><span class="code">        Mockito.when(userRepository.getUserByName(Mockito.anyString())).thenReturn(user);</span></span><br><span class="line"><span class="code">        Mockito.when(user.checkLocked()).thenReturn(false);</span></span><br><span class="line"><span class="code">        Mockito.when(user.login(Mockito.anyString(), Mockito.anyString())).thenReturn(true);</span></span><br><span class="line"><span class="code">        userService.login(LoginUserDTO.builder().username(&quot;U&quot;).password(&quot;P&quot;).build());</span></span><br><span class="line"><span class="code">        Mockito.verify(userRepository).save(user);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>运行后看到 UserService 的测试覆盖率如下：</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Class</th>
+<th>Method</th>
+<th>Line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UserService</td>
+<td>100%(1&#x2F;1)</td>
+<td>100%(2&#x2F;2)</td>
+<td>92%(12&#x2F;13)</td>
+</tr>
+</tbody></table>
+<p>实际上确实是有一行代码是没有覆盖到的，猜猜是哪一行？<br>有没有发现什么其他的问题？</p>
+<h3 id="常见的-Anti-Patterns"><a href="#常见的-Anti-Patterns" class="headerlink" title="常见的 Anti-Patterns"></a>常见的 Anti-Patterns</h3><p>刚才通过一个例子来讲解用例设计并通过 mock 来写一个类的单元测试，现在再来总结一些我见过的、典型的对测试不友好的代码，即所谓的 Anti-Patterns：</p>
+<ul>
+<li><p><strong>全局变量。</strong>滥用全局变量让测试变得困难，举个我们项目中的例子：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class LoginService &#123;</span><br><span class="line"><span class="code">    private static final Map&lt;String, UserStatus&gt; userMap = new ConcurrentHashMap&lt;&gt;();</span></span><br><span class="line"><span class="code">    private final UserRepository userRepository;</span></span><br><span class="line"><span class="code">    public LoginService(UserRepository userRepository) &#123;</span></span><br><span class="line"><span class="code">        this.userRepository = userRepository;</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code">    public boolean login(String username, String password) &#123;</span></span><br><span class="line"><span class="code">        User user = userRepository.getUserByName(username);</span></span><br><span class="line"><span class="code">        UserStatus userStatus = userMap.get(user.getName());</span></span><br><span class="line"><span class="code">        if (userStatus != null &amp;&amp; userStatus.isLocked()) &#123;</span></span><br><span class="line"><span class="code">            return false;</span></span><br><span class="line"><span class="code">        &#125;</span></span><br><span class="line"><span class="code">        if (user.login(username, password)) &#123;</span></span><br><span class="line"><span class="code">            userMap.put(user.getName(), new UserStatus());</span></span><br><span class="line"><span class="code">            return true;</span></span><br><span class="line"><span class="code">        &#125; else &#123;</span></span><br><span class="line"><span class="code">            return false;</span></span><br><span class="line"><span class="code">        &#125;</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code">&#125;</span></span><br><span class="line"><span class="code"></span></span><br></pre></td></tr></table></figure>
+<p>想象一下这段代码，你所有构造的 login 用例因为共用 userMap 而不再独立（当然你可以再写一个方法reset userMap，但如果是多线程调用呢）！</p>
+</li>
+<li><p><strong>结果随机。</strong>我曾经测试过一个随机采样的场景，并为此写了个测试用例判断某个区间，但是编译时跑测试用例总有概率会失败。</p>
+</li>
+<li><p><strong>静态方法中依赖外部资源。</strong>静态方法本质上是面向过程编程，如果一个静态方法又复杂、依赖了很重的外部资源，那么这个方法的几乎很难测试。</p>
+</li>
+<li><p><strong>过多外部依赖。</strong>一个对象如果依赖十几个外部对象才能完成工作，那么这个对象从设计上来说就是高耦合的。</p>
+</li>
+<li><p><strong>过多条件。</strong>多层条件语句建议使用<strong>卫语句、策略模式、状态模式等方式重构</strong>。</p>
+</li>
+</ul>
+<h3 id="阶段规划"><a href="#阶段规划" class="headerlink" title="阶段规划"></a>阶段规划</h3><p>后续单元测试的推行分为三个阶段。</p>
+<h5 id="第一阶段-会写"><a href="#第一阶段-会写" class="headerlink" title="第一阶段 会写"></a>第一阶段 会写</h5><p>第一阶段所有研发人员学习写单元测试，同时部分同学开始试点写单元测试，不要求写的多好，但是每次研发评审、代码review会将单元测试纳入讨论中。<br><strong>这个时间大约持续2个迭代。</strong></p>
+<h5 id="第二阶段-全员写"><a href="#第二阶段-全员写" class="headerlink" title="第二阶段 全员写"></a>第二阶段 全员写</h5><p>要求所有人都必须写单元测试，每个迭代研发<strong>都有写单元测试的经历</strong>。新增的核心代码必须有单元测试，对部分单元测试进行深度 review。</p>
+<h5 id="第三阶段-自动化"><a href="#第三阶段-自动化" class="headerlink" title="第三阶段 自动化"></a>第三阶段 自动化</h5><p>单元测试纳入自动化持续构建。</p>
+<h5 id="第四阶段-覆盖率"><a href="#第四阶段-覆盖率" class="headerlink" title="第四阶段 覆盖率"></a>第四阶段 覆盖率</h5><p>设定覆盖率目标，如核心类单元测试语句覆盖率至少达到70%。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>尽早测试，经常测试，自动测试！</p>
+<blockquote>
+<p>出自《解析极限编程》</p>
+</blockquote>
+<h3 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h3><p><a target="_blank" rel="noopener" href="https://tech.youzan.com/code-coverage/">浅谈代码覆盖率</a><br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/okmWMOeBm7cCIZ1zzFr4KQ">从头到脚说单测——谈有效的单元测试</a><br><a target="_blank" rel="noopener" href="https://github.com/alibaba/p3c">p3c</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag"># 测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/07/DelayQueue%E6%BA%90%E7%A0%81/" rel="prev" title="DelayQueue源码">
+                  <i class="fa fa-angle-left"></i> DelayQueue源码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/31/%E7%A0%94%E5%8F%91%E8%AF%84%E5%AE%A1%E6%B5%81%E7%A8%8B/" rel="next" title="研发评审流程">
+                  研发评审流程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

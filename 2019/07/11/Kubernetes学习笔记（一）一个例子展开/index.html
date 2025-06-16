@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="一句话简介&emsp;&emsp;Kubernetes (K8s)是一款谷歌开源，用于容器应用自动化部署、扩展和管理的分布式架构解决方案。如果你已经了解过Docker，那么再来看Kubernetes应该不难理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes学习笔记（一）一个例子展开">
+<meta property="og:url" content="http://example.com/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="一句话简介&emsp;&emsp;Kubernetes (K8s)是一款谷歌开源，用于容器应用自动化部署、扩展和管理的分布式架构解决方案。如果你已经了解过Docker，那么再来看Kubernetes应该不难理解。">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5ly1g4vzk2j0woj20mb0gcabq.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/639cfad5ly1g4w4tvqetxj20t20ac0t6.jpg">
+<meta property="article:published_time" content="2019-07-11T12:02:11.000Z">
+<meta property="article:modified_time" content="2019-10-24T16:22:02.000Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="Kubernetes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/639cfad5ly1g4vzk2j0woj20mb0gcabq.jpg">
+
+
+<link rel="canonical" href="http://example.com/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://example.com/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/","path":"2019/07/11/Kubernetes学习笔记（一）一个例子展开/","title":"Kubernetes学习笔记（一）一个例子展开"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Kubernetes学习笔记（一）一个例子展开 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一句话简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">一个简单的例子</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">2.1.</span> <span class="nav-text">创建镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E5%B9%B6%E9%83%A8%E7%BD%B2"><span class="nav-number">2.2.</span> <span class="nav-text">上传并部署</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEgoweb%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">访问goweb应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kubernetes%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">Kubernetes架构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Master"><span class="nav-number">3.1.</span> <span class="nav-text">Master</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Node"><span class="nav-number">3.2.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pod"><span class="nav-number">3.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Label"><span class="nav-number">3.4.</span> <span class="nav-text">Label</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Replication-Controller%EF%BC%88RC%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">Replication Controller（RC）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Service"><span class="nav-number">3.6.</span> <span class="nav-text">Service</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/11/Kubernetes%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%B1%95%E5%BC%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Kubernetes学习笔记（一）一个例子展开 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kubernetes学习笔记（一）一个例子展开
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-07-11 20:02:11" itemprop="dateCreated datePublished" datetime="2019-07-11T20:02:11+08:00">2019-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2019-10-25 00:22:02" itemprop="dateModified" datetime="2019-10-25T00:22:02+08:00">2019-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="一句话简介"><a href="#一句话简介" class="headerlink" title="一句话简介"></a>一句话简介</h4><p>&emsp;&emsp;Kubernetes (K8s)是一款谷歌开源，用于容器应用自动化部署、扩展和管理的分布式架构解决方案。如果你已经了解过Docker，那么再来看Kubernetes应该不难理解。</p>
+<span id="more"></span>
+<h4 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h4><h5 id="创建镜像"><a href="#创建镜像" class="headerlink" title="创建镜像"></a>创建镜像</h5><p>&emsp;&emsp;先用Go写一个简单的web服务：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// web.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span>(</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handler</span><span class="params">(writer http.ResponseWriter, request *http.Request)</span></span>&#123;</span><br><span class="line">	fmt.Fprintf(writer, <span class="string">&quot;Hello World,You viste %s!&quot;</span>, request.URL.Path[<span class="number">1</span>:])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/&quot;</span>, handler)</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:8090&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着在当前目录下（web.go的目录）新建Dockerfile文件：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="keyword">FROM</span> golang:latest</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> web.go /</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> go build web.go</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8090</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;./web&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<p>运行docker命令构建镜像：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t goweb:v1 .</span><br></pre></td></tr></table></figure>
+<p>可以看到镜像构建完成了，然后运行该镜像：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8090:8090 goweb:v1</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入 <a target="_blank" rel="noopener" href="http://localhost:8090/goweb%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BE%93%E5%87%BA%E5%A6%82%E4%B8%8B%E6%96%87%E5%AD%97">http://localhost:8090/goweb，可以看到输出如下文字</a>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello World,You viste goweb!</span><br></pre></td></tr></table></figure>
+
+<h5 id="上传并部署"><a href="#上传并部署" class="headerlink" title="上传并部署"></a>上传并部署</h5><p>&emsp;&emsp;以上可以证明这个镜像能够成功在容器中运行，现在要使用Kubernetes来部署goweb服务。在这之前，需要先把goweb镜像上传到dockerhub，因为我使用的是Google Kubernetes Engine（GKE）集群。至于如何上传镜像，可以参照官方<a target="_blank" rel="noopener" href="https://hub.docker.com/?ref=login&overlay=onboarding">Quick Start</a>。这里先将之前的镜像重新命名成我自己的ID：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker tag goweb:v1 jfant/goweb</span><br><span class="line">docker push jfant/goweb</span><br></pre></td></tr></table></figure>
+<p>上传成功后查看<a target="_blank" rel="noopener" href="https://hub.docker.com/repositories">dockerhup 仓库</a>，可以看到刚才上传上去的镜像，接下来使用kubectl指令将这个镜像发布到Kubernetes。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl run goweb --image=jfant/goweb --port=8090 --generator=run/v1</span><br><span class="line">replicationcontroller <span class="string">&quot;goweb&quot;</span> created</span><br></pre></td></tr></table></figure>
+<p>通过kubectl指令查看Pod：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ kubectl get pods</span><br><span class="line">NAME          READY     STATUS    RESTARTS   AGE</span><br><span class="line">goweb-vqp7w   1/1       Running   0          12m</span><br></pre></td></tr></table></figure>
+<h5 id="访问goweb应用"><a href="#访问goweb应用" class="headerlink" title="访问goweb应用"></a>访问goweb应用</h5><p>&emsp;&emsp;以上goweb应用已部署到Pod中，可以看到这个Pod现在是运行（Running）状态了，但是如何访问这个Pod？我部署的Kubernetes是一个具有三个物理节点的集群，如果想要从集群外部访问这个Pod，可以通过创建LoadBalancer类型的服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose rc goweb  --<span class="built_in">type</span>=LoadBalancer --name goweb-http</span><br><span class="line">service/goweb-http exposed</span><br></pre></td></tr></table></figure>
+<p>rc是<strong>Replication Controller</strong>的缩写，这些概念后面再解释，这里LoadBalancer服务创建完毕，通过kubectl命令查看所有的service：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ kubectl get services</span><br><span class="line">NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)          AGE</span><br><span class="line">goweb-http   LoadBalancer   10.3.252.64   xx.xx.xx.xx   8090:32012/TCP   70s</span><br><span class="line">kubernetes   ClusterIP      10.3.240.1    &lt;none&gt;           443/TCP          53d</span><br></pre></td></tr></table></figure>
+<p>可以看到goweb-http的<strong>EXTERNAL-IP</strong>即外部可访问的IP（我已经将真实的ip地址隐藏了），在浏览器中输入<a target="_blank" rel="noopener" href="http://xx.xx.xx.xx:8090/go">http://xx.xx.xx.xx:8090/go</a> 可以看到打印出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello World,You viste go!</span><br></pre></td></tr></table></figure>
+
+<h4 id="Kubernetes架构"><a href="#Kubernetes架构" class="headerlink" title="Kubernetes架构"></a>Kubernetes架构</h4><p>&emsp;&emsp;在上面的例子中，分别涉及了Kubernetes的Pod、Replication Controller(RC)、Service，这些都是Kubernetes重要的组件。下面是一个典型的Kubernetes架构图：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1g4vzk2j0woj20mb0gcabq.jpg"></p>
+<h5 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h5><p>Kubernetes Master是整个集群的“主脑”，主要通过运行如下进程控制整个集群：</p>
+<ul>
+<li>Kubernetes API Server（kube-apiserver），提供了HTTP Rest接口的关键服务进程，是Kubernetes里所有资源的增、删、改、查等操作的唯一入口，也是集群控制的入口进程。</li>
+<li>Kubernetes Controller Manager（kube-controller-manager），Kubernetes里所有资源对象的自动化控制中心，可以理解为资源对象的“大总管”。</li>
+<li>Kubernetes Scheduler（kube-scheduler），负责资源调度（Pod调度）的进程，相当于公交公司的“调度室”。</li>
+<li>启动了一个etcd Server进程，因为Kubernetes里的所有资源对象的数据全部是保存在etcd中的。</li>
+</ul>
+<h5 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h5><p>除了Master之外，Kubernetes集群中的其他机器（物理主机或者虚拟机）称之为Node节点，作为Kubernetes worker，Node节点定时向Master汇报自身的情况，并接收来自Master的工作命令。每个Node节点上都运行着以下一组关键进程：</p>
+<ul>
+<li>kubelet：负责Pod对应的容器的创建、启停等任务，同时与Master节点密切协作，实现集群管理的基本功能。</li>
+<li>kube-proxy：实现Kubernetes Service的通信与负载均衡机制的重要组件。</li>
+<li>Docker Engine（不一定是Docker，也有可能是其他容器引擎）：负责本机的容器创建和管理工作。</li>
+</ul>
+<p>可以通过执行以下命令查看集群中的Node节点：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">luyundeMacBook-Pro:~ luyun$ kubectl get nodes</span><br><span class="line">NAME                                                 STATUS   ROLES    AGE     VERSION</span><br><span class="line">gke-standard-cluster-my-default-pool-31d7df3c-53wf   Ready    &lt;none&gt;   54d     v1.12.7-gke.25</span><br><span class="line">gke-standard-cluster-my-default-pool-31d7df3c-6323   Ready    &lt;none&gt;   54d     v1.12.7-gke.25</span><br><span class="line">gke-standard-cluster-my-default-pool-31d7df3c-6c7w   Ready    &lt;none&gt;   6d11h   v1.12.7-gke.25</span><br></pre></td></tr></table></figure>
+
+<h5 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h5><p>Pod是Kubernetes中最重要也是最基础的组件，它运行于Node节点，包含一组容器和卷。Kubernetes为每个Pod分配了唯一的IP，一个Pod中的多个容器共享Pod IP和Volume。在Kubernetes中我们不会单独部署容器，更多的是针对一组Pod容器进行部署和操作。如上goweb的例子，我们就是新建了一个Pod。Pod具如下的属性：</p>
+<ul>
+<li>Pod中可以部署多个容器，这些容器总是运行于一个Node节点。不过通常我们只在Pod中部署一个容器。</li>
+<li>如果Pod中的某个容器停止，或者Pod所在Node宕机，Kubernetes会自动检测到这个问题，并重启这个Pod(重启Pod中的所有容器)。</li>
+<li>Pod是短暂的，它会被重启，重启完后其IP地址可能会改变。</li>
+<li>不同Pod上的容器之间可以直接通信。</li>
+</ul>
+<h5 id="Label"><a href="#Label" class="headerlink" title="Label"></a>Label</h5><p>Label是一组键&#x2F;值对，用于传递用户自定义的一些属性。它可以附加到各种资源对象，例如Node、Pod、Service、RC，同样一个资源对象可以定义任意多的Label。可以通过给指定的资源对象绑定一组或多组不同的Label，来实现多维度的资源管理功能。例如：</p>
+<ul>
+<li>通过Label来打版本标签，release:stable、release:canary等，部署不同的版本应用到不同的环境。</li>
+<li>环境标签，environment:dev、environment:prod等，可以区分应用的运行环境。</li>
+</ul>
+<h5 id="Replication-Controller（RC）"><a href="#Replication-Controller（RC）" class="headerlink" title="Replication Controller（RC）"></a>Replication Controller（RC）</h5><p>RC定义了一个Pod副本数的期望，确保任意时间都有指定数量的Pod“副本”在运行。假设为某个Pod创建了RC，并且指定3个副本。那么RC会自动创建3个Pod，并且进行持续地监控。如果某个Pod不响应，那么RC会创建另外一个Pod替换它。RC定义需要包含以下几部分：</p>
+<ul>
+<li>Pod期待的副本数量（replicas）。</li>
+<li>用于筛选目标Pod的Label Selector。</li>
+<li>当Pod少于预期副本数量，用于创建Pod的模板。</li>
+</ul>
+<h5 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h5><p>Kubernetes里的每个Service相当于微服务架构中的一个“服务”，Service定义了服务的访问入口，它是一系列Pod以及访问这些Pod的策略的一层抽象。Service和Pod、RC之间的关系如下：<br><img src="http://ww1.sinaimg.cn/large/639cfad5ly1g4w4tvqetxj20t20ac0t6.jpg"><br>Service在整个生命周期内，它的Cluster IP都不会发生改变，上面的例子通过LoadBalancer来访问goweb应用，LoadBalancer是一个负载均衡器，可以将流量均衡地分摊到指定的Pod上，而且LoadBalancer也是一个特殊的Service。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/07/08/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E4%B8%89%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BNamespaces/" rel="prev" title="拥抱Docker（三）基础原理之Namespaces">
+                  <i class="fa fa-angle-left"></i> 拥抱Docker（三）基础原理之Namespaces
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/07/15/%E6%8B%A5%E6%8A%B1Docker%EF%BC%88%E5%9B%9B%EF%BC%89%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86%E4%B9%8BCGroups/" rel="next" title="拥抱Docker（四）基础原理之CGroups">
+                  拥抱Docker（四）基础原理之CGroups <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -27,7 +27,7 @@
 <meta property="og:description" content="概览本文主要是记录产品性能优化以及迭代过程中遇到的各种问题，以及对问题的探究和反思。希望本文能带给大家一点启发，虽然这里有些问题或思考也并不一定单单与高并发（High Concurrency）有关，或者高并发的奥义也远不止于此。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2025-06-16T07:46:43.000Z">
-<meta property="article:modified_time" content="2025-06-16T08:30:48.904Z">
+<meta property="article:modified_time" content="2025-06-16T12:02:11.042Z">
 <meta property="article:author" content="functm">
 <meta name="twitter:card" content="summary">
 
@@ -200,7 +200,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2025-06-16 15:46:43 / Modified: 16:30:48" itemprop="dateCreated datePublished" datetime="2025-06-16T15:46:43+08:00">2025-06-16</time>
+      <time title="Created: 2025-06-16 15:46:43 / Modified: 20:02:11" itemprop="dateCreated datePublished" datetime="2025-06-16T15:46:43+08:00">2025-06-16</time>
     </span>
 
   
@@ -400,6 +400,8 @@
 <h3 id="其他-effective-建议"><a href="#其他-effective-建议" class="headerlink" title="其他 effective 建议"></a>其他 effective 建议</h3><ol>
 <li>热点代码中频繁遍历某个数组（List集合）判断是否包含某个值，思考能否能改成 <strong>Set</strong>。</li>
 <li>正则匹配需要高性能时，考虑 Hyperscan，或者使用一些AC（Aho–Corasick）自动机来实现。</li>
+<li>关注一些硬件及 JVM 底层相关的影响因素，如伪共享( false sharing )的理念。</li>
+<li>知识是相通的，比如 hashMap 使用位运算来取位的实现。</li>
 </ol>
 <blockquote>
 <p>后面想到再补充</p>

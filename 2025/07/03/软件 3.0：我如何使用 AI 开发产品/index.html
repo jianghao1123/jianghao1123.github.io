@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jianghao1123.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.23.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="什么是软件 3.0 本文是公司内部分享文档摘录。   OpenAI 联合创始人、特斯拉前 AI 负责人 Andrej Karpathy 在 Y Combinator 的 AI 创业学院活动上，进行了个人演讲。  本次演讲中，Karpathy 提出了「软件 3.0 时代」这一概念，他认为自然语言正在取代传统代码，而大型语言模型（LLM）则成为新的「万能计算机」。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件 3.0：我如何使用 AI 开发产品">
+<meta property="og:url" content="https://jianghao1123.github.io/2025/07/03/%E8%BD%AF%E4%BB%B6%203.0%EF%BC%9A%E6%88%91%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20AI%20%E5%BC%80%E5%8F%91%E4%BA%A7%E5%93%81/index.html">
+<meta property="og:site_name" content="矩阵编程">
+<meta property="og:description" content="什么是软件 3.0 本文是公司内部分享文档摘录。   OpenAI 联合创始人、特斯拉前 AI 负责人 Andrej Karpathy 在 Y Combinator 的 AI 创业学院活动上，进行了个人演讲。  本次演讲中，Karpathy 提出了「软件 3.0 时代」这一概念，他认为自然语言正在取代传统代码，而大型语言模型（LLM）则成为新的「万能计算机」。">
+<meta property="og:locale">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/c9a4439d-1915-412b-95d1-ebc80b2ddfff.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/836a0acc-3a8d-4560-9a5f-358151419f92.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b8c74503-e23b-465b-a3e2-76326153fc0e.jpeg">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/23156cf1-533c-48a3-8719-badee308e28c.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/24bd53a3-d74c-4136-aa0b-4aed2d27c4bc.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/12fad232-265c-4a5b-98a3-ffc90b5b189e.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/fab7712c-9a07-4974-bf8c-f00c75284400.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b3f3f4a7-b4f3-4753-babc-7879458cb096.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/e86a5a01-1d51-43ef-8178-d696761ec94f.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/fa462cfa-1feb-41c8-8ee7-7d54484e4a78.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/341bb8a7-fe19-4572-b6dd-a19129250d98.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b607c582-a0d4-4832-9150-04e8a0134085.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/8e12c998-5e81-449e-80fe-02fc3d3cc11f.png">
+<meta property="og:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/d7eb8ae8-def6-4278-b04f-bc56cd656209.png">
+<meta property="article:published_time" content="2025-07-03T03:48:57.000Z">
+<meta property="article:modified_time" content="2025-07-03T03:52:01.759Z">
+<meta property="article:author" content="functm">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/c9a4439d-1915-412b-95d1-ebc80b2ddfff.png">
+
+
+<link rel="canonical" href="https://jianghao1123.github.io/2025/07/03/%E8%BD%AF%E4%BB%B6%203.0%EF%BC%9A%E6%88%91%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20AI%20%E5%BC%80%E5%8F%91%E4%BA%A7%E5%93%81/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://jianghao1123.github.io/2025/07/03/%E8%BD%AF%E4%BB%B6%203.0%EF%BC%9A%E6%88%91%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20AI%20%E5%BC%80%E5%8F%91%E4%BA%A7%E5%93%81/","path":"2025/07/03/软件 3.0：我如何使用 AI 开发产品/","title":"软件 3.0：我如何使用 AI 开发产品"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>软件 3.0：我如何使用 AI 开发产品 | 矩阵编程</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">矩阵编程</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BD%AF%E4%BB%B6-3-0"><span class="nav-number">1.</span> <span class="nav-text">什么是软件 3.0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AI-%E6%98%AF%E7%9C%9F%E7%94%9F%E4%BA%A7%E5%8A%9B"><span class="nav-number">2.</span> <span class="nav-text">AI 是真生产力</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">生产力工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95-Vibe-Coding"><span class="nav-number">4.</span> <span class="nav-text">尝试 Vibe Coding</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Cursor-%E5%BC%80%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text">使用 Cursor 开发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B0%E5%85%B4%E7%9A%84%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E5%B1%95%E6%9C%9B"><span class="nav-number">6.</span> <span class="nav-text">新兴的开发模式展望</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#01-AI-%E5%8E%9F%E7%94%9F-Git%EF%BC%9A%E4%B8%BA-AI-%E4%BB%A3%E7%90%86%E9%87%8D%E6%96%B0%E6%9E%84%E6%83%B3%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="nav-number">6.0.1.</span> <span class="nav-text">01 AI 原生 Git：为 AI 代理重新构想版本控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#02-%E4%BB%AA%E8%A1%A8%E7%9B%98-%E7%BB%BC%E5%90%88%EF%BC%9A%E5%8A%A8%E6%80%81AI%E9%A9%B1%E5%8A%A8%E7%95%8C%E9%9D%A2"><span class="nav-number">6.0.2.</span> <span class="nav-text">02 仪表盘-&gt;综合：动态AI驱动界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#03-%E6%96%87%E6%A1%A3%EF%BC%8C%E5%B7%A5%E5%85%B7%E3%80%81%E7%B4%A2%E5%BC%95%E5%92%8C%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%93"><span class="nav-number">6.0.3.</span> <span class="nav-text">03 文档，工具、索引和交互式知识库的结合体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#04-%E4%BB%8E%E9%9D%99%E6%80%81%E6%A8%A1%E6%9D%BF%E5%88%B0%E6%99%BA%E8%83%BD%E7%94%9F%E6%88%90%EF%BC%9AVibe%E7%BC%96%E7%A8%8B%E6%AD%A3%E5%9C%A8%E5%8F%96%E4%BB%A3Create-React-App%E7%9A%84%E6%97%B6%E4%BB%A3"><span class="nav-number">6.0.4.</span> <span class="nav-text">04 从静态模板到智能生成：Vibe编程正在取代Create React App的时代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#05-%E5%BC%82%E6%AD%A5%E4%BB%A3%E7%90%86%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B4%E8%B5%B7"><span class="nav-number">6.0.5.</span> <span class="nav-text">05 异步代理工作的兴起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#06-%E5%9F%BA%E7%A1%80%E8%83%BD%E5%8A%9B%E6%A8%A1%E5%9D%97%E5%8C%96"><span class="nav-number">6.0.6.</span> <span class="nav-text">06 基础能力模块化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">functm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://jianghao1123.github.io/2025/07/03/%E8%BD%AF%E4%BB%B6%203.0%EF%BC%9A%E6%88%91%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20AI%20%E5%BC%80%E5%8F%91%E4%BA%A7%E5%93%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="functm">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="软件 3.0：我如何使用 AI 开发产品 | 矩阵编程">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          软件 3.0：我如何使用 AI 开发产品
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-07-03 11:48:57 / Modified: 11:52:01" itemprop="dateCreated datePublished" datetime="2025-07-03T11:48:57+08:00">2025-07-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="什么是软件-3-0"><a href="#什么是软件-3-0" class="headerlink" title="什么是软件 3.0"></a>什么是软件 3.0</h1><blockquote>
+<p>本文是公司内部分享文档摘录。 </p>
+</blockquote>
+<p>OpenAI 联合创始人、特斯拉前 AI 负责人 Andrej Karpathy 在 Y Combinator 的 AI 创业学院活动上，进行了个人演讲。</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/c9a4439d-1915-412b-95d1-ebc80b2ddfff.png" alt="image.png"></p>
+<p>本次演讲中，Karpathy 提出了<strong>「软件 3.0 时代」</strong>这一概念，<strong>他认为自然语言正在取代传统代码，而大型语言模型（LLM）则成为新的「万能计算机」。</strong></p>
+<span id="more"></span>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/836a0acc-3a8d-4560-9a5f-358151419f92.png" alt="image.png"></p>
+<ul>
+<li><p>软件 1.0 就是我们熟悉的传统编程，程序员一行行写代码，告诉计算机该做什么。就像盖房子，每块砖头放在哪里都要亲自指挥。</p>
+</li>
+<li><p>软件 2.0 就不一样了，核心变成了训练神经网络。你不用告诉计算机具体怎么做，而是给它大量数据让它自己”学会”。</p>
+</li>
+</ul>
+<blockquote>
+<p>举个特斯拉的例子：最初的自动驾驶系统里有大量传统代码，比如遇到路障怎么办、看到行人怎么处理，这些都要程序员一条条写出来。但随着AI能力提升，神经网络不仅能识别汽车，连路上的牛、鸡、鸭、鹅都能认出来，那些传统代码就没用了，直接删掉。</p>
+</blockquote>
+<ul>
+<li>软件 3.0，就是现在正在发生的事情——我们可以用自然语言直接跟AI对话，让它执行任务。这比之前的神经网络更可控，也大大降低了软件开发的门槛。任何人都能用自然语言”编程”了。</li>
+</ul>
+<p><strong>总结一下自己从视频中提炼的三点：</strong></p>
+<ul>
+<li><p><strong>现阶段 AI 产品的最好方式不是盲目追求全自动化的智能体，而是把传统的用户界面和大模型相结合，让 AI 去部分辅助人类进行工作。</strong></p>
+</li>
+<li><p><strong>为 AI 开发内容，让 AI 更好地阅读并服务人类。未来互联网内容的形式，为 AI 智能体构建新的内容。AI 并不擅长解读 HTML，也不像人类，比如看到某个说明文档，点击按钮查看之类的操作，AI 并不擅长。</strong></p>
+</li>
+<li><p><strong>程序员即将淘汰？<strong><strong>Karpathy认为现在是进入软件行业的最佳时机。大量的软件都需要被改写和重新构思。以前的软件是为人类编写的，</strong></strong>现在要考虑两点：</strong></p>
+<ul>
+<li><p><strong>智能体如何更方便地控制，以便服务人类。</strong></p>
+</li>
+<li><p><strong>人类如何更方便地审查结果。</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>演讲原视频地址：++<em><a target="_blank" rel="noopener" href="https://youtu.be/LCEmiRjPEtQ?si=n5Kpy9p-uTjTDTOH">https://youtu.be/LCEmiRjPEtQ?si=n5Kpy9p-uTjTDTOH</a></em>++</p>
+</blockquote>
+<h1 id="AI-是真生产力"><a href="#AI-是真生产力" class="headerlink" title="AI 是真生产力"></a>AI 是真生产力</h1><p>Product Hunt 榜单现在是 AI 的天下，AI 不再是花架子，而是真生产力，是核心的产品引擎。</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b8c74503-e23b-465b-a3e2-76326153fc0e.jpeg" alt="92cbae054119c6f19c747e98e5df11a1.jpeg"></p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/23156cf1-533c-48a3-8719-badee308e28c.png" alt="image.png"></p>
+<h1 id="生产力工具"><a href="#生产力工具" class="headerlink" title="生产力工具"></a>生产力工具</h1><p>设计</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://stitch.withgoogle.com/">stitch</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.lovart.ai/">lovart</a></p>
+</li>
+</ul>
+<p>代码</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://v0.dev/">v0.dev</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://bolt.new/">bolt.new</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://lovable.dev/">lovable</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://we0.ai/zh">we0</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://nocode.host/">nocode</a></p>
+</li>
+<li><p>cursor</p>
+</li>
+<li><p>…….（这样的工具有很多，可能还有一些更好的没有被发现）</p>
+</li>
+</ul>
+<blockquote>
+<p>AI 编程工具的崛起，AI 已经不仅仅是开发者编写代码的工具，甚至成为软件构建的基础设施。</p>
+</blockquote>
+<h1 id="尝试-Vibe-Coding"><a href="#尝试-Vibe-Coding" class="headerlink" title="尝试 Vibe Coding"></a>尝试 Vibe Coding</h1><p>氛围编程 (vibe coding) 是一种新兴的软件开发方法，极大地依赖于人工智能 (AI)。该术语由 AI 研究员 Andrej Karpathy 于 2025 年初提出，用于描述一种流程，在该流程中，开发者主要使用自然语言提示（以普通语言说出或输入），来指示 AI 工具生成、优化和调试代码。</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/embed/aAvrSbDOFtU">YouTube: https://www.youtube.com/embed/aAvrSbDOFtU</a></p>
+<h1 id="使用-Cursor-开发"><a href="#使用-Cursor-开发" class="headerlink" title="使用 Cursor 开发"></a>使用 Cursor 开发</h1><p>在 cursor 的 agent 使用过程中，会产生如下问题：</p>
+<ul>
+<li><p>在大型项目中出现“幻觉”。</p>
+</li>
+<li><p>丢失上下文。</p>
+</li>
+<li><p>生成不正确的代码、引入错误或无法理解复杂的逻辑。</p>
+</li>
+</ul>
+<p>基于 cursor 的缺陷，我们来介绍一种新的工作流模式：riper5 。来源于 -&gt; <a target="_blank" rel="noopener" href="https://forum.cursor.com/t/i-created-an-amazing-mode-called-riper-5-mode-fixes-claude-3-7-drastically/65516">I created an AMAZING MODE called “RIPER-5 Mode” Fixes Claude 3.7 Drastically!</a></p>
+<p>riper 本质是严格限制 agent 模式下 AI 的行为，规划好极其细致的围城。</p>
+<p>下面是我使用 riper5 让 Cursor给我规划和执行的一些任务情况：</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/24bd53a3-d74c-4136-aa0b-4aed2d27c4bc.png" alt="image.png"></p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/12fad232-265c-4a5b-98a3-ffc90b5b189e.png" alt="image.png"></p>
+<blockquote>
+<p>可以看到还有错误的任务，会自动跳过，最后手动再来执行一遍</p>
+</blockquote>
+<p>有没有研究模式的对比，用测试用例来比较：</p>
+<p>当没有研究模式时，让cursor对一个类写测试用例：</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/fab7712c-9a07-4974-bf8c-f00c75284400.png" alt="image.png"></p>
+<p>当使用研究模式时，让 cursor 不要急着写代码，先写一些计划，比如构建测试场景：</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b3f3f4a7-b4f3-4753-babc-7879458cb096.png" alt="image.png"></p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/e86a5a01-1d51-43ef-8178-d696761ec94f.png" alt="image.png"></p>
+<p>最后，你还可以集成一些 MCP 工具：</p>
+<ul>
+<li><p>context7</p>
+</li>
+<li><p>Claude Task Master</p>
+</li>
+<li><p>Serena</p>
+</li>
+<li><p>……</p>
+</li>
+</ul>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/fa462cfa-1feb-41c8-8ee7-7d54484e4a78.png" alt="image.png"></p>
+<h1 id="新兴的开发模式展望"><a href="#新兴的开发模式展望" class="headerlink" title="新兴的开发模式展望"></a>新兴的开发模式展望</h1><h3 id="01-AI-原生-Git：为-AI-代理重新构想版本控制"><a href="#01-AI-原生-Git：为-AI-代理重新构想版本控制" class="headerlink" title="01 AI 原生 Git：为 AI 代理重新构想版本控制"></a>01 AI 原生 Git：为 AI 代理重新构想版本控制</h3><p>代码成为输入的副产品，更像是一个编译产物，而非人工撰写的源码。在这种世界里，Git 的功能会逐渐从协作工作区转变为一个产物日志 —— 一个不仅记录“什么改变了”，还记录“为什么改变”、“是谁操作的”的地方。</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/341bb8a7-fe19-4572-b6dd-a19129250d98.png" alt="image.png"></p>
+<blockquote>
+<p>code is cheap, show me the talk</p>
+</blockquote>
+<h3 id="02-仪表盘-综合：动态AI驱动界面"><a href="#02-仪表盘-综合：动态AI驱动界面" class="headerlink" title="02 仪表盘-&gt;综合：动态AI驱动界面"></a>02 仪表盘-&gt;综合：动态AI驱动界面</h3><p>仪表盘的演变：如何更好地服务于人类用户与 AI 代理的双重需求</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/b607c582-a0d4-4832-9150-04e8a0134085.png" alt="image.png"></p>
+<h3 id="03-文档，工具、索引和交互式知识库的结合体"><a href="#03-文档，工具、索引和交互式知识库的结合体" class="headerlink" title="03 文档，工具、索引和交互式知识库的结合体"></a>03 文档，工具、索引和交互式知识库的结合体</h3><p>用户不再是从目录开始逐页阅读或自上而下浏览，而是从一个问题开始：“我该如何完成某项任务？”这种心理模型的转变，意味着文档的角色已经从“让我来学习这份规范”转变为“请帮我以我喜欢的方式重新组织这些信息”。</p>
+<p>文档不再仅仅是静态的 HTML 或 Markdown 页面，而是演变为由索引、嵌入（embeddings）和具备工具意识的AI代理支持的交互式知识系统。</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/8e12c998-5e81-449e-80fe-02fc3d3cc11f.png" alt="image.png"></p>
+<blockquote>
+<p>▲ Mintlify的屏幕截图，用户可以使用cmd+k快捷键打开 AI 聊天窗口，对Mintlify 文档进行问答</p>
+</blockquote>
+<h3 id="04-从静态模板到智能生成：Vibe编程正在取代Create-React-App的时代"><a href="#04-从静态模板到智能生成：Vibe编程正在取代Create-React-App的时代" class="headerlink" title="04 从静态模板到智能生成：Vibe编程正在取代Create React App的时代"></a>04 从静态模板到智能生成：Vibe编程正在取代Create React App的时代</h3><p>随着“文本生成应用”平台（如 Replit、Same.dev、Loveable、Convex 推出的 Chef 和 Bolt）以及 AI 集成开发环境（如 Cursor）的兴起，这种模式正在发生转变。</p>
+<p><img src="https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgXbx1PPXmlWN/img/d7eb8ae8-def6-4278-b04f-bc56cd656209.png" alt="image.png"></p>
+<h3 id="05-异步代理工作的兴起"><a href="#05-异步代理工作的兴起" class="headerlink" title="05 异步代理工作的兴起"></a>05 异步代理工作的兴起</h3><p>异步代理编程的兴起，比如Google Jules、Manus 以及 Minimax Agent。</p>
+<h3 id="06-基础能力模块化"><a href="#06-基础能力模块化" class="headerlink" title="06 基础能力模块化"></a>06 基础能力模块化</h3><p>正如早期 Web 开发时代需要 Rails 的生成器和 rails new 来加速开发，AI代理时代也需要值得信赖的基础模块：即插即用的身份系统、使用追踪、计费逻辑和访问控制机制——这些模块不仅要足够抽象以便于代码生成，还要足够灵活，能够随着应用一起成长。</p>
+<p>……（省略了很多，有兴趣可以点下面的资料自己看）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><strong>AI 时代，每个人的思维都要转变：</strong></p>
+<ul>
+<li><p><strong>从编写代码到叙述你的逻辑意图，****软件工程思想指导编程</strong></p>
+</li>
+<li><p><strong>从实现能力到品味判断力，****用产品思维验收 AI 工作成果</strong></p>
+</li>
+<li><p><strong>从辅助工具到新编程式基础设施，多尝试的新的 AI 编码设施。</strong></p>
+</li>
+</ul>
+<p> </p>
+<p><strong>总之，人人都可以是编程专家。</strong></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://www.woshipm.com/ai/6215127.html">a16z最新分享：AI时代的9大新兴开发模式</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Jasper-1024/CursorRIPER.sigma">CursorRIPER.sigma</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/NeekChaw/RIPER-5">RIPER-5</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.producthunt.com/">producthunt</a></p>
+<p><a target="_blank" rel="noopener" href="https://decohack.com/">decohack</a>（producthunt中文）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/16/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%8C%87%E5%BC%95/" rel="prev" title="高并发指引">
+                  <i class="fa fa-angle-left"></i> 高并发指引
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">functm</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
